@@ -1,1 +1,5 @@
-export type AppState = {}
+import * as SelectedMenu from './selectedMenu';
+
+export type AppState = {
+  selectedMenu: SelectedMenu.State;
+};
