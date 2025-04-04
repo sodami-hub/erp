@@ -2,8 +2,8 @@ import type {Action} from 'redux';
 
 export type State = string;
 
-export type ChangeMenu = Action<'@selectedMenu/change'> & {
+export type SelectMenu = Action<'@selectedMenu/select'> & {
   payload: string;
 };
 
-export type Actions = ChangeMenu;
+export type Actions = SelectMenu;
