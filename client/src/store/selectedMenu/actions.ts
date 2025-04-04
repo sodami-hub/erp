@@ -1,6 +1,6 @@
 import type * as T from './types';
 
-export const changeMenu = (payload: T.ChangeMenu) => ({
-  type: '@selectedMenu/change',
+export const ChangeMenu = (payload: T.SelectMenu) => ({
+  type: '@selectedMenu/select',
   payload
 });
