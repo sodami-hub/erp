@@ -3,6 +3,7 @@ import {Provider} from 'react-redux';
 import {BrowserRouter} from 'react-router-dom';
 import RoutesSetup from './routes/RoutesSetup';
 import {useStore} from './store';
+import {AuthProvider} from './context';
 
 function App() {
   const store = useStore();
@@ -10,7 +11,9 @@ function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <RoutesSetup />
+        <AuthProvider>
+          <RoutesSetup />
+        </AuthProvider>
       </BrowserRouter>
     </Provider>
   );

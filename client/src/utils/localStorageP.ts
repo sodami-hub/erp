@@ -1,6 +1,5 @@
 /*
 localStorage 에 쓰기와 읽기
-내부적으로 사용
  */
 
 export const readItemFromStorageP = (key: string) =>
