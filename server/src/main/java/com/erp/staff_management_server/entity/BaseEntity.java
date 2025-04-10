@@ -26,7 +26,7 @@ public class BaseEntity {
      private LocalDateTime updatedAt;
 
      @Column(name = "creator_id")
-     @CreatedBy
+     @CreatedBy  // User ID 를 인식하려면, AuditorAware 를 구현한 클래스를 만들어야 된다.
      private String creatorId;
 
      @Column(name = "updater_id")
