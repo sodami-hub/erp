@@ -8,6 +8,9 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -63,6 +66,10 @@ public class JwtTokenProvider {
             if (claims == null) {
                 throw new IllegalArgumentException("JWT token does not contain auth information.");
             }
+
+            Authentication auth = new UsernamePasswordAuthenticationToken(claims,null,null);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
             return claims;
         } catch (Exception e) {
             log.error("JWT token parsing error: {}", e.getMessage());

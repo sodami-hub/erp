@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JwtClaimsDTO {
-    private String staffId;
+    private int staffId;
     private String institutionId;
     private String phone;
     private String authId;
