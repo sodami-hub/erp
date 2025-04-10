@@ -9,7 +9,7 @@ spring:
     show-sql: true
 
 jwt:
-  secret: ${JWT_SECRET_KEY}
+  secret: 07aadbb507fdf74a7b748de508ed943457391637fafcf3b7c48e384e8b56b5f9
 
 logging:
   level:

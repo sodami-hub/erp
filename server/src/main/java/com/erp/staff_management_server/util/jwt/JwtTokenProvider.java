@@ -26,12 +26,19 @@ import java.util.Date;
 @Slf4j
 @Component
 public class JwtTokenProvider {
-    private final Key key;
+    private Key key;
 
     // application.yml에 있는 jwt.secret 값을 가져와서 Base64로 디코딩 후 Key 객체를 생성
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+        if (secretKey == null || secretKey.isEmpty()) {
+            throw new IllegalArgumentException("JWT_SECRET_KEY must not be null or empty");
+        }
+        try {
+            byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+            this.key = Keys.hmacShaKeyFor(keyBytes);
+        } catch (IllegalArgumentException e) {
+
+        }
     }
 
     // JWT 토큰을 생성하는 메서드
