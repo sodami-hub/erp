@@ -54,13 +54,12 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
           if (res === undefined) {
             setErrorMessage('res is undefined');
           } else {
-            console.log(res.json());
             return res.json();
           }
         })
         .then((result: {ok: boolean; body?: JwtToken; errorMessage?: string}) => {
-          const {ok, body, errorMessage} = result;
           console.log(result);
+          const {ok, body, errorMessage} = result;
           if (ok) {
             U.writeObjectP('jwt', body ?? {}).finally(() => {
               setJwt(body ?? {});

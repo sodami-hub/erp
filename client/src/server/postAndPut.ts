@@ -13,6 +13,7 @@ const postAndPut =
       init = {
         ...init,
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'application/json',
           Authorization: `${JSON.stringify(jwt)}`
         }

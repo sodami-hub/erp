@@ -21,7 +21,7 @@ public class AuthController {
     this.authService = authService;
   }
 
-  @PostMapping("/auth/login")
+  @PostMapping(value = "/auth/login", produces = "application/json")
   public ResponseEntity<LoginResponseDTO> login(
       @RequestBody LoginRequestDTO loginRequestDTO,
       @RequestHeader(value = "Authorization", required = false) JwtToken jwtToken) {

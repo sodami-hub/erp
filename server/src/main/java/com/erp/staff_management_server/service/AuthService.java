@@ -20,7 +20,7 @@ public class AuthService {
 
   public LoginResponseDTO login(LoginRequestDTO loginRequestDTO, JwtToken jwtToken) {
     System.out.println(loginRequestDTO.getOrganizationId() + " / " + loginRequestDTO.getId());
-    return new LoginResponseDTO(false, null, "error");
+    return new LoginResponseDTO(false, new JwtToken(null, null, null), "error");
     /*
     - 토큰 검증
     - RequestDTO를 통해서 로그인 정보 조회
