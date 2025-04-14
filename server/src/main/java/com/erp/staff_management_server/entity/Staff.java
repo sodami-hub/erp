@@ -1,10 +1,14 @@
 package com.erp.staff_management_server.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -12,60 +16,60 @@ import java.time.LocalDate;
 @Table(name = "staffs")
 public class Staff extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "staff_id")
-    private Long staffId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "staff_id")
+  private Long staffId;
 
-    @Column(name = "institution_id", nullable = false)
-    private String institutionId;
+  @Column(name = "institution_id", nullable = false)
+  private String institutionId;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+  @Column(name = "name", nullable = false)
+  private String name;
 
-    @Column(name = "gender")
-    private Integer gender;
+  @Column(name = "gender")
+  private Integer gender;
 
-    @Column(name = "birth")
-    private LocalDate birth;
+  @Column(name = "birth")
+  private LocalDate birth;
 
-    @Column(name = "phone")
-    private String phone;
+  @Column(name = "phone")
+  private String phone;  // 로그인 id
 
-    @Column(name = "password")
-    private String password;
+  @Column(name = "password")
+  private String password;  // phone 뒤 4자리
 
-    @Column(name = "email")
-    private String email;
+  @Column(name = "email")
+  private String email;
 
-    @Column(name = "address")
-    private String address;
+  @Column(name = "address")
+  private String address;
 
-    @Column(name = "join_date")
-    private LocalDate joinDate;
+  @Column(name = "join_date")
+  private LocalDate joinDate;
 
-    @Column(name = "contract_status")
-    private Integer contractStatus;
+  @Column(name = "contract_status")
+  private Integer contractStatus;
 
-    @Column(name = "retire_date")
-    private LocalDate retireDate;
+  @Column(name = "retire_date")
+  private LocalDate retireDate;
 
-    @Column(name = "dependents")
-    private Integer dependents;
+  @Column(name = "dependents")
+  private Integer dependents;
 
-    @Column(name = "w4c")
-    private String w4c;
+  @Column(name = "w4c")
+  private String w4c;
 
-    @Column(name = "auth_id")
-    private String authId;
+  @Column(name = "auth_id")
+  private String authId;
 
-    @Column(name = "possible_work")
-    private String possibleWork;
+  @Column(name = "possible_work")
+  private String possibleWork;
 
-    @Column(name = "work_type")
-    private String workType;
+  @Column(name = "work_type")
+  private String workType;
 
-    @Column(name = "work_status")
-    private String workStatus;
+  @Column(name = "work_status")
+  private String workStatus;
 
 }

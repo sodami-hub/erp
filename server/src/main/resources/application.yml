@@ -9,7 +9,8 @@ spring:
     show-sql: true
 
 jwt:
-  secret: 07aadbb507fdf74a7b748de508ed943457391637fafcf3b7c48e384e8b56b5f9
+  secret: dXNlYSBasdfqwer2345dfgsdfg3245zZWN1cmUga2V5IHdpdGggYSBtaW5pbXVtIGxlbmd0aCBvZiA2NCBieXRlcwtesttesttesttesttest
+
 
 logging:
   level:

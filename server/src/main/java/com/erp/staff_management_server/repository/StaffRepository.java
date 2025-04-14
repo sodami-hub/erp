@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Integer> {
 
+  Staff getStaffIdByPhone(String phone);  // id(phone)로 스태프 정보 조회
 }

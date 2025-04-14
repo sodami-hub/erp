@@ -3,7 +3,7 @@ import {createContext, useCallback, useContext, useEffect, useState} from 'react
 import * as U from '../utils';
 import {post} from '../server';
 
-export type LoggedUser = {organizationId: string; id: string; password: string};
+export type LoggedUser = {institutionId: string; id: string; password: string};
 export type JwtToken = {
   grantType: string;
   accessToken: string;
@@ -18,7 +18,7 @@ type ContextType = {
   errorMessage?: string;
   loggedUser?: LoggedUser;
   login: (
-    organizationId: string,
+    institutionId: string,
     id: string,
     password: string,
     callback?: Callback
@@ -26,7 +26,7 @@ type ContextType = {
 };
 
 export const AuthContext = createContext<ContextType>({
-  login: (organizationId: string, id: string, password: string, callback?: Callback) => {}
+  login: (institutionId: string, id: string, password: string, callback?: Callback) => {}
 });
 
 type AuthProviderProps = {};
@@ -37,8 +37,8 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const login = useCallback(
-    (organizationId: string, id: string, password: string, callback?: Callback) => {
-      const user = {organizationId, id, password};
+    (institutionId: string, id: string, password: string, callback?: Callback) => {
+      const user = {institutionId, id, password};
       U.readObjectP('jwt')
         .then(jwt => {
           if (!jwt) {
@@ -48,6 +48,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
             if (!receiveNewJwt) return;
           }
           setJwt(jwt ?? {});
+          console.log('jwt:', jwt);
           return post('/auth/login', user, jwt);
         })
         .then(res => {
@@ -57,19 +58,25 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
             return res.json();
           }
         })
-        .then((result: {ok: boolean; body?: JwtToken; errorMessage?: string}) => {
-          console.log(result);
-          const {ok, body, errorMessage} = result;
-          if (ok) {
-            U.writeObjectP('jwt', body ?? {}).finally(() => {
-              setJwt(body ?? {});
-              setLoggedUser(notUsed => user);
-              callback && callback();
-            });
-          } else {
-            setErrorMessage(errorMessage ?? '');
+        .then(
+          (result: {
+            ok: boolean;
+            body?: JwtToken | null;
+            errorMessage?: string | null;
+          }) => {
+            console.log(result);
+            const {ok, body, errorMessage} = result;
+            if (ok) {
+              U.writeObjectP('jwt', body ?? {}).finally(() => {
+                setJwt(body ?? {});
+                setLoggedUser(notUsed => user);
+                callback && callback();
+              });
+            } else {
+              setErrorMessage(errorMessage ?? '');
+            }
           }
-        });
+        );
     },
     []
   );

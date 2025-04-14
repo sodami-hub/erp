@@ -1,14 +1,31 @@
 package com.erp.staff_management_server.dto.jwt;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Builder
-@Data
-@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class JwtToken {
-    private String grantType;
-    private String accessToken;
-    private String refreshToken;
+
+  private String grantType;
+  private String accessToken;
+  private String refreshToken;
+
+
+  @JsonCreator
+  public JwtToken(
+      @JsonProperty("grantType") String grantType,
+      @JsonProperty("accessToken") String accessToken,
+      @JsonProperty("refreshToken") String refreshToken
+  ) {
+    this.grantType = grantType;
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+  }
 }

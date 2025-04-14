@@ -26,7 +26,7 @@ public class TestController {
     String time = now.format(formatter);
 
     // 비밀번호 인코딩
-    String pw = "12345";
+    String pw = "5678";
     String encodedPw = encoder.encode(pw);
 
     // SecurityContextHolder 에 Authentication 객체를 넣어준다.
