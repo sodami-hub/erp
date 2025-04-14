@@ -1,6 +1,5 @@
 package com.erp.staff_management_server.config;
 
-import com.erp.staff_management_server.util.AuditorAwareImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
