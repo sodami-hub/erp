@@ -17,3 +17,6 @@ logging:
     org.hibernate.type.descriptor.sql: TRACE
     com.app.salty.checklist: DEBUG
     org.springframework.web: DEBUG
+
+server:
+  port: 8081

@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JwtClaimsDTO {
-    private int staffId;
-    private String institutionId;
-    private String phone;
-    private String authId;
+
+  private int staffId;
+  private String institutionId;
+  private String authId;
 }
