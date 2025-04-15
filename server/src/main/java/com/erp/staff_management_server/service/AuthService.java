@@ -50,12 +50,12 @@ public class AuthService {
     StaffInfoDTO staffInfo = getStaffInfoByPhone(loginRequestDTO.getId());
     if (staffInfo == null) {
       // 직원 정보가 존재하지 않음
-      return new LoginResponseDTO(false, null, "로그인 정보를 확인해주세요.");
+      return new LoginResponseDTO(false, null, null, "로그인 정보를 확인해주세요.");
     }
     boolean check = loginInfoCheck(loginRequestDTO, staffInfo);
     if (!check) {
       // DB 정보와 로그인 정보가 일치하지 않음
-      return new LoginResponseDTO(false, null, "로그인 정보를 확인해주세요.");
+      return new LoginResponseDTO(false, null, null, "로그인 정보를 확인해주세요.");
     }
 
     // 2. 로그인 정보와 DB에서 조회한 정보가 일치하는 경우
@@ -63,7 +63,7 @@ public class AuthService {
       //토큰을 생성해서 전달
       System.out.println("로그인 정보와 DB에서 조회한 정보가 일치하지만 토큰이 없습니다. 토큰을 생성합니다.");
       JwtToken token = genJwtToken(staffInfo);
-      return new LoginResponseDTO(true, token, null);
+      return new LoginResponseDTO(true, token, staffInfo.getAuthId(), null);
     } else {
       // 토큰이 있는 경우 토큰의 유효성 확인 및 토큰의 정보와 로그인 정보가 같은지 확인
       System.out.println("로그인 정보와 DB에서 조회한 정보가 일치하고 토큰이 있습니다. 토큰을 확인합니다.");
@@ -72,7 +72,7 @@ public class AuthService {
         // 만료된 토큰인 경우 - 다시 생성해서 전달
         System.out.println("토큰이 만료되었습니다. 새로운 토큰을 생성합니다.");
         JwtToken token = genJwtToken(staffInfo);
-        return new LoginResponseDTO(true, token, null);
+        return new LoginResponseDTO(true, token, staffInfo.getAuthId(), null);
       } else {
         // 유효한 토큰인 경우 - 토큰의 정보와 로그인 정보를 비교한다.
         System.out.println("토큰이 유효합니다. 토큰의 정보를 확인합니다.");
@@ -81,12 +81,12 @@ public class AuthService {
           // 토큰의 정보와 로그인 정보가 같은 경우
           System.out.println("토큰의 정보와 로그인 정보가 같습니다. 로그인 성공.");
           jwtTokenProvider.saveAuth(claims);
-          return new LoginResponseDTO(true, jwtToken, null);
+          return new LoginResponseDTO(true, jwtToken, staffInfo.getAuthId(), null);
         } else {
           // 토큰의 정보와 로그인 정보가 다른 경우 - 다시 생성해서 전달
           System.out.println("토큰의 정보와 로그인 정보가 다릅니다. 새로운 토큰을 생성합니다.");
           JwtToken token = genJwtToken(staffInfo);
-          return new LoginResponseDTO(true, token, null);
+          return new LoginResponseDTO(true, token, staffInfo.getAuthId(), null);
         }
       }
     }

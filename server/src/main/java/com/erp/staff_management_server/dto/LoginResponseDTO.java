@@ -12,5 +12,6 @@ public class LoginResponseDTO {
 
   private boolean ok;
   private JwtToken body;
+  private String authCode;
   private String errorMessage;
 }

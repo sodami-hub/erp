@@ -15,6 +15,7 @@ type Callback = () => void;
 // 먼저 login 부분만 구현해본다.
 type ContextType = {
   jwt?: object;
+  authCode?: string;
   errorMessage?: string;
   loggedUser?: LoggedUser;
   login: (
@@ -35,6 +36,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [loggedUser, setLoggedUser] = useState<LoggedUser | undefined>(undefined);
   const [jwt, setJwt] = useState<object>({});
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [authCode, setAuthCode] = useState<string>('');
 
   const login = useCallback(
     (institutionId: string, id: string, password: string, callback?: Callback) => {
@@ -62,14 +64,16 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
           (result: {
             ok: boolean;
             body?: JwtToken | null;
+            authCode?: string | null;
             errorMessage?: string | null;
           }) => {
             console.log(result);
-            const {ok, body, errorMessage} = result;
+            const {ok, body, errorMessage, authCode} = result;
             if (ok) {
               U.writeObjectP('jwt', body ?? {}).finally(() => {
                 setJwt(body ?? {});
                 setLoggedUser(notUsed => user);
+                setAuthCode(notUsed => authCode ?? '');
                 callback && callback();
               });
             } else {
@@ -113,6 +117,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   }, [errorMessage]);
 
   const value = {
+    authCode,
     jwt,
     errorMessage,
     loggedUser,
