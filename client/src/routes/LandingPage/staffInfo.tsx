@@ -1,6 +1,6 @@
 import {ChangeEvent, useCallback, useState} from 'react';
 import {useToggle} from '../../hooks';
-import {ModalAction, ModalContent, SignUpModal} from '../../components';
+import {ModalContent, SignUpModal} from '../../components';
 
 type NameSearch = Record<'name', string>;
 const initialSearchState = {name: ''};
@@ -26,40 +26,8 @@ export default function StaffInfo() {
         신규 직원 등록
       </button>
       <SignUpModal open={open}>
-        <div className={'bg-gray-500 w-3/4 rounded-xl relative'}>
-          <ModalContent
-            className={'full'}
-            onCloseIconClicked={toggleOpen}
-            closeIconClassName={'btn-primary btn-outline btn-sm material-icons'}>
-            <div className={'text-center text-black text-xl font-bold mb-2'}>
-              직원 등록
-            </div>
-            <div className={'flex flex-col w-full'}>
-              <input
-                type={'text'}
-                className={'w-full p-3 mb-4 input input-primary'}
-                name={'name'}
-                placeholder={'이름'}
-              />
-              <input
-                type={'text'}
-                className={'w-full p-3 mb-4 input input-primary'}
-                name={'phoneNumber'}
-                placeholder={'전화번호'}
-              />
-              <input
-                type={'text'}
-                className={'w-full p-3 mb-4 input input-primary'}
-                name={'address'}
-                placeholder={'주소'}
-              />
-            </div>
-          </ModalContent>
-          <ModalAction>
-            <button className={'btn btn-accent mb-1 mr-1'} onClick={onAccept}>
-              등록
-            </button>
-          </ModalAction>
+        <div className={'bg-gray-200 w-3/4 rounded-lg relative'}>
+          <ModalContent onCloseIconClicked={toggleOpen} />
         </div>
       </SignUpModal>
 
