@@ -1,11 +1,11 @@
 import {ChangeEvent, useCallback, useState} from 'react';
-import {useToggle} from '../../hooks';
-import {ModalContent, SignUpModal} from '../../components';
+import {useToggle} from '../../../hooks';
+import {SignUpModal, SignUpModalContent} from './SignUpModal';
 
 type NameSearch = Record<'name', string>;
 const initialSearchState = {name: ''};
 
-export default function StaffInfo() {
+export default function NewStaff() {
   const [{name}, setName] = useState<NameSearch>(initialSearchState);
 
   const changedSearchValue = useCallback(
@@ -16,9 +16,6 @@ export default function StaffInfo() {
   );
 
   const [open, toggleOpen] = useToggle(false);
-  const onAccept = useCallback(() => {
-    toggleOpen();
-  }, [toggleOpen]);
 
   return (
     <section className={'flex flex-col w-80 ml-3 mt-3'}>
@@ -27,7 +24,7 @@ export default function StaffInfo() {
       </button>
       <SignUpModal open={open}>
         <div className={'bg-gray-200 w-3/4 rounded-lg relative'}>
-          <ModalContent onCloseIconClicked={toggleOpen} />
+          <SignUpModalContent onCloseIconClicked={toggleOpen} />
         </div>
       </SignUpModal>
 

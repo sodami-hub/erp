@@ -28,7 +28,7 @@ public class Staff extends BaseEntity {
   private String name;
 
   @Column(name = "gender")
-  private Integer gender;
+  private String gender; // 남/여
 
   @Column(name = "birth")
   private LocalDate birth;
@@ -49,13 +49,13 @@ public class Staff extends BaseEntity {
   private LocalDate joinDate;
 
   @Column(name = "contract_status")
-  private Integer contractStatus;
+  private String contractStatus; // 정규직, 계약직, 인턴
 
   @Column(name = "retire_date")
   private LocalDate retireDate;
 
   @Column(name = "dependents")
-  private Integer dependents;
+  private String dependents; // 부양가족 0~9명
 
   @Column(name = "w4c")
   private String w4c;

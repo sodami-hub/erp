@@ -2,6 +2,7 @@ import type {FC, PropsWithChildren} from 'react';
 import {createContext, useCallback, useContext, useEffect, useState} from 'react';
 import * as U from '../utils';
 import {post} from '../server';
+import type {staffInfo} from './staffInfoType';
 
 export type LoggedUser = {institutionId: string; id: string; password: string};
 export type JwtToken = {
@@ -12,7 +13,6 @@ export type JwtToken = {
 
 type Callback = () => void;
 
-// 먼저 login 부분만 구현해본다.
 type ContextType = {
   jwt?: object;
   authCode?: string;
@@ -24,10 +24,17 @@ type ContextType = {
     password: string,
     callback?: Callback
   ) => void;
+  signup: (newStaff: staffInfo) => void;
 };
 
 export const AuthContext = createContext<ContextType>({
-  login: (institutionId: string, id: string, password: string, callback?: Callback) => {}
+  login: (
+    _institutionId: string,
+    _id: string,
+    _password: string,
+    _callback?: Callback
+  ) => {},
+  signup: (_newStaff: staffInfo) => {}
 });
 
 type AuthProviderProps = {};
@@ -37,6 +44,19 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [jwt, setJwt] = useState<object>({});
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
+
+  const signup = useCallback((newStaff: staffInfo) => {
+    post('/auth/signup', newStaff)
+      .then(res => res.json())
+      .then((result: {ok: boolean; errorMessage?: string}) => {
+        const {ok, errorMessage} = result;
+        if (ok) {
+          alert('회원가입이 완료되었습니다.');
+        } else {
+          setErrorMessage(errorMessage ?? '');
+        }
+      });
+  }, []);
 
   const login = useCallback(
     (institutionId: string, id: string, password: string, callback?: Callback) => {
@@ -72,8 +92,8 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
             if (ok) {
               U.writeObjectP('jwt', body ?? {}).finally(() => {
                 setJwt(body ?? {});
-                setLoggedUser(notUsed => user);
-                setAuthCode(notUsed => authCode ?? '');
+                setLoggedUser(() => user);
+                setAuthCode(() => authCode ?? '');
                 callback && callback();
               });
             } else {
@@ -112,7 +132,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   useEffect(() => {
     if (errorMessage) {
       alert(errorMessage);
-      setErrorMessage(notUsed => '');
+      setErrorMessage(() => '');
     }
   }, [errorMessage]);
 
@@ -121,7 +141,8 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     jwt,
     errorMessage,
     loggedUser,
-    login
+    login,
+    signup
   };
   return <AuthContext.Provider value={value} children={children} />;
 };
