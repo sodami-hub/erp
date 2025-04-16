@@ -28,6 +28,7 @@ public class AuthService {
         && loginRequestDTO.getInstitutionId().equals(staffInfo.getInstitutionId());
   }
 
+  // 로그인 정보(id -> phone)를 가지고 DB에서 직원 정보 조회
   private StaffInfoDTO getStaffInfoByPhone(String phone) {
     Staff staff = staffRepository.getStaffIdByPhone(phone);
     if (staff == null) {
@@ -36,7 +37,7 @@ public class AuthService {
     return new StaffInfoDTO(staff);
   }
 
-  // 토큰을 생성하고 생성한 토큰을 Authentication에 저장
+  // 토큰을 생성하고 생성한 토큰을 Authentication에 저장 및 토큰 반환
   private JwtToken genJwtToken(StaffInfoDTO staffInfo) {
     JwtClaimsDTO claims = new JwtClaimsDTO(staffInfo.getStaffId(), staffInfo.getInstitutionId(),
         staffInfo.getAuthId());
@@ -60,7 +61,7 @@ public class AuthService {
 
     // 2. 로그인 정보와 DB에서 조회한 정보가 일치하는 경우
     if (jwtToken == null) {
-      //토큰을 생성해서 전달
+      //클라이언트에 토큰이 없다. 토큰을 새로 생성해서 전달한다.
       System.out.println("로그인 정보와 DB에서 조회한 정보가 일치하지만 토큰이 없습니다. 토큰을 생성합니다.");
       JwtToken token = genJwtToken(staffInfo);
       return new LoginResponseDTO(true, token, staffInfo.getAuthId(), null);
