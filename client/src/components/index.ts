@@ -1,3 +1,3 @@
 export * from './MainMenu';
 export * from './SecondaryMenu';
-export * from './Calendar';
+export * from './CalendarModal';

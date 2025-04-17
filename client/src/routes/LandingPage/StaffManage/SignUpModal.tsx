@@ -8,7 +8,9 @@ import React, {
 } from 'react';
 import {staffInfo, useAuth} from '../../../context';
 import {useToggle} from '../../../hooks';
-import CalendarSelect from '../../../components/Calendar';
+import type {Value} from '../../../components';
+import {CalendarModal, CalendarSelect} from '../../../components';
+import moment from 'moment';
 
 export type ReactDivProps = DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -128,6 +130,14 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
 
   const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
 
+  const selectedDate = useCallback((date: Value) => {
+    if (date && date instanceof Date) {
+      const formattedDate = moment(date).format('YYYY-MM-DD');
+      setSignupForm(obj => ({...obj, birth: formattedDate}));
+      toggleBirthCalOpen();
+    }
+  }, []);
+
   const closeIconClassName =
     _closeIconClassName ?? 'btn-primary btn-outline material-icons';
   if (!showCloseIcon) return <div {...props} className={className} children={children} />;
@@ -182,17 +192,9 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
           onChange={changed('birth')}
           onClick={toggleBirthCalOpen}
         />
-        {birthCalOpen && (
-          <CalendarSelect
-            onDateChange={selectedDate => {
-              const formattedDate = Array.isArray(selectedDate)
-                ? selectedDate[0]?.toISOString().split('T')[0] || ''
-                : selectedDate?.toISOString().split('T')[0] || '';
-              setSignupForm(obj => ({...obj, birth: formattedDate}));
-              toggleBirthCalOpen();
-            }}
-          />
-        )}
+        <CalendarModal open={birthCalOpen}>
+          <CalendarSelect toggle={toggleBirthCalOpen} onDateChange={selectedDate} />
+        </CalendarModal>
       </div>
       <div className={'flex flex-row justify-end items-center'}>
         <button type={'submit'} className={'btn btn-accent mb-2 mr-2'} onClick={onSubmit}>
