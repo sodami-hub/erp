@@ -26,8 +26,11 @@ export const SignUpModal: FC<ModalProps> = ({open, className: _className, ...pro
   return <div {...props} className={className} />;
 };
 
-type SignupFormType = staffInfo;
-const initialFormState: staffInfo = {
+type SignupFormType = staffInfo & {
+  addr01?: string;
+  addr02?: string;
+};
+const initialFormState: SignupFormType = {
   name: '',
   gender: '',
   birth: '',
@@ -42,7 +45,9 @@ const initialFormState: staffInfo = {
   authId: '',
   possibleWork: '',
   workType: '',
-  workStatus: ''
+  workStatus: '',
+  addr01: '',
+  addr02: ''
 };
 
 export type ModalContentProps = ReactDivProps & {
@@ -89,10 +94,16 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       authId,
       possibleWork,
       workType,
-      workStatus
+      workStatus,
+      addr01,
+      addr02
     },
     setSignupForm
   ] = useState<SignupFormType>(initialFormState);
+
+  useEffect(() => {
+    setSignupForm(obj => ({...obj, address: obj.addr01 + ' ' + obj.addr02}));
+  }, [addr01, addr02]);
 
   const changed = useCallback(
     (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +113,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     []
   );
 
-  const onSubmit = useCallback(() => {
+  const signupStaff = useCallback(() => {
     const newStaff: SignupFormType = {
       name,
       gender,
@@ -120,6 +131,23 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       workType,
       workStatus
     };
+    alert(
+      name +
+        gender +
+        birth +
+        phone +
+        password +
+        email +
+        address +
+        joinDate +
+        contractStatus +
+        dependents +
+        w4c +
+        authId +
+        possibleWork +
+        workType +
+        workStatus
+    );
     signup(newStaff);
   }, [
     name,
@@ -153,10 +181,11 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const onClickAddr = () => {
     new window.daum.Postcode({
       oncomplete: function (data: IAddr) {
-        const address = data.address + ' ' + data.zonecode + ' ';
-        setSignupForm(obj => ({...obj, address}));
+        const addr01 = data.address + ' ' + data.zonecode;
+        setSignupForm(obj => ({...obj, addr01: addr01}));
         alert('상세 주소를 입력해주세요.');
-        document.getElementById('address')?.focus();
+        console.log('addr01:', addr01);
+        document.getElementById('addr02')?.focus();
       }
     }).open();
   };
@@ -238,12 +267,23 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
         />
         <input
           type={'text'}
-          className={'w-[81%] p-2 m-2 input input-primary'}
-          id={'address'}
-          name={'address'}
+          className={'w-[40%] p-2 m-2 input input-primary'}
+          id={'addr01'}
+          name={'addr01'}
           placeholder={'주소'}
-          value={address}
-          onChange={changed('address')}
+          value={addr01}
+          readOnly
+          onClick={onClickAddr}
+          onChange={changed('addr01')}
+        />
+        <input
+          type={'text'}
+          className={'w-[38%] p-2 m-2 input input-primary'}
+          id={'addr02'}
+          name={'addr02'}
+          placeholder={'상세주소'}
+          value={addr02}
+          onChange={changed('addr02')}
         />
         <button className={'btn btn-primary m-2 p-2'} onClick={onClickAddr}>
           주소 검색
@@ -253,7 +293,10 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       </div>
 
       <div className={'flex flex-row justify-end items-center'}>
-        <button type={'submit'} className={'btn btn-accent mb-2 mr-2'} onClick={onSubmit}>
+        <button
+          type={'submit'}
+          className={'btn btn-accent mb-2 mr-2'}
+          onClick={signupStaff}>
           등록
         </button>
       </div>
