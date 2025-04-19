@@ -67,17 +67,6 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
 
   const {signup} = useAuth();
 
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
   const [
     {
       name,
@@ -102,8 +91,14 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   ] = useState<SignupFormType>(initialFormState);
 
   useEffect(() => {
-    setSignupForm(obj => ({...obj, address: obj.addr01 + ' ' + obj.addr02}));
-  }, [addr01, addr02]);
+    const script = document.createElement('script');
+    script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const changed = useCallback(
     (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -112,6 +107,10 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     },
     []
   );
+
+  useEffect(() => {
+    setSignupForm(obj => ({...obj, address: obj.addr01 + ' ' + obj.addr02}));
+  }, [addr01, addr02]);
 
   const signupStaff = useCallback(() => {
     const newStaff: SignupFormType = {
@@ -131,23 +130,6 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       workType,
       workStatus
     };
-    alert(
-      name +
-        gender +
-        birth +
-        phone +
-        password +
-        email +
-        address +
-        joinDate +
-        contractStatus +
-        dependents +
-        w4c +
-        authId +
-        possibleWork +
-        workType +
-        workStatus
-    );
     signup(newStaff);
   }, [
     name,
