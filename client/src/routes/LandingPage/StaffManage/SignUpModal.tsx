@@ -30,24 +30,12 @@ type SignupFormType = staffInfo & {
   addr01?: string;
   addr02?: string;
 };
+
+// prettier-ignore
 const initialFormState: SignupFormType = {
-  name: '',
-  gender: '',
-  birth: '',
-  phone: '',
-  password: '',
-  email: '',
-  address: '',
-  joinDate: '',
-  contractStatus: '',
-  dependents: '',
-  w4c: '',
-  authId: '',
-  possibleWork: '',
-  workType: '',
-  workStatus: '',
-  addr01: '',
-  addr02: ''
+  name: '', gender: '', birth: '', phone: '', password: '', email: '', address: '',
+  joinDate: '', contractStatus: '', dependents: '', w4c: '', authId: '',
+  possibleWork: '', workType: '', workStatus: '', addr01: '', addr02: ''
 };
 
 export type ModalContentProps = ReactDivProps & {
@@ -64,31 +52,27 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
 }) => {
   const showCloseIcon = !!onCloseIconClicked;
   const className = [showCloseIcon && 'relative', _className].join(' ');
+  const closeIconClassName =
+    _closeIconClassName ?? 'btn-primary btn-outline material-icons';
 
   const {signup} = useAuth();
 
+  //prettier-ignore
   const [
     {
-      name,
-      gender,
-      birth,
-      phone,
-      password,
-      email,
-      address,
-      joinDate,
-      contractStatus,
-      dependents,
-      w4c,
-      authId,
-      possibleWork,
-      workType,
-      workStatus,
-      addr01,
-      addr02
+      name, gender, birth, phone, password, email, address, joinDate, contractStatus,
+      dependents, w4c, authId, possibleWork, workType, workStatus, addr01, addr02
     },
     setSignupForm
   ] = useState<SignupFormType>(initialFormState);
+
+  const changed = useCallback(
+    (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
+      setSignupForm(obj => ({...obj, [key]: e.target.value}));
+      console.log(key, e.target.value);
+    },
+    []
+  );
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -100,57 +84,9 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     };
   }, []);
 
-  const changed = useCallback(
-    (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
-      setSignupForm(obj => ({...obj, [key]: e.target.value}));
-      console.log(key, e.target.value);
-    },
-    []
-  );
-
   useEffect(() => {
     setSignupForm(obj => ({...obj, address: obj.addr01 + ' ' + obj.addr02}));
   }, [addr01, addr02]);
-
-  const signupStaff = useCallback(() => {
-    const newStaff: SignupFormType = {
-      name,
-      gender,
-      birth,
-      phone,
-      password,
-      email,
-      address,
-      joinDate,
-      contractStatus,
-      dependents,
-      w4c,
-      authId,
-      possibleWork,
-      workType,
-      workStatus
-    };
-    signup(newStaff);
-  }, [
-    name,
-    gender,
-    birth,
-    phone,
-    password,
-    email,
-    address,
-    joinDate,
-    contractStatus,
-    dependents,
-    w4c,
-    authId,
-    possibleWork,
-    workType,
-    workStatus,
-    signup
-  ]);
-
-  const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
 
   const selectedDate = useCallback((date: Value) => {
     if (date && date instanceof Date) {
@@ -172,8 +108,27 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     }).open();
   };
 
-  const closeIconClassName =
-    _closeIconClassName ?? 'btn-primary btn-outline material-icons';
+  //prettier-ignore
+  const signupStaff = useCallback(() => {
+    /*
+    서버에 staff 정보를 전송하기 전에 address를 합쳐서 전송하기 위한 호출...
+    타입이 이해가 안돼서 저장해 둔 상태
+    */
+    // changed('address')({ target: { value: '' } } as ChangeEvent<HTMLInputElement>);
+    const newStaff: SignupFormType = {
+      name, gender, birth, phone, password, email, address, joinDate,
+      contractStatus, dependents, w4c, authId, possibleWork, workType, workStatus
+    };
+    signup(newStaff);
+  }, [
+    name, gender, birth, phone, password, email, address, joinDate,
+    contractStatus, dependents, w4c, authId, possibleWork, workType, workStatus,
+    signup
+  ]);
+
+  // modal toggle
+  const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
+
   if (!showCloseIcon) return <div {...props} className={className} children={children} />;
   return (
     <div {...props} className={className}>
