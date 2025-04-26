@@ -28,5 +28,4 @@ public class AuthController {
     LoginResponseDTO responseDTO = authService.login(loginRequestDTO, jwtToken);
     return ResponseEntity.ok(responseDTO);
   }
-
 }

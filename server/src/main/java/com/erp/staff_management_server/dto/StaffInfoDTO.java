@@ -15,15 +15,15 @@ public class StaffInfoDTO {
   private Long staffId;
   private String institutionId;
   private String name;
-  private Integer gender;
+  private String gender;
   private String phone;
   private String password;
   private String email;
   private String address;
   private LocalDate joinDate;
-  private Integer contractStatus;
+  private String contractStatus;
   private LocalDate retireDate;
-  private Integer dependents;
+  private String dependents;
   private String w4c;
   private String authId;
   private String possibleWork;

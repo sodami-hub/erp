@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FC, useCallback, useEffect, useState} from 'react';
-import {staffInfo, useAuth} from '../../../context';
+import {useAuth} from '../../../context';
 import {useToggle} from '../../../hooks';
 import type {Value} from '../../../components';
 import {
@@ -9,7 +9,9 @@ import {
   ReactDivProps
 } from '../../../components';
 import moment from 'moment';
+import {CommonCode, loadCommonCodeList, staffInfo} from './SignUpComponents';
 
+// ================= 카카오 주소 API ====================
 declare global {
   interface Window {
     daum: any;
@@ -21,11 +23,16 @@ interface IAddr {
   zonecode: string;
 }
 
+// ==================================================
+
+// ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<ModalProps> = ({open, className: _className, ...props}) => {
   const className = ['modal', open ? 'modal-open' : '', _className].join(' ');
   return <div {...props} className={className} />;
 };
+// ====================================================
 
+// ================= 신규 회원 등록을 위한 type 및 초깃값 정의 ============================
 type SignupFormType = staffInfo & {
   addr01?: string;
   addr02?: string;
@@ -37,12 +44,21 @@ const initialFormState: SignupFormType = {
   joinDate: '', contractStatus: '', dependents: '', w4c: '', authId: '',
   possibleWork: '', workType: '', workStatus: '', addr01: '', addr02: ''
 };
+// =========================================================================
+
+// ================= 공통코드 리스트 초깃값 정의 =============================
+const initialCommonCodeList: CommonCode = {
+  authList: [],
+  workTypeList: [],
+  workList: [],
+  workStatusList: []
+};
+// ====================================================================
 
 export type ModalContentProps = ReactDivProps & {
   onCloseIconClicked?: () => void;
   closeIconClassName?: string;
 };
-
 export const SignUpModalContent: FC<ModalContentProps> = ({
   onCloseIconClicked,
   closeIconClassName: _closeIconClassName,
@@ -55,8 +71,19 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const closeIconClassName =
     _closeIconClassName ?? 'btn-primary btn-outline material-icons';
 
-  const {signup} = useAuth();
+  const {signup, jwt} = useAuth();
 
+  // ==================== 공통코드 불러오기 =============================
+  const [commonCodeList, setCommonCodeList] = useState<CommonCode>(initialCommonCodeList);
+
+  useEffect(() => {
+    loadCommonCodeList(jwt).then((data: CommonCode) => {
+      setCommonCodeList(data);
+    });
+  }, []);
+  //===================================================
+
+  //============= 직원등록 폼 정보 초깃값 설정 및 변경사항 저장 ==================
   //prettier-ignore
   const [
     {
@@ -73,7 +100,9 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     },
     []
   );
+  // ==================================================
 
+  // =================== 주소 검색 API 로드 및 주소 변경사항 저장==========================
   useEffect(() => {
     const script = document.createElement('script');
     script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
@@ -82,18 +111,6 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     return () => {
       document.body.removeChild(script);
     };
-  }, []);
-
-  useEffect(() => {
-    setSignupForm(obj => ({...obj, address: obj.addr01 + ' ' + obj.addr02}));
-  }, [addr01, addr02]);
-
-  const selectedDate = useCallback((date: Value) => {
-    if (date && date instanceof Date) {
-      const formattedDate = moment(date).format('YYYY-MM-DD');
-      setSignupForm(obj => ({...obj, birth: formattedDate}));
-      toggleBirthCalOpen();
-    }
   }, []);
 
   const onClickAddr = () => {
@@ -108,11 +125,27 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     }).open();
   };
 
+  useEffect(() => {
+    setSignupForm(obj => ({...obj, address: obj.addr01 + ' ' + obj.addr02}));
+  }, [addr01, addr02]);
+  //==========================================================
+
+  // ====================== 달력 API 로드 및 생년월일 변경사항 저장 ==========================
+  const selectedDate = useCallback((date: Value) => {
+    if (date && date instanceof Date) {
+      const formattedDate = moment(date).format('YYYY-MM-DD');
+      setSignupForm(obj => ({...obj, birth: formattedDate}));
+      toggleBirthCalOpen();
+    }
+  }, []);
+  // ====================================================
+
+  // ============================== 회원가입 폼 제출 ========================
   //prettier-ignore
   const signupStaff = useCallback(() => {
     /*
     서버에 staff 정보를 전송하기 전에 address를 합쳐서 전송하기 위한 호출...
-    타입이 이해가 안돼서 저장해 둔 상태
+    타입에 대해서 공부하기 위해 남겨둔 코드
     */
     // changed('address')({ target: { value: '' } } as ChangeEvent<HTMLInputElement>);
     const newStaff: SignupFormType = {
@@ -125,9 +158,14 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     contractStatus, dependents, w4c, authId, possibleWork, workType, workStatus,
     signup
   ]);
+  // ==============================================================================
 
-  // modal toggle
+  // ================================  modal toggle  =========================
+  // 1. 생년월일 선택 달력 모달
   const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
+  // 2.
+
+  // ==================================================================
 
   if (!showCloseIcon) return <div {...props} className={className} children={children} />;
   return (
@@ -204,7 +242,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
         />
         <input
           type={'text'}
-          className={'w-[40%] p-2 m-2 input input-primary'}
+          className={'w-[41%] p-2 m-2 input input-primary'}
           id={'addr01'}
           name={'addr01'}
           placeholder={'주소'}

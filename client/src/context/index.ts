@@ -1,2 +1,2 @@
 export * from './AuthContext';
-export * from './staffInfoType';
+export * from '../routes/LandingPage/StaffManage/SignUpComponents/staffInfoType';
