@@ -6,6 +6,7 @@ export const readItemFromStorageP = (key: string) =>
   new Promise<string | null>(async (resolve, reject) => {
     try {
       const value = localStorage.getItem(key);
+      console.log('readItemFromStorageP', value, typeof value);
       resolve(value);
     } catch (e) {
       reject(e);

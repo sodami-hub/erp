@@ -1,10 +1,12 @@
 package com.erp.staff_management_server.controller;
 
 import com.erp.staff_management_server.dto.CommonCodeResponseDTO;
+import com.erp.staff_management_server.dto.jwt.JwtToken;
 import com.erp.staff_management_server.service.CommonCodeRespService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -18,8 +20,10 @@ public class CommonCodeRespController {
   }
 
   @GetMapping(value = "/commonCodeList", produces = "application/json")
-  public ResponseEntity<CommonCodeResponseDTO> getCommonCodeList() {
-    CommonCodeResponseDTO commonCodeResp = commonCodeRespService.getCommonCodeList();
+  public ResponseEntity<CommonCodeResponseDTO> getCommonCodeList(
+      @RequestHeader(value = "Authorization", required = false) JwtToken jwtToken
+  ) {
+    CommonCodeResponseDTO commonCodeResp = commonCodeRespService.getCommonCodeList(jwtToken);
     return ResponseEntity.ok(commonCodeResp);
   }
 }

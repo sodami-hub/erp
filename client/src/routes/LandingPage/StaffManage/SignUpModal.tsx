@@ -48,6 +48,7 @@ const initialFormState: SignupFormType = {
 
 // ================= 공통코드 리스트 초깃값 정의 =============================
 const initialCommonCodeList: CommonCode = {
+  ok: false,
   authList: [],
   workTypeList: [],
   workList: [],
@@ -77,10 +78,11 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const [commonCodeList, setCommonCodeList] = useState<CommonCode>(initialCommonCodeList);
 
   useEffect(() => {
+    if (!jwt) return;
     loadCommonCodeList(jwt).then((data: CommonCode) => {
       setCommonCodeList(data);
     });
-  }, []);
+  }, [jwt]);
   //===================================================
 
   //============= 직원등록 폼 정보 초깃값 설정 및 변경사항 저장 ==================

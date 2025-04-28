@@ -11,10 +11,16 @@ export type JwtToken = {
   refreshToken: string;
 };
 
+const initialJwtToken: JwtToken = {
+  grantType: '',
+  accessToken: '',
+  refreshToken: ''
+};
+
 type Callback = () => void;
 
 type ContextType = {
-  jwt?: object;
+  jwt?: JwtToken;
   authCode?: string;
   errorMessage?: string;
   loggedUser?: LoggedUser;
@@ -41,7 +47,7 @@ type AuthProviderProps = {};
 
 export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children}) => {
   const [loggedUser, setLoggedUser] = useState<LoggedUser | undefined>(undefined);
-  const [jwt, setJwt] = useState<object>({});
+  const [jwt, setJwt] = useState<JwtToken>(initialJwtToken);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
 
@@ -69,7 +75,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
             );
             if (!receiveNewJwt) return;
           }
-          setJwt(jwt ?? {});
+          setJwt((jwt as JwtToken) ?? {});
           console.log('jwt:', jwt);
           return post('/auth/login', user, jwt);
         })
@@ -90,8 +96,11 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
             console.log(result);
             const {ok, body, errorMessage, authCode} = result;
             if (ok) {
+              U.writeObjectP('user', user).finally(() => {
+                console.log('user:', user);
+              });
               U.writeObjectP('jwt', body ?? {}).finally(() => {
-                setJwt(body ?? {});
+                setJwt(body ?? initialJwtToken);
                 setLoggedUser(() => user);
                 setAuthCode(() => authCode ?? '');
                 callback && callback();
@@ -113,12 +122,12 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
         .then(() => {})
         .catch(() => {});
     } else {
+      // 새로고침해도 로그인 상태유지
       U.readObjectP('jwt')
-        .then(jwt => setJwt(jwt ?? {}))
+        .then(jwt => setJwt((jwt as JwtToken) ?? initialJwtToken))
         .catch(() => {
           // 오류 무시
         });
-      // 새로고침해도 로그인 상태유지
       U.readStringP('user')
         .then(user =>
           setLoggedUser(

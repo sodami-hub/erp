@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CommonCodeResponseDTO {
 
+  private boolean ok;
   private List<String> authList;
   private List<String> workTypeList;
   private List<String> workList;
