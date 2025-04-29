@@ -2,26 +2,13 @@
 localStorage 에 쓰기와 읽기
  */
 
-export const readItemFromStorageP = (key: string) =>
-  new Promise<string | null>(async (resolve, reject) => {
-    try {
-      const value = localStorage.getItem(key);
-      console.log('readItemFromStorageP', value, typeof value);
-      resolve(value);
-    } catch (e) {
-      reject(e);
-    }
-  });
+export const readItemFromStorage = (key: string) => {
+  return localStorage.getItem(key);
+};
 
-export const writeItemToStorageP = (key: string, value: string) =>
-  new Promise<string>(async (resolve, reject) => {
-    try {
-      localStorage.setItem(key, value);
-      resolve(value);
-    } catch (e) {
-      reject(e);
-    }
-  });
+export const writeItemToStorage = (key: string, value: string) => {
+  localStorage.setItem(key, value);
+};
 
-export const readStringP = readItemFromStorageP;
-export const writeStringP = writeItemToStorageP;
+export const readStringP = readItemFromStorage;
+export const writeStringP = writeItemToStorage;

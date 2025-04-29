@@ -67,18 +67,16 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const login = useCallback(
     (institutionId: string, id: string, password: string, callback?: Callback) => {
       const user = {institutionId, id, password};
-      U.readObjectP('jwt')
-        .then(jwt => {
-          if (!jwt) {
-            const receiveNewJwt = window.confirm(
-              `로그인 인증 정보가 없습니다.\n 새로운 기기에서 로그인 하시겠습니까?`
-            );
-            if (!receiveNewJwt) return;
-          }
-          setJwt((jwt as JwtToken) ?? {});
-          console.log('jwt:', jwt);
-          return post('/auth/login', user, jwt);
-        })
+      const jwt = U.readObject('jwt');
+      if (!jwt) {
+        const receiveNewJwt = window.confirm(
+          `로그인 인증 정보가 없습니다.\n 새로운 기기에서 로그인 하시겠습니까?`
+        );
+        if (!receiveNewJwt) return;
+      }
+      setJwt((jwt as JwtToken) ?? {});
+
+      post('/auth/login', user, jwt)
         .then(res => {
           if (res === undefined) {
             setErrorMessage('res is undefined');
@@ -96,15 +94,12 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
             console.log(result);
             const {ok, body, errorMessage, authCode} = result;
             if (ok) {
-              U.writeObjectP('user', user).finally(() => {
-                console.log('user:', user);
-              });
-              U.writeObjectP('jwt', body ?? {}).finally(() => {
-                setJwt(body ?? initialJwtToken);
-                setLoggedUser(() => user);
-                setAuthCode(() => authCode ?? '');
-                callback && callback();
-              });
+              U.writeObject('user', user);
+              U.writeObject('jwt', body ?? {});
+              setJwt(body ?? initialJwtToken);
+              setLoggedUser(() => user);
+              setAuthCode(() => authCode ?? '');
+              callback && callback();
             } else {
               setErrorMessage(errorMessage ?? '');
             }
@@ -118,23 +113,16 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     // localStorage 의 jwt 값을 초기화할 때 사용
     const deleteToken = false;
     if (deleteToken) {
-      U.writeObjectP('jwt', {})
-        .then(() => {})
-        .catch(() => {});
+      U.writeObject('jwt', {});
     } else {
       // 새로고침해도 로그인 상태유지
-      U.readObjectP('jwt')
-        .then(jwt => setJwt((jwt as JwtToken) ?? initialJwtToken))
-        .catch(() => {
-          // 오류 무시
-        });
-      U.readStringP('user')
-        .then(user =>
-          setLoggedUser(
-            user === null ? undefined : user === '{}' ? undefined : JSON.parse(user)
-          )
-        )
-        .catch(() => {});
+      const jwt = U.readObject('jwt');
+      setJwt((jwt as JwtToken) ?? initialJwtToken);
+
+      const user = U.readStringP('user');
+      setLoggedUser(
+        user === null ? undefined : user === '{}' ? undefined : JSON.parse(user)
+      );
     }
   }, []);
 

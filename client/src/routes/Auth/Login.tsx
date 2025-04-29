@@ -1,7 +1,6 @@
 import {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../../context';
-import * as U from '../../utils';
 
 /*
 {
@@ -32,13 +31,7 @@ export default function Login() {
   }, [id, password, organizationId, login]);
 
   // 저장된 로그인 데이터가 있으면 불러와서 form에 넣기
-  useEffect(() => {
-    U.readObjectP<LoginFormType>('user')
-      .then(user => {
-        if (user) setForm(user);
-      })
-      .catch(e => console.log(e));
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div className={'w-screen h-screen bg-white m-2 border-2 border-gray-800'}>

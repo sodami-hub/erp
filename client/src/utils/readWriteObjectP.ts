@@ -5,14 +5,13 @@
 
 import * as L from './localStorageP';
 
-export const readObjectP = <T extends object>(key: string) =>
-  new Promise<T | null>((resolve, reject) => {
-    L.readStringP(key)
-      .then(value => {
-        resolve(value ? JSON.parse(value) : null);
-      })
-      .catch(reject);
-  });
+export const readObject = <T extends object>(key: string) => {
+  const readData = L.readStringP(key);
+  if (!readData) {
+    return null;
+  }
+  return JSON.parse(readData);
+};
 
-export const writeObjectP = (key: string, value: object) =>
+export const writeObject = (key: string, value: object) =>
   L.writeStringP(key, JSON.stringify(value));
