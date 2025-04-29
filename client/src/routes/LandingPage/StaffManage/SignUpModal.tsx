@@ -5,6 +5,8 @@ import type {Value} from '../../../components';
 import {
   CalendarModal,
   CalendarSelect,
+  CheckBoxComponent,
+  CheckBoxModal,
   ModalProps,
   ReactDivProps
 } from '../../../components';
@@ -162,10 +164,20 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   ]);
   // ==============================================================================
 
+  // =================== 체크 박스 선택값 처리 ================
+
+  const selectCheckBox = useCallback((value: string[]) => {
+    const val = value.join(',');
+    setSignupForm(obj => ({...obj, workType: val}));
+  }, []);
+
+  // =======================================================
+
   // ================================  modal toggle  =========================
   // 1. 생년월일 선택 달력 모달
   const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
-  // 2.
+  // 2. 직종 선택 모달
+  const [workTypeModalOpen, toggleWorkTypeModal] = useToggle(false);
 
   // ==================================================================
 
@@ -265,6 +277,27 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
         <button className={'btn btn-primary m-2 p-2'} onClick={onClickAddr}>
           주소 검색
         </button>
+
+        <button
+          className={'btn btn-primary m-2 p-2 w-[8%] text-md'}
+          onClick={toggleWorkTypeModal}>
+          직 종
+        </button>
+        <span
+          className={
+            'border-2 border-black w-[25%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+          }>
+          {workType}
+        </span>
+        <div>
+          <CheckBoxModal open={workTypeModalOpen}>
+            <CheckBoxComponent
+              toggle={toggleWorkTypeModal}
+              workTypeList={commonCodeList.workTypeList}
+              sendValue={selectCheckBox}
+            />
+          </CheckBoxModal>
+        </div>
 
         {/*  회원가입 폼 컨텐츠 부분*/}
       </div>
