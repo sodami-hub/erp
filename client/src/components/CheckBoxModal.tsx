@@ -17,31 +17,27 @@ export const CheckBoxModal: FC<CheckBoxModalProps> = ({
 
 export type CheckBoxProps = ReactDivProps & {
   toggle: () => void;
-  workTypeList: string[];
+  checkList: string[];
   sendValue: (value: string[]) => void;
 };
 
-const initialWorkTypeValue: string[] = [];
+const initialValue: string[] = [];
 
-export const CheckBoxComponent: FC<CheckBoxProps> = ({
-  toggle,
-  workTypeList,
-  sendValue
-}) => {
-  const [workTypeValue, setWorkTypeValue] = useState<string[]>(initialWorkTypeValue);
+export const CheckBoxComponent: FC<CheckBoxProps> = ({toggle, checkList, sendValue}) => {
+  const [checkedValue, setCheckedValue] = useState<string[]>(initialValue);
 
   const onSubmit = (value: string, checked: boolean) => {
     if (checked) {
-      const newVal = [...workTypeValue, value];
+      const newVal = [...checkedValue, value];
       const set = new Set(newVal);
-      setWorkTypeValue(Array.from(set));
+      setCheckedValue(Array.from(set));
     } else {
-      const newVal = workTypeValue.filter(v => v !== value);
-      setWorkTypeValue(newVal);
+      const newVal = checkedValue.filter(v => v !== value);
+      setCheckedValue(newVal);
     }
   };
 
-  const checkBoxes = workTypeList.map((value, index) => (
+  const checkBoxes = checkList.map((value, index) => (
     <label key={index} className="flex items-center space-x-2">
       <input
         type="checkbox"
@@ -50,7 +46,7 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({
           console.log(e.target.value, e.target.checked);
           onSubmit(e.target.value, e.target.checked);
         }}
-        className="checkbox-neutral"
+        className="checkbox-neutral my-2"
       />
       <span>{value}</span>
     </label>
@@ -63,10 +59,10 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({
       <div>{checkBoxes}</div>
       <div className={'flex flex-row justify-center items-center'}>
         <button
-          className={'btn btn-primary mr-2'}
+          className={'btn btn-primary'}
           onClick={() => {
-            console.log(workTypeValue);
-            sendValue(workTypeValue);
+            console.log(checkedValue);
+            sendValue(checkedValue);
             toggle();
           }}>
           확 인

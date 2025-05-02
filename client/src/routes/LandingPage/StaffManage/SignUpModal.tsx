@@ -1,14 +1,16 @@
 import React, {ChangeEvent, FC, useCallback, useEffect, useState} from 'react';
 import {useAuth} from '../../../context';
 import {useToggle} from '../../../hooks';
-import type {Value} from '../../../components';
 import {
   CalendarModal,
   CalendarSelect,
   CheckBoxComponent,
   CheckBoxModal,
   ModalProps,
-  ReactDivProps
+  RadioButtonComponent,
+  RadioButtonModal,
+  ReactDivProps,
+  Value
 } from '../../../components';
 import moment from 'moment';
 import {CommonCode, loadCommonCodeList, staffInfo} from './SignUpComponents';
@@ -164,11 +166,21 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   ]);
   // ==============================================================================
 
-  // =================== 체크 박스 선택값 처리 ================
+  // =================== 체크 박스 / 라디오 버튼 선택값 처리 ================
 
-  const selectCheckBox = useCallback((value: string[]) => {
+  const selectWorkType = useCallback((value: string[]) => {
     const val = value.join(',');
     setSignupForm(obj => ({...obj, workType: val}));
+  }, []);
+  const selectWorkList = useCallback((value: string[]) => {
+    const val = value.join(',');
+    setSignupForm(obj => ({...obj, possibleWork: val}));
+  }, []);
+  const selectContractStatus = useCallback((value: string) => {
+    setSignupForm(obj => ({...obj, contractStatus: value}));
+  }, []);
+  const selectWorkStatus = useCallback((value: string) => {
+    setSignupForm(obj => ({...obj, workStatus: value}));
   }, []);
 
   // =======================================================
@@ -178,6 +190,12 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
   // 2. 직종 선택 모달
   const [workTypeModalOpen, toggleWorkTypeModal] = useToggle(false);
+  // 3. 가능 업무 선택 모달
+  const [workListModalOpen, toggleWorkListModal] = useToggle(false);
+  // 4. 근무 구분(계약직/정규직) 라디오 버튼 모달
+  const [contractStatusModalOpen, toggleContractStatusModal] = useToggle(false);
+  // 5. 근무 상태(근무중, 대기, 등) 라디오 버튼 모달
+  const [workStatusModalOpen, toggleWorkStatusModal] = useToggle(false);
 
   // ==================================================================
 
@@ -274,18 +292,28 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
           value={addr02}
           onChange={changed('addr02')}
         />
-        <button className={'btn btn-primary m-2 p-2'} onClick={onClickAddr}>
+        <button className={'btn btn-primary m-2 p-2 w-[10%]'} onClick={onClickAddr}>
           주소 검색
         </button>
 
+        <input
+          type={'email'}
+          className={'w-[20%] p-2 m-2 input input-primary'}
+          id={'email'}
+          name={'email'}
+          placeholder={'Email'}
+          value={email}
+          onChange={changed('email')}
+        />
+
         <button
-          className={'btn btn-primary m-2 p-2 w-[8%] text-md'}
+          className={'btn btn-primary m-2 p-2 w-[6%] text-md'}
           onClick={toggleWorkTypeModal}>
           직 종
         </button>
         <span
           className={
-            'border-2 border-black w-[25%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+            'border-2 border-black w-[35%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
           }>
           {workType}
         </span>
@@ -293,10 +321,75 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
           <CheckBoxModal open={workTypeModalOpen}>
             <CheckBoxComponent
               toggle={toggleWorkTypeModal}
-              workTypeList={commonCodeList.workTypeList}
-              sendValue={selectCheckBox}
+              checkList={commonCodeList.workTypeList}
+              sendValue={selectWorkType}
             />
           </CheckBoxModal>
+        </div>
+
+        <button
+          className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+          onClick={toggleWorkListModal}>
+          가능 업무
+        </button>
+        <span
+          className={
+            'border-2 border-black w-[18%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+          }>
+          {possibleWork}
+        </span>
+        <div>
+          <CheckBoxModal open={workListModalOpen}>
+            <CheckBoxComponent
+              toggle={toggleWorkListModal}
+              checkList={commonCodeList.workList}
+              sendValue={selectWorkList}
+            />
+          </CheckBoxModal>
+        </div>
+
+        <button
+          className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+          onClick={toggleContractStatusModal}>
+          근무 구분
+        </button>
+        <span
+          className={
+            'border-2 border-black w-[8%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+          }>
+          {contractStatus}
+        </span>
+        <div>
+          <RadioButtonModal open={contractStatusModalOpen}>
+            <RadioButtonComponent
+              name={'contract'}
+              toggle={toggleContractStatusModal}
+              buttonList={['계약직', '정규직']}
+              sendValue={selectContractStatus}
+            />
+          </RadioButtonModal>
+        </div>
+
+        <button
+          className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+          onClick={toggleWorkStatusModal}>
+          근무 상태
+        </button>
+        <span
+          className={
+            'border-2 border-black w-[8%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+          }>
+          {workStatus}
+        </span>
+        <div>
+          <RadioButtonModal open={workStatusModalOpen}>
+            <RadioButtonComponent
+              name={'contract'}
+              toggle={toggleWorkStatusModal}
+              buttonList={commonCodeList.workStatusList}
+              sendValue={selectWorkStatus}
+            />
+          </RadioButtonModal>
         </div>
 
         {/*  회원가입 폼 컨텐츠 부분*/}
