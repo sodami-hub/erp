@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useCallback, useEffect, useState} from 'react';
+import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useAuth} from '../../../context';
 import {useToggle} from '../../../hooks';
 import {
@@ -80,13 +80,20 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
 
   // ==================== 공통코드 불러오기 =============================
   const [commonCodeList, setCommonCodeList] = useState<CommonCode>(initialCommonCodeList);
-
-  useEffect(() => {
+  //
+  // useEffect(() => {
+  //   if (!jwt) return;
+  //   loadCommonCodeList(jwt).then((data: CommonCode) => {
+  //     setCommonCodeList(data);
+  //   });
+  // }, [jwt]);
+  useMemo(() => {
     if (!jwt) return;
     loadCommonCodeList(jwt).then((data: CommonCode) => {
       setCommonCodeList(data);
     });
   }, [jwt]);
+
   //===================================================
 
   //============= 직원등록 폼 정보 초깃값 설정 및 변경사항 저장 ==================

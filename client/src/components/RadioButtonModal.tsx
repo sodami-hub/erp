@@ -35,7 +35,7 @@ export const RadioButtonComponent: FC<RadioButtonProps> = ({
     setCheckedValue(value);
   };
 
-  const radioButton = buttonList.map((value, index) => (
+  const radioButton = buttonList?.map((value, index) => (
     <label key={index} className={'flex items-center space-x-2'}>
       <input
         name={name}

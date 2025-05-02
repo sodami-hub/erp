@@ -37,7 +37,7 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({toggle, checkList, sendVal
     }
   };
 
-  const checkBoxes = checkList.map((value, index) => (
+  const checkBoxes = checkList?.map((value, index) => (
     <label key={index} className="flex items-center space-x-2">
       <input
         type="checkbox"
