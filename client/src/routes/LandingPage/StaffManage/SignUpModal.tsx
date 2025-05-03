@@ -79,7 +79,11 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const {signup, jwt} = useAuth();
 
   // ==================== 공통코드 불러오기 =============================
+  /*
+  어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
+   */
   const [commonCodeList, setCommonCodeList] = useState<CommonCode>(initialCommonCodeList);
+
   //
   // useEffect(() => {
   //   if (!jwt) return;
@@ -87,6 +91,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   //     setCommonCodeList(data);
   //   });
   // }, [jwt]);
+
   useMemo(() => {
     if (!jwt) return;
     loadCommonCodeList(jwt).then((data: CommonCode) => {
