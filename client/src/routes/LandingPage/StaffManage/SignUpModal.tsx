@@ -13,7 +13,13 @@ import {
   Value
 } from '../../../components';
 import moment from 'moment';
-import {CommonCode, loadCommonCodeList, staffInfo} from './SignUpComponents';
+import {
+  CommonCode,
+  DependentsModal,
+  DependentsModalContents,
+  loadCommonCodeList,
+  staffInfo
+} from './SignUpComponents';
 
 // ================= 카카오 주소 API ====================
 declare global {
@@ -158,6 +164,15 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   }, []);
   // ====================================================
 
+  // ============= 부양가족 첨부서류 업로드 ================
+  const [material, setMaterial] = useState<FormData[]>([]);
+
+  const submitMaterial = useCallback((data: FormData[]) => {
+    setMaterial(data);
+  }, []);
+
+  // ====================================================
+
   // ============================== 회원가입 폼 제출 ========================
   //prettier-ignore
   const signupStaff = useCallback(() => {
@@ -170,7 +185,8 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       name, gender, birth, phone, password, email, address, joinDate,
       contractStatus, dependents, w4c, authId, possibleWork, workType, workStatus
     };
-    signup(newStaff);
+    material.forEach(value => console.log(value.get('file')));
+    signup(newStaff, material);
   }, [
     name, gender, birth, phone, password, email, address, joinDate,
     contractStatus, dependents, w4c, authId, possibleWork, workType, workStatus,
@@ -178,7 +194,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   ]);
   // ==============================================================================
 
-  // =================== 체크 박스 / 라디오 버튼 선택값 처리 ================
+  // =================== 모달박스(체크 박스 / 라디오 버튼 등...) 선택값 처리 ================
 
   const selectWorkType = useCallback((value: string[]) => {
     const val = value.join(',');
@@ -195,6 +211,10 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     setSignupForm(obj => ({...obj, workStatus: value}));
   }, []);
 
+  const selectDependents = useCallback((value: string) => {
+    setSignupForm(obj => ({...obj, dependents: value}));
+  }, []);
+
   // =======================================================
 
   // ================================  modal toggle  =========================
@@ -208,6 +228,8 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const [contractStatusModalOpen, toggleContractStatusModal] = useToggle(false);
   // 5. 근무 상태(근무중, 대기, 등) 라디오 버튼 모달
   const [workStatusModalOpen, toggleWorkStatusModal] = useToggle(false);
+  // 6. 부양가족 선택 모달
+  const [dependentsModalOpen, toggleDependentsModal] = useToggle(false);
 
   // ==================================================================
 
@@ -402,6 +424,27 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
               sendValue={selectWorkStatus}
             />
           </RadioButtonModal>
+        </div>
+
+        <button
+          className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+          onClick={toggleDependentsModal}>
+          부양 가족
+        </button>
+        <span
+          className={
+            'border-2 border-black w-[8%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+          }>
+          {dependents}명
+        </span>
+        <div>
+          <DependentsModal open={dependentsModalOpen}>
+            <DependentsModalContents
+              toggle={toggleDependentsModal}
+              setNumbers={selectDependents}
+              setMaterials={submitMaterial}
+            />
+          </DependentsModal>
         </div>
 
         {/*  회원가입 폼 컨텐츠 부분*/}

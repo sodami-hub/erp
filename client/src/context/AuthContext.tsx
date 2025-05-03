@@ -1,7 +1,7 @@
 import type {FC, PropsWithChildren} from 'react';
 import {createContext, useCallback, useContext, useEffect, useState} from 'react';
 import * as U from '../utils';
-import {post} from '../server';
+import {fileUpload, post} from '../server';
 import type {staffInfo} from '../routes/LandingPage/StaffManage/SignUpComponents/staffInfoType';
 
 export type LoggedUser = {institutionId: string; id: string; password: string};
@@ -30,7 +30,7 @@ type ContextType = {
     password: string,
     callback?: Callback
   ) => void;
-  signup: (newStaff: staffInfo) => void;
+  signup: (newStaff: staffInfo, document?: FormData[]) => void;
 };
 
 export const AuthContext = createContext<ContextType>({
@@ -40,7 +40,7 @@ export const AuthContext = createContext<ContextType>({
     _password: string,
     _callback?: Callback
   ) => {},
-  signup: (_newStaff: staffInfo) => {}
+  signup: (_newStaff: staffInfo, _document?: FormData[]) => {}
 });
 
 type AuthProviderProps = {};
@@ -51,7 +51,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
 
-  const signup = useCallback((newStaff: staffInfo) => {
+  const signup = useCallback((newStaff: staffInfo, document?: FormData[]) => {
     post('/auth/signup', newStaff)
       .then(res => res.json())
       .then((result: {ok: boolean; errorMessage?: string}) => {
@@ -62,6 +62,18 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
           setErrorMessage(errorMessage ?? '');
         }
       });
+    if (document) {
+      document.forEach(data => {
+        fileUpload('/staff/documentsUp', data)
+          .then(res => res.json())
+          .then((result: {ok: boolean; errorMessage?: string}) => {
+            const {ok, errorMessage} = result;
+            if (!ok) {
+              setErrorMessage(errorMessage ?? '');
+            }
+          });
+      });
+    }
   }, []);
 
   const login = useCallback(
