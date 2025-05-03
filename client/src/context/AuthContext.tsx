@@ -1,5 +1,12 @@
-import type {FC, PropsWithChildren} from 'react';
-import {createContext, useCallback, useContext, useEffect, useState} from 'react';
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 import * as U from '../utils';
 import {fileUpload, post} from '../server';
 import type {staffInfo} from '../routes/LandingPage/StaffManage/SignUpComponents/staffInfoType';
@@ -52,10 +59,12 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [authCode, setAuthCode] = useState<string>('');
 
   const signup = useCallback((newStaff: staffInfo, document?: FormData[]) => {
+    let id: number;
     post('/auth/signup', newStaff)
       .then(res => res.json())
-      .then((result: {ok: boolean; errorMessage?: string}) => {
+      .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
         const {ok, errorMessage} = result;
+        id = result.userId;
         if (ok) {
           alert('회원가입이 완료되었습니다.');
         } else {
@@ -64,7 +73,8 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       });
     if (document) {
       document.forEach(data => {
-        fileUpload('/staff/documentsUp', data)
+        data.append('userId', String(id));
+        fileUpload('/fileUpload', data)
           .then(res => res.json())
           .then((result: {ok: boolean; errorMessage?: string}) => {
             const {ok, errorMessage} = result;

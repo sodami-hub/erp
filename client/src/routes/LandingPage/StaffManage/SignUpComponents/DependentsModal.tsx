@@ -46,6 +46,8 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
   const appendData = (data: FileList) => {
     setFileList(prev => {
       if (!prev) return data;
+
+      // DataTransfer 객체를 사용해서  fileList 상태 업데이트 (fileList 추가)
       const dataTransfer = new DataTransfer();
       Array.from(prev).forEach(file => dataTransfer.items.add(file));
       Array.from(data).forEach(file => dataTransfer.items.add(file));
@@ -72,6 +74,7 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
         <input
           type={'file'}
           className={'file-input mt-2 text-white'}
+          accept={'image/*'}
           onChange={e => {
             if (e.target.files && e.target.files[0]) {
               appendData(e.target.files);
@@ -84,6 +87,7 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
         <input
           type={'file'}
           className={'file-input mt-2 text-white'}
+          accept={'image/*'}
           onChange={e => {
             if (e.target.files && e.target.files[0]) {
               appendData(e.target.files);

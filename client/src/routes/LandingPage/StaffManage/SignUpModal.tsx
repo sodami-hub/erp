@@ -185,7 +185,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       name, gender, birth, phone, password, email, address, joinDate,
       contractStatus, dependents, w4c, authId, possibleWork, workType, workStatus
     };
-    material.forEach(value => console.log(value.get('file')));
+    material.forEach(value => console.log(value.get('file')))
     signup(newStaff, material);
   }, [
     name, gender, birth, phone, password, email, address, joinDate,
