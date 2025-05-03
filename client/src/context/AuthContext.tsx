@@ -37,7 +37,7 @@ type ContextType = {
     password: string,
     callback?: Callback
   ) => void;
-  signup: (newStaff: staffInfo, document?: FormData[]) => void;
+  signup: (newStaff: staffInfo, document?: FormData) => void;
 };
 
 export const AuthContext = createContext<ContextType>({
@@ -47,7 +47,7 @@ export const AuthContext = createContext<ContextType>({
     _password: string,
     _callback?: Callback
   ) => {},
-  signup: (_newStaff: staffInfo, _document?: FormData[]) => {}
+  signup: (_newStaff: staffInfo, _document?: FormData) => {}
 });
 
 type AuthProviderProps = {};
@@ -58,32 +58,29 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
 
-  const signup = useCallback((newStaff: staffInfo, document?: FormData[]) => {
-    let id: number;
+  const signup = useCallback((newStaff: staffInfo, document?: FormData) => {
     post('/auth/signup', newStaff)
       .then(res => res.json())
       .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
-        const {ok, errorMessage} = result;
-        id = result.userId;
+        const {ok, userId, errorMessage} = result;
         if (ok) {
+          if (document) {
+            document.append('userId', String(userId));
+            fileUpload('/fileUpload', document)
+              .then(res => res.json())
+              .then((result: {ok: boolean; errorMessage?: string}) => {
+                const {ok, errorMessage} = result;
+                if (!ok) {
+                  setErrorMessage(errorMessage ?? '');
+                  return;
+                }
+              });
+          }
           alert('회원가입이 완료되었습니다.');
         } else {
           setErrorMessage(errorMessage ?? '');
         }
       });
-    if (document) {
-      document.forEach(data => {
-        data.append('userId', String(id));
-        fileUpload('/fileUpload', data)
-          .then(res => res.json())
-          .then((result: {ok: boolean; errorMessage?: string}) => {
-            const {ok, errorMessage} = result;
-            if (!ok) {
-              setErrorMessage(errorMessage ?? '');
-            }
-          });
-      });
-    }
   }, []);
 
   const login = useCallback(

@@ -167,7 +167,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   // ============= 부양가족 첨부서류 업로드 ================
   const [material, setMaterial] = useState<FormData[]>([]);
 
-  const submitMaterial = useCallback((data: FormData[]) => {
+  const submitMaterial = useCallback((data: FormData) => {
     setMaterial(data);
   }, []);
 

@@ -18,7 +18,7 @@ export const DependentsModal: FC<DependentsModalProps> = ({
 export type DependentsContentsProps = ReactDivProps & {
   toggle: () => void;
   setNumbers: (value: string) => void;
-  setMaterials: (data: FormData[]) => void;
+  setMaterials: (data: FormData) => void;
 };
 
 export const DependentsModalContents: FC<DependentsContentsProps> = ({
@@ -27,32 +27,21 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
   setMaterials
 }) => {
   const [dependent, setDependent] = useState<string>('');
-  const [fileList, setFileList] = useState<FileList>();
+  const [file01, setFile01] = useState<File>();
+  const [file02, setFile02] = useState<File>();
 
   const onSubmit = (dependent: string) => {
-    const formDataArray = fileList
-      ? Array.from(fileList).map(file => {
-          const formData = new FormData();
-          formData.append('file', file);
-          return formData;
-        })
-      : [];
+    const formData = new FormData();
+    if (file01) {
+      formData.append('file', file01);
+    }
+    if (file02) {
+      formData.append('file', file02);
+    }
 
     setNumbers(dependent);
-    setMaterials(formDataArray);
+    setMaterials(formData);
     toggle();
-  };
-
-  const appendData = (data: FileList) => {
-    setFileList(prev => {
-      if (!prev) return data;
-
-      // DataTransfer 객체를 사용해서  fileList 상태 업데이트 (fileList 추가)
-      const dataTransfer = new DataTransfer();
-      Array.from(prev).forEach(file => dataTransfer.items.add(file));
-      Array.from(data).forEach(file => dataTransfer.items.add(file));
-      return dataTransfer.files;
-    });
   };
 
   return (
@@ -77,7 +66,7 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
           accept={'image/*'}
           onChange={e => {
             if (e.target.files && e.target.files[0]) {
-              appendData(e.target.files);
+              setFile01(e.target.files[0]);
             }
           }}
         />
@@ -90,7 +79,7 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
           accept={'image/*'}
           onChange={e => {
             if (e.target.files && e.target.files[0]) {
-              appendData(e.target.files);
+              setFile02(e.target.files[0]);
             }
           }}
         />
