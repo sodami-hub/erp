@@ -165,7 +165,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   // ====================================================
 
   // ============= 부양가족 첨부서류 업로드 ================
-  const [material, setMaterial] = useState<FormData[]>([]);
+  const [material, setMaterial] = useState<FormData>();
 
   const submitMaterial = useCallback((data: FormData) => {
     setMaterial(data);
@@ -185,7 +185,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       name, gender, birth, phone, password, email, address, joinDate,
       contractStatus, dependents, w4c, authId, possibleWork, workType, workStatus
     };
-    material.forEach(value => console.log(value.get('file')))
+    console.log(material?.get('file'))
     signup(newStaff, material);
   }, [
     name, gender, birth, phone, password, email, address, joinDate,
@@ -462,8 +462,8 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   );
 };
 
-export type ModalActionProps = ReactDivProps & {};
-export const ModalAction: FC<ModalActionProps> = ({className: _className, ...props}) => {
-  const className = ['modal-action', _className].join(' ');
-  return <div {...props} className={className} />;
-};
+// export type ModalActionProps = ReactDivProps & {};
+// export const ModalAction: FC<ModalActionProps> = ({className: _className, ...props}) => {
+//   const className = ['modal-action', _className].join(' ');
+//   return <div {...props} className={className} />;
+// };

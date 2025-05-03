@@ -9,7 +9,7 @@ import {
 } from 'react';
 import * as U from '../utils';
 import {fileUpload, post} from '../server';
-import type {staffInfo} from '../routes/LandingPage/StaffManage/SignUpComponents/staffInfoType';
+import type {staffInfo} from '../routes/LandingPage/StaffManage/SignUpComponents';
 
 export type LoggedUser = {institutionId: string; id: string; password: string};
 export type JwtToken = {
