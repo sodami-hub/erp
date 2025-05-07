@@ -10,7 +10,6 @@ export type staffInfo = {
   contractStatus: string;
   dependents: string;
   w4c: string;
-  authId: string;
   possibleWork: string;
   workType: string;
   workStatus: string;

@@ -20,13 +20,14 @@ public class AttachedFileController {
 
   @PostMapping("/fileUpload")
   public String fileUpload(
-      @RequestParam("file") MultipartFile[] files,
+      @RequestParam(value = "file01", required = false) MultipartFile file01,
+      @RequestParam(value = "file02", required = false) MultipartFile file02,
       @RequestParam("userId") Long userId) {
 
     // 파일 처리 로직
-    for (MultipartFile file : files) {
-      System.out.println("파일 이름: " + file.getOriginalFilename());
-    }
+//    for (MultipartFile file : files) {
+//      System.out.println("파일 이름: " + file.getOriginalFilename());
+//    }
 
     // userId 처리 로직
     System.out.println("userId: " + userId);

@@ -51,7 +51,7 @@ type SignupFormType = staffInfo & {
 // prettier-ignore
 const initialFormState: SignupFormType = {
   name: '', gender: '', birth: '', phone: '', password: '', email: '', address: '',
-  joinDate: '', contractStatus: '', dependents: '', w4c: '', authId: '',
+  joinDate: '', contractStatus: '', dependents: '', w4c: '',
   possibleWork: '', workType: '', workStatus: '', addr01: '', addr02: ''
 };
 // =========================================================================
@@ -112,7 +112,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const [
     {
       name, gender, birth, phone, password, email, address, joinDate, contractStatus,
-      dependents, w4c, authId, possibleWork, workType, workStatus, addr01, addr02
+      dependents, w4c, possibleWork, workType, workStatus, addr01, addr02
     },
     setSignupForm
   ] = useState<SignupFormType>(initialFormState);
@@ -154,12 +154,20 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   }, [addr01, addr02]);
   //==========================================================
 
-  // ====================== 달력 API 로드 및 생년월일 변경사항 저장 ==========================
-  const selectedDate = useCallback((date: Value) => {
+  // ====================== 달력 API 변경사항 저장 ==========================
+  const selectedBirthDate = useCallback((date: Value) => {
     if (date && date instanceof Date) {
       const formattedDate = moment(date).format('YYYY-MM-DD');
       setSignupForm(obj => ({...obj, birth: formattedDate}));
       toggleBirthCalOpen();
+    }
+  }, []);
+
+  const selectedJoinDate = useCallback((date: Value) => {
+    if (date && date instanceof Date) {
+      const formattedDate = moment(date).format('YYYY-MM-DD');
+      setSignupForm(obj => ({...obj, joinDate: formattedDate}));
+      toggleJoinDateCalOpen();
     }
   }, []);
   // ====================================================
@@ -183,13 +191,14 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     // changed('address')({ target: { value: '' } } as ChangeEvent<HTMLInputElement>);
     const newStaff: SignupFormType = {
       name, gender, birth, phone, password, email, address, joinDate,
-      contractStatus, dependents, w4c, authId, possibleWork, workType, workStatus
+      contractStatus, dependents, w4c, possibleWork, workType, workStatus
     };
-    console.log(material?.get('file'))
+    console.log(material?.get('file01'));
+    console.log(material?.get('file02'));
     signup(newStaff, material);
   }, [
     name, gender, birth, phone, password, email, address, joinDate,
-    contractStatus, dependents, w4c, authId, possibleWork, workType, workStatus,
+    contractStatus, dependents, w4c, possibleWork, workType, workStatus,
     signup
   ]);
   // ==============================================================================
@@ -230,6 +239,8 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const [workStatusModalOpen, toggleWorkStatusModal] = useToggle(false);
   // 6. 부양가족 선택 모달
   const [dependentsModalOpen, toggleDependentsModal] = useToggle(false);
+  // 7. 입사일 달력 모달
+  const [joinDateCalOpen, toggleJoinDateCalOpen] = useToggle(false);
 
   // ==================================================================
 
@@ -287,7 +298,11 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
         />
         <div>
           <CalendarModal open={birthCalOpen}>
-            <CalendarSelect toggle={toggleBirthCalOpen} onDateChange={selectedDate} />
+            <CalendarSelect
+              toggle={toggleBirthCalOpen}
+              onDateChange={selectedBirthDate}
+              keyProp={'birth'}
+            />
           </CalendarModal>
         </div>
         <input
@@ -389,7 +404,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
         </button>
         <span
           className={
-            'border-2 border-black w-[8%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+            'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
           }>
           {contractStatus}
         </span>
@@ -411,7 +426,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
         </button>
         <span
           className={
-            'border-2 border-black w-[8%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+            'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
           }>
           {workStatus}
         </span>
@@ -433,7 +448,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
         </button>
         <span
           className={
-            'border-2 border-black w-[8%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+            'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
           }>
           {dependents}명
         </span>
@@ -445,6 +460,34 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
               setMaterials={submitMaterial}
             />
           </DependentsModal>
+        </div>
+
+        <input
+          type={'text'}
+          className={'w-[24%] p-2 m-2 input input-primary'}
+          id={'w4c'}
+          name={'w4c'}
+          placeholder={'w4c'}
+          value={w4c}
+          onChange={changed('w4c')}
+        />
+
+        <input
+          type={'button'}
+          className={'w-[18%] p-2 m-2 btn text-xs'}
+          name={'joinDate'}
+          value={'입사일 : ' + joinDate}
+          onChange={changed('joinDate')}
+          onClick={toggleJoinDateCalOpen}
+        />
+        <div>
+          <CalendarModal open={joinDateCalOpen}>
+            <CalendarSelect
+              toggle={toggleJoinDateCalOpen}
+              onDateChange={selectedJoinDate}
+              keyProp={'joinDate'}
+            />
+          </CalendarModal>
         </div>
 
         {/*  회원가입 폼 컨텐츠 부분*/}

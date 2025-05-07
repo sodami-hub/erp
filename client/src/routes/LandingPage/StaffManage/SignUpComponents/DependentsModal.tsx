@@ -33,12 +33,11 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
   const onSubmit = (dependent: string) => {
     const formData = new FormData();
     if (file01) {
-      formData.append('file', file01);
+      formData.append('file01', file01);
     }
     if (file02) {
-      formData.append('file', file02);
+      formData.append('file02', file02);
     }
-
     setNumbers(dependent);
     setMaterials(formData);
     toggle();
