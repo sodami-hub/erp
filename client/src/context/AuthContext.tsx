@@ -59,10 +59,11 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [authCode, setAuthCode] = useState<string>('');
 
   const signup = useCallback((newStaff: staffInfo, document?: FormData) => {
-    post('/auth/signup', newStaff)
+    post('/auth/signup', newStaff, jwt)
       .then(res => res.json())
       .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
         const {ok, userId, errorMessage} = result;
+        console.log(ok, userId, errorMessage);
         if (ok) {
           if (document) {
             document.append('userId', String(userId));
