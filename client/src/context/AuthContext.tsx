@@ -10,6 +10,7 @@ import {
 import * as U from '../utils';
 import {fileUpload, post} from '../server';
 import type {staffInfo} from '../routes/LandingPage/StaffManage/SignUpComponents';
+import {useNavigate} from 'react-router-dom';
 
 export type LoggedUser = {institutionId: string; id: string; password: string};
 export type JwtToken = {
@@ -57,6 +58,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [jwt, setJwt] = useState<JwtToken>(initialJwtToken);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
+  const navigate = useNavigate();
 
   const signup = useCallback((newStaff: staffInfo, document?: FormData) => {
     post('/auth/signup', newStaff, jwt)
@@ -80,6 +82,14 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
           alert('회원가입이 완료되었습니다.');
         } else {
           setErrorMessage(errorMessage ?? '');
+          if (errorMessage?.includes('권한이')) {
+            navigate('/index');
+          } else if (errorMessage?.includes('로그인')) {
+            //로그아웃 로직 추가!!! 필요
+            navigate('/');
+          } else {
+            navigate('/index/staffInfo');
+          }
         }
       });
   }, []);
@@ -136,8 +146,8 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       U.writeObject('jwt', {});
     } else {
       // 새로고침해도 로그인 상태유지
-      const jwt = U.readObject('jwt');
-      setJwt((jwt as JwtToken) ?? initialJwtToken);
+      const storedJwt = U.readObject('jwt');
+      setJwt((storedJwt as JwtToken) ?? initialJwtToken);
 
       const user = U.readStringP('user');
       setLoggedUser(

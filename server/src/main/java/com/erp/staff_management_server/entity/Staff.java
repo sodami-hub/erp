@@ -1,5 +1,6 @@
 package com.erp.staff_management_server.entity;
 
+import com.erp.staff_management_server.dto.SignUpRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,11 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "staffs")
 public class Staff extends BaseEntity {
 
@@ -71,5 +74,27 @@ public class Staff extends BaseEntity {
 
   @Column(name = "work_status")
   private String workStatus;
+
+  public Staff(SignUpRequestDTO signUpRequestDTO, Long managerId) {
+    this.institutionId = signUpRequestDTO.getInstitutionId();
+    this.name = signUpRequestDTO.getName();
+    this.gender = signUpRequestDTO.getGender();
+    this.birth = LocalDate.parse(signUpRequestDTO.getBirth());
+    this.phone = signUpRequestDTO.getPhone();
+    this.password = signUpRequestDTO.getPassword();
+    this.email = signUpRequestDTO.getEmail();
+    this.address = signUpRequestDTO.getAddress();
+    this.joinDate = LocalDate.parse(signUpRequestDTO.getJoinDate());
+    this.contractStatus = signUpRequestDTO.getContractStatus();
+    this.retireDate = signUpRequestDTO.getRetireDate();
+    this.dependents = signUpRequestDTO.getDependents();
+    this.w4c = signUpRequestDTO.getW4c();
+    this.authId = signUpRequestDTO.getAuthId();
+    this.possibleWork = signUpRequestDTO.getPossibleWork();
+    this.workType = signUpRequestDTO.getWorkType();
+    this.workStatus = signUpRequestDTO.getWorkStatus();
+    super.setCreatorId(managerId);
+    super.setUpdaterId(managerId);
+  }
 
 }

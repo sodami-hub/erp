@@ -40,8 +40,8 @@ public class AuthController {
     System.out.println(signUpRequestDTO.toString());
     System.out.println(jwtToken.toString());
 
-    // 클라이언트로 넘겨주는 데이터 확인 완료
-    SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO(true, 1L, null);
+    SignUpResponseDTO signUpResponseDTO = authService.staffSignUp(signUpRequestDTO, jwtToken);
+
     return ResponseEntity.ok(signUpResponseDTO);
   }
 }

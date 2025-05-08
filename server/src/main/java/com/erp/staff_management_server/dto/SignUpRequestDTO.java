@@ -1,5 +1,6 @@
 package com.erp.staff_management_server.dto;
 
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.ToString;
 @ToString
 public class SignUpRequestDTO {
 
+  // 클라이언트에서 전달되는 필드
   private String name;
   private String gender;
   private String birth;
@@ -27,4 +29,10 @@ public class SignUpRequestDTO {
   private String possibleWork;
   private String workType;
   private String workStatus;
+  // ==== 추가 정의 필드
+  private String institutionId;
+  private LocalDate retireDate;
+  private String authId;
+
+
 }

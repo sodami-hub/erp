@@ -2,6 +2,8 @@ package com.erp.staff_management_server.service;
 
 import com.erp.staff_management_server.dto.LoginRequestDTO;
 import com.erp.staff_management_server.dto.LoginResponseDTO;
+import com.erp.staff_management_server.dto.SignUpRequestDTO;
+import com.erp.staff_management_server.dto.SignUpResponseDTO;
 import com.erp.staff_management_server.dto.StaffInfoDTO;
 import com.erp.staff_management_server.dto.jwt.JwtClaimsDTO;
 import com.erp.staff_management_server.dto.jwt.JwtToken;
@@ -95,4 +97,28 @@ public class AuthService {
   }
 
 
+  public SignUpResponseDTO staffSignUp(SignUpRequestDTO signUpRequestDTO, JwtToken jwtToken) {
+
+    JwtClaimsDTO jwtClaimsDTO;
+
+    // 1. 토큰 검증 로직 -> 유효한지(유효하지 않으면 다시 로그인) // 직원등록 권한이 있는지
+    if (jwtTokenProvider.validateToken(jwtToken.getAccessToken())) {
+      jwtClaimsDTO = jwtTokenProvider.getClaims(jwtToken.getAccessToken());
+      if (jwtClaimsDTO.getAuthId().equals("102")) {
+        return new SignUpResponseDTO(false, null, "직원등록 권한이 없습니다.");
+      }
+    } else {
+      return new SignUpResponseDTO(false, null, "사용자 인증이 만료됐습니다. 다시 로그인해주세요.");
+    }
+
+    // 직원등록에 추가로 필요한 정보
+    signUpRequestDTO.setInstitutionId(jwtClaimsDTO.getInstitutionId());
+    signUpRequestDTO.setAuthId("102"); // 기관관리자가 등록하는 직원의 권한코드 '102'
+    signUpRequestDTO.setRetireDate(null);
+
+    // 2. 직원 등록 로직
+    Staff newStaff = new Staff(signUpRequestDTO, jwtClaimsDTO.getStaffId());
+    Staff staff = staffRepository.save(newStaff);
+    return new SignUpResponseDTO(true, staff.getStaffId(), null);
+  }
 }

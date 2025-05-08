@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
+import React, {ChangeEvent, FC, useCallback, useEffect, useState} from 'react';
 import {useAuth} from '../../../context';
 import {useToggle} from '../../../hooks';
 import {
@@ -90,15 +90,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
    */
   const [commonCodeList, setCommonCodeList] = useState<CommonCode>(initialCommonCodeList);
 
-  //
-  // useEffect(() => {
-  //   if (!jwt) return;
-  //   loadCommonCodeList(jwt).then((data: CommonCode) => {
-  //     setCommonCodeList(data);
-  //   });
-  // }, [jwt]);
-
-  useMemo(() => {
+  useEffect(() => {
     if (!jwt) return;
     loadCommonCodeList(jwt).then((data: CommonCode) => {
       setCommonCodeList(data);
@@ -196,6 +188,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     console.log(material?.get('file01'));
     console.log(material?.get('file02'));
     signup(newStaff, material);
+    setSignupForm(initialFormState);
   }, [
     name, gender, birth, phone, password, email, address, joinDate,
     contractStatus, dependents, w4c, possibleWork, workType, workStatus,
