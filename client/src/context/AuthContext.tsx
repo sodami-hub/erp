@@ -38,7 +38,7 @@ type ContextType = {
     password: string,
     callback?: Callback
   ) => void;
-  signup: (newStaff: staffInfo, document?: FormData) => void;
+  signup: (newStaff: staffInfo, currentJwt: JwtToken, document?: FormData) => void;
 };
 
 export const AuthContext = createContext<ContextType>({
@@ -48,7 +48,7 @@ export const AuthContext = createContext<ContextType>({
     _password: string,
     _callback?: Callback
   ) => {},
-  signup: (_newStaff: staffInfo, _document?: FormData) => {}
+  signup: (_newStaff: staffInfo, currentJwt: JwtToken, _document?: FormData) => {}
 });
 
 type AuthProviderProps = {};
@@ -60,39 +60,42 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [authCode, setAuthCode] = useState<string>('');
   const navigate = useNavigate();
 
-  const signup = useCallback((newStaff: staffInfo, document?: FormData) => {
-    post('/auth/signup', newStaff, jwt)
-      .then(res => res.json())
-      .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
-        const {ok, userId, errorMessage} = result;
-        console.log(ok, userId, errorMessage);
-        if (ok) {
-          if (document) {
-            document.append('userId', String(userId));
-            fileUpload('/fileUpload', document)
-              .then(res => res.json())
-              .then((result: {ok: boolean; errorMessage?: string}) => {
-                const {ok, errorMessage} = result;
-                if (!ok) {
-                  setErrorMessage(errorMessage ?? '');
-                  return;
-                }
-              });
-          }
-          alert('회원가입이 완료되었습니다.');
-        } else {
-          setErrorMessage(errorMessage ?? '');
-          if (errorMessage?.includes('권한이')) {
-            navigate('/index');
-          } else if (errorMessage?.includes('로그인')) {
-            //로그아웃 로직 추가!!! 필요
-            navigate('/');
+  const signup = useCallback(
+    (newStaff: staffInfo, currentJwt: JwtToken, document?: FormData) => {
+      post('/auth/signup', newStaff, currentJwt)
+        .then(res => res.json())
+        .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
+          const {ok, userId, errorMessage} = result;
+          console.log(ok, userId, errorMessage);
+          if (ok) {
+            if (document) {
+              document.append('userId', String(userId));
+              fileUpload('/fileUpload', document)
+                .then(res => res.json())
+                .then((result: {ok: boolean; errorMessage?: string}) => {
+                  const {ok, errorMessage} = result;
+                  if (!ok) {
+                    setErrorMessage(errorMessage ?? '');
+                    return;
+                  }
+                });
+            }
+            alert('회원가입이 완료되었습니다.');
           } else {
-            navigate('/index/staffInfo');
+            setErrorMessage(errorMessage ?? '');
+            if (errorMessage?.includes('권한이')) {
+              navigate('/index');
+            } else if (errorMessage?.includes('로그인')) {
+              //로그아웃 로직 추가!!! 필요
+              navigate('/');
+            } else {
+              navigate('/index/staffInfo');
+            }
           }
-        }
-      });
-  }, []);
+        });
+    },
+    []
+  );
 
   const login = useCallback(
     (institutionId: string, id: string, password: string, callback?: Callback) => {

@@ -187,7 +187,11 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     };
     console.log(material?.get('file01'));
     console.log(material?.get('file02'));
-    signup(newStaff, material);
+    if (jwt) {
+      signup(newStaff, jwt, material);
+    } else {
+      alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.')
+    }
     setSignupForm(initialFormState);
   }, [
     name, gender, birth, phone, password, email, address, joinDate,
