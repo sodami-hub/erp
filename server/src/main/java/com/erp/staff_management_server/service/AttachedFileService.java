@@ -36,14 +36,14 @@ public class AttachedFileService {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     // Random 객체 생성
     Random random = new Random();
-    // 0 이상 100 미만의 랜덤한 정수 반환
     String randomNumber = Integer.toString(random.nextInt(Integer.MAX_VALUE));
+    // timeStamp 생성
     String timeStamp = dateFormat.format(new Date());
     return timeStamp + randomNumber + originalFileName;
   }
 
   // 서버 스토리지에 파일 저장
-  private DependencyDocumentDTO fileService(MultipartFile file) throws FileUploadException {
+  private DependencyDocumentDTO saveFileStorage(MultipartFile file) throws FileUploadException {
     String originalName = file.getOriginalFilename();
 
     // 파일 타입 확인
@@ -81,19 +81,19 @@ public class AttachedFileService {
     Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
 
     if (!file01.isEmpty()) {
-      DependencyDocumentDTO dependencyDocumentDTO = fileService(file01);
+      DependencyDocumentDTO dependencyDocumentDTO = saveFileStorage(file01);
       dependencyDocumentDTO.setStaffId(userId);
 
       // 파일 정보 DB 저장 처리
-      DependencyDocuments upLoadFile = documentRepository.save(
+      documentRepository.save(
           new DependencyDocuments(dependencyDocumentDTO, managerId));
     }
     if (!file02.isEmpty()) {
-      DependencyDocumentDTO dependencyDocumentDTO = fileService(file02);
+      DependencyDocumentDTO dependencyDocumentDTO = saveFileStorage(file02);
       dependencyDocumentDTO.setStaffId(userId);
 
       // 파일 정보 DB 저장 처리
-      DependencyDocuments upLoadFile = documentRepository.save(
+      documentRepository.save(
           new DependencyDocuments(dependencyDocumentDTO, managerId));
     }
 

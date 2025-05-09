@@ -5,7 +5,7 @@ import {SignUpModal, SignUpModalContent} from './SignUpModal';
 type NameSearch = Record<'name', string>;
 const initialSearchState = {name: ''};
 
-export default function NewStaff() {
+export default function StaffInfo() {
   const [{name}, setName] = useState<NameSearch>(initialSearchState);
 
   const changedSearchValue = useCallback(

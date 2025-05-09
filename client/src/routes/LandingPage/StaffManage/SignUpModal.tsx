@@ -193,6 +193,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.');
     }
     setSignupForm(initialFormState);
+    resetDependencyFile();
   }, [
     name, gender, birth, phone, password, email, address, joinDate,
     contractStatus, dependents, w4c, possibleWork, workType, workStatus,
@@ -238,6 +239,8 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const [dependentsModalOpen, toggleDependentsModal] = useToggle(false);
   // 7. 입사일 달력 모달
   const [joinDateCalOpen, toggleJoinDateCalOpen] = useToggle(false);
+  // 8. 부양가족 관련 서류 input 초기화
+  const [dependencyFile, resetDependencyFile] = useToggle(false);
 
   // ==================================================================
 
@@ -249,6 +252,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
           className={closeIconClassName}
           onClick={() => {
             onCloseIconClicked();
+            resetDependencyFile();
             setSignupForm(initialFormState);
           }}>
           close
@@ -455,7 +459,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
               toggle={toggleDependentsModal}
               setNumbers={selectDependents}
               setMaterials={submitMaterial}
-              isOpen={isOpen}
+              reset={dependencyFile}
             />
           </DependentsModal>
         </div>

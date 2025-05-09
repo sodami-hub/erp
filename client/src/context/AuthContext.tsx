@@ -48,7 +48,7 @@ export const AuthContext = createContext<ContextType>({
     _password: string,
     _callback?: Callback
   ) => {},
-  signup: (_newStaff: staffInfo, currentJwt: JwtToken, _document?: FormData) => {}
+  signup: (_newStaff: staffInfo, _currentJwt: JwtToken, _document?: FormData) => {}
 });
 
 type AuthProviderProps = {};
@@ -70,9 +70,6 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
           if (ok) {
             if (document) {
               document.append('userId', String(userId));
-              console.log(document.get('file01'));
-              console.log(document.get('file02'));
-              console.log(document.get('userId'));
               fileUpload('/fileUpload', document, currentJwt)
                 .then(res => res.json())
                 .then((result: {ok: boolean; errorMessage?: string}) => {

@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from 'react';
+import {FC, useEffect, useRef, useState} from 'react';
 import {ReactDivProps} from '../../../../components';
 
 export type DependentsModalProps = ReactDivProps & {
@@ -19,28 +19,34 @@ export type DependentsContentsProps = ReactDivProps & {
   toggle: () => void;
   setNumbers: (value: string) => void;
   setMaterials: (data: FormData) => void;
-  isOpen: boolean;
+  reset: boolean;
 };
 
 export const DependentsModalContents: FC<DependentsContentsProps> = ({
   toggle,
   setNumbers,
   setMaterials,
-  isOpen
+  reset
 }) => {
   const [dependent, setDependent] = useState<string>('');
   const [file01, setFile01] = useState<File>();
   const [file02, setFile02] = useState<File>();
 
+  /*
+  <input type="file" />의 값은 React 상태를 통해 초기화할 수 없습니다.
+  이는 보안상의 이유로 브라우저가 파일 입력 필드의 값을 직접 조작하는 것을 허용하지 않기 때문입니다.
+  useRef를 사용한다.
+   */
+  const file01Ref = useRef<HTMLInputElement>(null);
+  const file02Ref = useRef<HTMLInputElement>(null);
+
   // 파일 전송 혹은 상태변화시 초기화가 안됨.... ㅡ,.ㅡ;;
   useEffect(() => {
-    console.log(isOpen);
-    if (!isOpen) {
-      console.log(isOpen);
-      setFile01(undefined);
-      setFile02(undefined);
-    }
-  }, [isOpen]);
+    setFile01(undefined);
+    setFile02(undefined);
+    if (file01Ref.current) file01Ref.current.value = '';
+    if (file02Ref.current) file02Ref.current.value = '';
+  }, [reset]);
 
   const onSubmit = (dependent: string) => {
     const formData = new FormData();
@@ -75,6 +81,7 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
           type={'file'}
           className={'file-input mt-2 text-white'}
           accept={'image/*'}
+          ref={file01Ref}
           onChange={e => {
             if (e.target.files && e.target.files[0]) {
               setFile01(e.target.files[0]);
@@ -88,6 +95,7 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
           type={'file'}
           className={'file-input mt-2 text-white'}
           accept={'image/*'}
+          ref={file02Ref}
           onChange={e => {
             if (e.target.files && e.target.files[0]) {
               setFile02(e.target.files[0]);
