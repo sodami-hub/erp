@@ -43,9 +43,7 @@ public class AuthService {
   private JwtToken genJwtToken(StaffInfoDTO staffInfo) {
     JwtClaimsDTO claims = new JwtClaimsDTO(staffInfo.getStaffId(), staffInfo.getInstitutionId(),
         staffInfo.getAuthId());
-    JwtToken token = jwtTokenProvider.generateToken(claims);
-    jwtTokenProvider.saveAuth(claims);
-    return token;
+    return jwtTokenProvider.generateToken(claims);
   }
 
   public LoginResponseDTO login(LoginRequestDTO loginRequestDTO, JwtToken jwtToken) {
@@ -83,7 +81,6 @@ public class AuthService {
         if (Objects.equals(claims.getStaffId(), staffInfo.getStaffId())) {
           // 토큰의 정보와 로그인 정보가 같은 경우
           System.out.println("토큰의 정보와 로그인 정보가 같습니다. 로그인 성공.");
-          jwtTokenProvider.saveAuth(claims);
           return new LoginResponseDTO(true, jwtToken, staffInfo.getAuthId(), null);
         } else {
           // 토큰의 정보와 로그인 정보가 다른 경우 - 다시 생성해서 전달
@@ -93,7 +90,6 @@ public class AuthService {
         }
       }
     }
-
   }
 
 

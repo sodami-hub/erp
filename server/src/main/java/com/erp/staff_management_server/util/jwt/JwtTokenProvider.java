@@ -13,9 +13,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 
@@ -82,11 +79,6 @@ public class JwtTokenProvider {
     );
   }
 
-  // 토큰의 정보를 Authentication 객체에 저장하는 메서드
-  public void saveAuth(JwtClaimsDTO claims) {
-    Authentication auth = new UsernamePasswordAuthenticationToken(claims, null, null);
-    SecurityContextHolder.getContext().setAuthentication(auth);
-  }
 
   // 토큰 검증
   public boolean validateToken(String token) {

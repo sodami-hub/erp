@@ -17,11 +17,10 @@ const fileUploadPost = (
       ...init,
       headers: {
         Accept: 'application/json',
-        ContentType: 'multipart/form-data',
         Authorization: `${JSON.stringify(jwt)}`
       }
     };
-  } else init = {...init, headers: {'Content-Type': 'multipart/form-data'}};
+  } else init = {...init};
   return fetch(getServerUrl(path), init);
 };
 

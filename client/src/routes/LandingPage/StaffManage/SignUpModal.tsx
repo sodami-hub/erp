@@ -69,9 +69,11 @@ const initialCommonCodeList: CommonCode = {
 export type ModalContentProps = ReactDivProps & {
   onCloseIconClicked?: () => void;
   closeIconClassName?: string;
+  isOpen: boolean;
 };
 export const SignUpModalContent: FC<ModalContentProps> = ({
   onCloseIconClicked,
+  isOpen,
   closeIconClassName: _closeIconClassName,
   className: _className,
   children,
@@ -185,12 +187,10 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       name, gender, birth, phone, password, email, address, joinDate,
       contractStatus, dependents, w4c, possibleWork, workType, workStatus
     };
-    console.log(material?.get('file01'));
-    console.log(material?.get('file02'));
     if (jwt) {
       signup(newStaff, jwt, material);
     } else {
-      alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.')
+      alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.');
     }
     setSignupForm(initialFormState);
   }, [
@@ -455,6 +455,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
               toggle={toggleDependentsModal}
               setNumbers={selectDependents}
               setMaterials={submitMaterial}
+              isOpen={isOpen}
             />
           </DependentsModal>
         </div>

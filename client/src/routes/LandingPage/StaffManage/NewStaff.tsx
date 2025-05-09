@@ -24,7 +24,7 @@ export default function NewStaff() {
       </button>
       <SignUpModal open={open}>
         <div className={'bg-gray-200 w-[65%] rounded-lg relative'}>
-          <SignUpModalContent onCloseIconClicked={toggleOpen} />
+          <SignUpModalContent onCloseIconClicked={toggleOpen} isOpen={open} />
         </div>
       </SignUpModal>
 

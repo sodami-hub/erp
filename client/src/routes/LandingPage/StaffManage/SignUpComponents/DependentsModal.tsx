@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {ReactDivProps} from '../../../../components';
 
 export type DependentsModalProps = ReactDivProps & {
@@ -19,16 +19,28 @@ export type DependentsContentsProps = ReactDivProps & {
   toggle: () => void;
   setNumbers: (value: string) => void;
   setMaterials: (data: FormData) => void;
+  isOpen: boolean;
 };
 
 export const DependentsModalContents: FC<DependentsContentsProps> = ({
   toggle,
   setNumbers,
-  setMaterials
+  setMaterials,
+  isOpen
 }) => {
   const [dependent, setDependent] = useState<string>('');
   const [file01, setFile01] = useState<File>();
   const [file02, setFile02] = useState<File>();
+
+  // 파일 전송 혹은 상태변화시 초기화가 안됨.... ㅡ,.ㅡ;;
+  useEffect(() => {
+    console.log(isOpen);
+    if (!isOpen) {
+      console.log(isOpen);
+      setFile01(undefined);
+      setFile02(undefined);
+    }
+  }, [isOpen]);
 
   const onSubmit = (dependent: string) => {
     const formData = new FormData();
