@@ -1,4 +1,9 @@
-import React, {ChangeEvent, FC, useCallback, useEffect, useState} from 'react';
+/*
+추후 코드 리팩토링
+직원 등록 정보(SignupForm) 만 전달받아서 저장하고 나머지는 모두 컴포넌트로 만들어서 분리하는 방향으로 변경
+ */
+
+import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useAuth} from '../../../context';
 import {useToggle} from '../../../hooks';
 import {
@@ -72,13 +77,13 @@ export type ModalContentProps = ReactDivProps & {
   isOpen: boolean;
 };
 export const SignUpModalContent: FC<ModalContentProps> = ({
-  onCloseIconClicked,
-  isOpen,
-  closeIconClassName: _closeIconClassName,
-  className: _className,
-  children,
-  ...props
-}) => {
+                                                            onCloseIconClicked,
+                                                            isOpen,
+                                                            closeIconClassName: _closeIconClassName,
+                                                            className: _className,
+                                                            children,
+                                                            ...props
+                                                          }) => {
   const showCloseIcon = !!onCloseIconClicked;
   const className = [showCloseIcon && 'relative', _className].join(' ');
   const closeIconClassName =
@@ -99,7 +104,11 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     });
   }, [jwt]);
 
+  const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
+
+
   //===================================================
+
 
   //============= 직원등록 폼 정보 초깃값 설정 및 변경사항 저장 ==================
   //prettier-ignore
@@ -133,7 +142,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
 
   const onClickAddr = () => {
     new window.daum.Postcode({
-      oncomplete: function (data: IAddr) {
+      oncomplete: function(data: IAddr) {
         const addr01 = data.address + ' ' + data.zonecode;
         setSignupForm(obj => ({...obj, addr01: addr01}));
         alert('상세 주소를 입력해주세요.');
@@ -371,7 +380,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
           <CheckBoxModal open={workTypeModalOpen}>
             <CheckBoxComponent
               toggle={toggleWorkTypeModal}
-              checkList={commonCodeList.workTypeList}
+              checkList={memoizedCommonCodeList.workTypeList}
               sendValue={selectWorkType}
             />
           </CheckBoxModal>
@@ -392,7 +401,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
           <CheckBoxModal open={workListModalOpen}>
             <CheckBoxComponent
               toggle={toggleWorkListModal}
-              checkList={commonCodeList.workList}
+              checkList={memoizedCommonCodeList.workList}
               sendValue={selectWorkList}
             />
           </CheckBoxModal>
@@ -436,7 +445,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
             <RadioButtonComponent
               name={'contract'}
               toggle={toggleWorkStatusModal}
-              buttonList={commonCodeList.workStatusList}
+              buttonList={memoizedCommonCodeList.workStatusList}
               sendValue={selectWorkStatus}
             />
           </RadioButtonModal>
