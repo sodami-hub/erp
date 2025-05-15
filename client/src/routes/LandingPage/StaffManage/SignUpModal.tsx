@@ -18,13 +18,7 @@ import {
   Value
 } from '../../../components';
 import moment from 'moment';
-import {
-  CommonCode,
-  DependentsModal,
-  DependentsModalContents,
-  loadCommonCodeList,
-  staffInfo
-} from './SignUpComponents';
+import * as SI from './SignInfoInputComponents';
 
 // ================= 카카오 주소 API ====================
 declare global {
@@ -48,7 +42,7 @@ export const SignUpModal: FC<ModalProps> = ({open, className: _className, ...pro
 // ====================================================
 
 // ================= 신규 회원 등록을 위한 type 및 초깃값 정의 ============================
-type SignupFormType = staffInfo & {
+type SignupFormType = SI.staffInfo & {
   addr01?: string;
   addr02?: string;
 };
@@ -62,7 +56,7 @@ const initialFormState: SignupFormType = {
 // =========================================================================
 
 // ================= 공통코드 리스트 초깃값 정의 =============================
-const initialCommonCodeList: CommonCode = {
+const initialCommonCodeList: SI.CommonCode = {
   ok: false,
   authList: [],
   workTypeList: [],
@@ -95,11 +89,11 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   /*
   어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
    */
-  const [commonCodeList, setCommonCodeList] = useState<CommonCode>(initialCommonCodeList);
+  const [commonCodeList, setCommonCodeList] = useState<SI.CommonCode>(initialCommonCodeList);
 
   useEffect(() => {
     if (!jwt) return;
-    loadCommonCodeList(jwt).then((data: CommonCode) => {
+    SI.loadCommonCodeList(jwt).then((data: SI.CommonCode) => {
       setCommonCodeList(data);
     });
   }, [jwt]);
@@ -269,35 +263,12 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       </div>
       <div className={'text-center text-black text-xl font-bold mb-2'}>직원 등록</div>
       <div className={'flex flex-row flex-wrap justify-center jus w-full'}>
-        <input
-          type={'text'}
-          className={'w-[15%] p-2 m-2 input input-primary'}
-          name={'name'}
-          placeholder={'이름'}
-          value={name}
-          onChange={changed('name')}
-        />
-        <div
-          className={
-            'flex justify-center items-center w-[13%] p-2 m-2 bg-black text-md font-bold h-10 border-2 border-gray-700 rounded'
-          }>
-          <input
-            type={'radio'}
-            className={'w-1/2'}
-            name={'gender'}
-            value={'남'}
-            onChange={changed('gender')}
-          />
-          남
-          <input
-            type={'radio'}
-            className={'w-1/2'}
-            name={'gender'}
-            value={'여'}
-            onChange={changed('gender')}
-          />
-          여
-        </div>
+
+        <SI.Name changed={changed} value={name} />
+
+        <SI.Gender value01={'남'} value02={'여'} changed={changed} />
+
+
         <input
           type={'button'}
           className={'w-[18%] p-2 m-2 btn text-xs'}
@@ -315,22 +286,11 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
             />
           </CalendarModal>
         </div>
-        <input
-          type={'text'}
-          className={'w-1/6 p-2 m-2 input input-primary'}
-          name={'phone'}
-          placeholder={'전화번호(ID)'}
-          value={phone}
-          onChange={changed('phone')}
-        />
-        <input
-          type={'password'}
-          className={'w-[20%] p-2 m-2 input input-primary'}
-          name={'password'}
-          placeholder={'비밀번호(ID 뒤 4자리)'}
-          value={password}
-          onChange={changed('password')}
-        />
+
+        <SI.Phone changed={changed} value={phone} />
+
+        <SI.Password changed={changed} value={password} />
+
         <input
           type={'text'}
           className={'w-[41%] p-2 m-2 input input-primary'}
@@ -463,14 +423,14 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
           {dependents}명
         </span>
         <div>
-          <DependentsModal open={dependentsModalOpen}>
-            <DependentsModalContents
+          <SI.DependentsModal open={dependentsModalOpen}>
+            <SI.DependentsModalContents
               toggle={toggleDependentsModal}
               setNumbers={selectDependents}
               setMaterials={submitMaterial}
               reset={dependencyFile}
             />
-          </DependentsModal>
+          </SI.DependentsModal>
         </div>
 
         <input

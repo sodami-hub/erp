@@ -9,7 +9,7 @@ import {
 } from 'react';
 import * as U from '../utils';
 import {fileUpload, post} from '../server';
-import type {staffInfo} from '../routes/LandingPage/StaffManage/SignUpComponents';
+import type {staffInfo} from '../routes/LandingPage/StaffManage/SignInfoInputComponents';
 import {useNavigate} from 'react-router-dom';
 
 export type LoggedUser = {institutionId: string; id: string; password: string};
