@@ -6,3 +6,4 @@ export * from './Gender';
 export * from './Birth';
 export * from './Phone';
 export * from './Password';
+export * from './Address';

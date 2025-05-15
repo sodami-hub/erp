@@ -1,8 +1,3 @@
-/*
-추후 코드 리팩토링
-직원 등록 정보(SignupForm) 만 전달받아서 저장하고 나머지는 모두 컴포넌트로 만들어서 분리하는 방향으로 변경
- */
-
 import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useAuth} from '../../../context';
 import {useToggle} from '../../../hooks';
@@ -19,20 +14,6 @@ import {
 } from '../../../components';
 import moment from 'moment';
 import * as SI from './SignInfoInputComponents';
-
-// ================= 카카오 주소 API ====================
-declare global {
-  interface Window {
-    daum: any;
-  }
-}
-
-interface IAddr {
-  address: string;
-  zonecode: string;
-}
-
-// ==================================================
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<ModalProps> = ({open, className: _className, ...props}) => {
@@ -71,13 +52,13 @@ export type ModalContentProps = ReactDivProps & {
   isOpen: boolean;
 };
 export const SignUpModalContent: FC<ModalContentProps> = ({
-                                                            onCloseIconClicked,
-                                                            isOpen,
-                                                            closeIconClassName: _closeIconClassName,
-                                                            className: _className,
-                                                            children,
-                                                            ...props
-                                                          }) => {
+  onCloseIconClicked,
+  isOpen,
+  closeIconClassName: _closeIconClassName,
+  className: _className,
+  children,
+  ...props
+}) => {
   const showCloseIcon = !!onCloseIconClicked;
   const className = [showCloseIcon && 'relative', _className].join(' ');
   const closeIconClassName =
@@ -89,7 +70,8 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   /*
   어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
    */
-  const [commonCodeList, setCommonCodeList] = useState<SI.CommonCode>(initialCommonCodeList);
+  const [commonCodeList, setCommonCodeList] =
+    useState<SI.CommonCode>(initialCommonCodeList);
 
   useEffect(() => {
     if (!jwt) return;
@@ -100,9 +82,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
 
   const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
 
-
   //===================================================
-
 
   //============= 직원등록 폼 정보 초깃값 설정 및 변경사항 저장 ==================
   //prettier-ignore
@@ -117,48 +97,17 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   const changed = useCallback(
     (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
       setSignupForm(obj => ({...obj, [key]: e.target.value}));
+      if (key === 'addr01' || key === 'addr02') {
+        console.log('주소 변경');
+        setSignupForm(obj => ({...obj, address: obj.addr01 + ' ' + obj.addr02}));
+      }
       console.log(key, e.target.value);
     },
     []
   );
   // ==================================================
 
-  // =================== 주소 검색 API 로드 및 주소 변경사항 저장==========================
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const onClickAddr = () => {
-    new window.daum.Postcode({
-      oncomplete: function(data: IAddr) {
-        const addr01 = data.address + ' ' + data.zonecode;
-        setSignupForm(obj => ({...obj, addr01: addr01}));
-        alert('상세 주소를 입력해주세요.');
-        console.log('addr01:', addr01);
-        document.getElementById('addr02')?.focus();
-      }
-    }).open();
-  };
-
-  useEffect(() => {
-    setSignupForm(obj => ({...obj, address: obj.addr01 + ' ' + obj.addr02}));
-  }, [addr01, addr02]);
-  //==========================================================
-
   // ====================== 달력 API 변경사항 저장 ==========================
-  const selectedBirthDate = useCallback((date: Value) => {
-    if (date && date instanceof Date) {
-      const formattedDate = moment(date).format('YYYY-MM-DD');
-      setSignupForm(obj => ({...obj, birth: formattedDate}));
-      toggleBirthCalOpen();
-    }
-  }, []);
 
   const selectedJoinDate = useCallback((date: Value) => {
     if (date && date instanceof Date) {
@@ -228,8 +177,6 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   // =======================================================
 
   // ================================  modal toggle  =========================
-  // 1. 생년월일 선택 달력 모달
-  const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
   // 2. 직종 선택 모달
   const [workTypeModalOpen, toggleWorkTypeModal] = useToggle(false);
   // 3. 가능 업무 선택 모달
@@ -263,57 +210,17 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       </div>
       <div className={'text-center text-black text-xl font-bold mb-2'}>직원 등록</div>
       <div className={'flex flex-row flex-wrap justify-center jus w-full'}>
-
         <SI.Name changed={changed} value={name} />
 
         <SI.Gender value01={'남'} value02={'여'} changed={changed} />
 
-
-        <input
-          type={'button'}
-          className={'w-[18%] p-2 m-2 btn text-xs'}
-          name={'birth'}
-          value={'생년월일 : ' + birth}
-          onChange={changed('birth')}
-          onClick={toggleBirthCalOpen}
-        />
-        <div>
-          <CalendarModal open={birthCalOpen}>
-            <CalendarSelect
-              toggle={toggleBirthCalOpen}
-              onDateChange={selectedBirthDate}
-              keyProp={'birth'}
-            />
-          </CalendarModal>
-        </div>
+        <SI.Birth changed={changed} />
 
         <SI.Phone changed={changed} value={phone} />
 
         <SI.Password changed={changed} value={password} />
 
-        <input
-          type={'text'}
-          className={'w-[41%] p-2 m-2 input input-primary'}
-          id={'addr01'}
-          name={'addr01'}
-          placeholder={'주소'}
-          value={addr01}
-          readOnly
-          onClick={onClickAddr}
-          onChange={changed('addr01')}
-        />
-        <input
-          type={'text'}
-          className={'w-[38%] p-2 m-2 input input-primary'}
-          id={'addr02'}
-          name={'addr02'}
-          placeholder={'상세주소'}
-          value={addr02}
-          onChange={changed('addr02')}
-        />
-        <button className={'btn btn-primary m-2 p-2 w-[10%]'} onClick={onClickAddr}>
-          주소 검색
-        </button>
+        <SI.Address addr02={addr02 ?? ''} changed={changed} initialize={isOpen} />
 
         <input
           type={'email'}
