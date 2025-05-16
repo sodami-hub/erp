@@ -40,7 +40,6 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
   const file01Ref = useRef<HTMLInputElement>(null);
   const file02Ref = useRef<HTMLInputElement>(null);
 
-  // 파일 전송 혹은 상태변화시 초기화가 안됨.... ㅡ,.ㅡ;;
   useEffect(() => {
     setFile01(undefined);
     setFile02(undefined);
@@ -58,6 +57,7 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
     }
     setNumbers(dependent);
     setMaterials(formData);
+    setDependent('');
     toggle();
   };
 

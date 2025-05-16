@@ -1,22 +1,14 @@
 import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useAuth} from '../../../context';
-import {useToggle} from '../../../hooks';
-import {
-  CalendarModal,
-  CalendarSelect,
-  CheckBoxComponent,
-  CheckBoxModal,
-  ModalProps,
-  RadioButtonComponent,
-  RadioButtonModal,
-  ReactDivProps,
-  Value
-} from '../../../components';
-import moment from 'moment';
+import * as C from '../../../components';
 import * as SI from './SignInfoInputComponents';
 
 // ============ 신규 직원 등록 모달 =====================
-export const SignUpModal: FC<ModalProps> = ({open, className: _className, ...props}) => {
+export const SignUpModal: FC<C.ModalProps> = ({
+  open,
+  className: _className,
+  ...props
+}) => {
   const className = ['modal', open ? 'modal-open' : '', _className].join(' ');
   return <div {...props} className={className} />;
 };
@@ -46,7 +38,7 @@ const initialCommonCodeList: SI.CommonCode = {
 };
 // ====================================================================
 
-export type ModalContentProps = ReactDivProps & {
+export type ModalContentProps = C.ReactDivProps & {
   onCloseIconClicked?: () => void;
   closeIconClassName?: string;
   isOpen: boolean;
@@ -66,6 +58,9 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
 
   const {signup, jwt} = useAuth();
 
+  // form 정보 리셋을 위한 값
+  const [reset, setReset] = useState(false);
+
   // ==================== 공통코드 불러오기 =============================
   /*
   어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
@@ -81,7 +76,6 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   }, [jwt]);
 
   const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
-
   //===================================================
 
   //============= 직원등록 폼 정보 초깃값 설정 및 변경사항 저장 ==================
@@ -107,34 +101,19 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   );
   // ==================================================
 
-  // ====================== 달력 API 변경사항 저장 ==========================
-
-  const selectedJoinDate = useCallback((date: Value) => {
-    if (date && date instanceof Date) {
-      const formattedDate = moment(date).format('YYYY-MM-DD');
-      setSignupForm(obj => ({...obj, joinDate: formattedDate}));
-      toggleJoinDateCalOpen();
-    }
-  }, []);
-  // ====================================================
-
   // ============= 부양가족 첨부서류 업로드 ================
   const [material, setMaterial] = useState<FormData>();
 
   const submitMaterial = useCallback((data: FormData) => {
     setMaterial(data);
+    console.log(data.get('file01'));
+    console.log(data.get('file02'));
   }, []);
-
   // ====================================================
 
   // ============================== 회원가입 폼 제출 ========================
   //prettier-ignore
   const signupStaff = useCallback(() => {
-    /*
-    서버에 staff 정보를 전송하기 전에 address를 합쳐서 전송하기 위한 호출...
-    타입에 대해서 공부하기 위해 남겨둔 코드
-    */
-    // changed('address')({ target: { value: '' } } as ChangeEvent<HTMLInputElement>);
     const newStaff: SignupFormType = {
       name, gender, birth, phone, password, email, address, joinDate,
       contractStatus, dependents, w4c, possibleWork, workType, workStatus
@@ -145,54 +124,13 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.');
     }
     setSignupForm(initialFormState);
-    resetDependencyFile();
+    setReset(prev => !prev);
   }, [
     name, gender, birth, phone, password, email, address, joinDate,
     contractStatus, dependents, w4c, possibleWork, workType, workStatus,
     signup
   ]);
   // ==============================================================================
-
-  // =================== 모달박스(체크 박스 / 라디오 버튼 등...) 선택값 처리 ================
-
-  const selectWorkType = useCallback((value: string[]) => {
-    const val = value.join(',');
-    setSignupForm(obj => ({...obj, workType: val}));
-  }, []);
-  const selectWorkList = useCallback((value: string[]) => {
-    const val = value.join(',');
-    setSignupForm(obj => ({...obj, possibleWork: val}));
-  }, []);
-  const selectContractStatus = useCallback((value: string) => {
-    setSignupForm(obj => ({...obj, contractStatus: value}));
-  }, []);
-  const selectWorkStatus = useCallback((value: string) => {
-    setSignupForm(obj => ({...obj, workStatus: value}));
-  }, []);
-
-  const selectDependents = useCallback((value: string) => {
-    setSignupForm(obj => ({...obj, dependents: value}));
-  }, []);
-
-  // =======================================================
-
-  // ================================  modal toggle  =========================
-  // 2. 직종 선택 모달
-  const [workTypeModalOpen, toggleWorkTypeModal] = useToggle(false);
-  // 3. 가능 업무 선택 모달
-  const [workListModalOpen, toggleWorkListModal] = useToggle(false);
-  // 4. 근무 구분(계약직/정규직) 라디오 버튼 모달
-  const [contractStatusModalOpen, toggleContractStatusModal] = useToggle(false);
-  // 5. 근무 상태(근무중, 대기, 등) 라디오 버튼 모달
-  const [workStatusModalOpen, toggleWorkStatusModal] = useToggle(false);
-  // 6. 부양가족 선택 모달
-  const [dependentsModalOpen, toggleDependentsModal] = useToggle(false);
-  // 7. 입사일 달력 모달
-  const [joinDateCalOpen, toggleJoinDateCalOpen] = useToggle(false);
-  // 8. 부양가족 관련 서류 input 초기화
-  const [dependencyFile, resetDependencyFile] = useToggle(false);
-
-  // ==================================================================
 
   if (!showCloseIcon) return <div {...props} className={className} children={children} />;
   return (
@@ -202,7 +140,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
           className={closeIconClassName}
           onClick={() => {
             onCloseIconClicked();
-            resetDependencyFile();
+            setReset(prev => !prev);
             setSignupForm(initialFormState);
           }}>
           close
@@ -220,155 +158,40 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
 
         <SI.Password changed={changed} value={password} />
 
-        <SI.Address addr02={addr02 ?? ''} changed={changed} initialize={isOpen} />
+        <SI.Address addr02={addr02 ?? ''} changed={changed} initialize={reset} />
 
-        <input
-          type={'email'}
-          className={'w-[20%] p-2 m-2 input input-primary'}
-          id={'email'}
-          name={'email'}
-          placeholder={'Email'}
-          value={email}
-          onChange={changed('email')}
+        <SI.Email value={email} changed={changed} />
+
+        <SI.WorkType
+          value={workType}
+          workTypeList={memoizedCommonCodeList.workTypeList}
+          changed={changed}
         />
 
-        <button
-          className={'btn btn-primary m-2 p-2 w-[6%] text-md'}
-          onClick={toggleWorkTypeModal}>
-          직 종
-        </button>
-        <span
-          className={
-            'border-2 border-black w-[35%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
-          }>
-          {workType}
-        </span>
-        <div>
-          <CheckBoxModal open={workTypeModalOpen}>
-            <CheckBoxComponent
-              toggle={toggleWorkTypeModal}
-              checkList={memoizedCommonCodeList.workTypeList}
-              sendValue={selectWorkType}
-            />
-          </CheckBoxModal>
-        </div>
-
-        <button
-          className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
-          onClick={toggleWorkListModal}>
-          가능 업무
-        </button>
-        <span
-          className={
-            'border-2 border-black w-[18%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
-          }>
-          {possibleWork}
-        </span>
-        <div>
-          <CheckBoxModal open={workListModalOpen}>
-            <CheckBoxComponent
-              toggle={toggleWorkListModal}
-              checkList={memoizedCommonCodeList.workList}
-              sendValue={selectWorkList}
-            />
-          </CheckBoxModal>
-        </div>
-
-        <button
-          className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
-          onClick={toggleContractStatusModal}>
-          근무 구분
-        </button>
-        <span
-          className={
-            'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
-          }>
-          {contractStatus}
-        </span>
-        <div>
-          <RadioButtonModal open={contractStatusModalOpen}>
-            <RadioButtonComponent
-              name={'contract'}
-              toggle={toggleContractStatusModal}
-              buttonList={['계약직', '정규직']}
-              sendValue={selectContractStatus}
-            />
-          </RadioButtonModal>
-        </div>
-
-        <button
-          className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
-          onClick={toggleWorkStatusModal}>
-          근무 상태
-        </button>
-        <span
-          className={
-            'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
-          }>
-          {workStatus}
-        </span>
-        <div>
-          <RadioButtonModal open={workStatusModalOpen}>
-            <RadioButtonComponent
-              name={'contract'}
-              toggle={toggleWorkStatusModal}
-              buttonList={memoizedCommonCodeList.workStatusList}
-              sendValue={selectWorkStatus}
-            />
-          </RadioButtonModal>
-        </div>
-
-        <button
-          className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
-          onClick={toggleDependentsModal}>
-          부양 가족
-        </button>
-        <span
-          className={
-            'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
-          }>
-          {dependents}명
-        </span>
-        <div>
-          <SI.DependentsModal open={dependentsModalOpen}>
-            <SI.DependentsModalContents
-              toggle={toggleDependentsModal}
-              setNumbers={selectDependents}
-              setMaterials={submitMaterial}
-              reset={dependencyFile}
-            />
-          </SI.DependentsModal>
-        </div>
-
-        <input
-          type={'text'}
-          className={'w-[24%] p-2 m-2 input input-primary'}
-          id={'w4c'}
-          name={'w4c'}
-          placeholder={'w4c'}
-          value={w4c}
-          onChange={changed('w4c')}
+        <SI.PossibleWork
+          value={possibleWork}
+          workList={memoizedCommonCodeList.workList}
+          changed={changed}
         />
 
-        <input
-          type={'button'}
-          className={'w-[18%] p-2 m-2 btn text-xs'}
-          name={'joinDate'}
-          value={'입사일 : ' + joinDate}
-          onChange={changed('joinDate')}
-          onClick={toggleJoinDateCalOpen}
-        />
-        <div>
-          <CalendarModal open={joinDateCalOpen}>
-            <CalendarSelect
-              toggle={toggleJoinDateCalOpen}
-              onDateChange={selectedJoinDate}
-              keyProp={'joinDate'}
-            />
-          </CalendarModal>
-        </div>
+        <SI.ContractStatus value={contractStatus} changed={changed} />
 
-        {/*  회원가입 폼 컨텐츠 부분*/}
+        <SI.WorkStatus
+          value={workStatus}
+          workStatusList={memoizedCommonCodeList.workStatusList}
+          changed={changed}
+        />
+
+        <SI.Dependents
+          value={dependents}
+          reset={reset}
+          changed={changed}
+          saveFile={submitMaterial}
+        />
+
+        <SI.W4C value={w4c} changed={changed} />
+
+        <SI.JoinDate value={joinDate} changed={changed} />
       </div>
 
       <div className={'flex flex-row justify-end items-center'}>
@@ -382,9 +205,3 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     </div>
   );
 };
-
-// export type ModalActionProps = ReactDivProps & {};
-// export const ModalAction: FC<ModalActionProps> = ({className: _className, ...props}) => {
-//   const className = ['modal-action', _className].join(' ');
-//   return <div {...props} className={className} />;
-// };

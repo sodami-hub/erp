@@ -47,9 +47,7 @@ export const Address = ({
   };
 
   useEffect(() => {
-    if (!initialize) {
-      setAddress01('');
-    }
+    setAddress01('');
   }, [initialize]);
 
   return (

@@ -23,7 +23,7 @@ export default function StaffInfo() {
         신규 직원 등록
       </button>
       <SignUpModal open={open}>
-        <div className={'bg-gray-200 w-[65%] rounded-lg relative'}>
+        <div className={'bg-gray-200 w-[65%] rounded-lg relative min-w-[830px]'}>
           <SignUpModalContent onCloseIconClicked={toggleOpen} isOpen={open} />
         </div>
       </SignUpModal>
