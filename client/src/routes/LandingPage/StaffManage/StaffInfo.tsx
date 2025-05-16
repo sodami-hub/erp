@@ -1,6 +1,7 @@
 import {ChangeEvent, useCallback, useState} from 'react';
 import {useToggle} from '../../../hooks';
 import {SignUpModal, SignUpModalContent} from './SignUpModal';
+import {StaffList} from './StaffList';
 
 type NameSearch = Record<'name', string>;
 const initialSearchState = {name: ''};
@@ -95,7 +96,7 @@ export default function StaffInfo() {
         <hr className={'w-[396px] border-2 border-gray-600 mt-2 -ml-12 -mr-9'} />
         <div className={'mt-3.5'}>
           <h2 className={'text text-black'}>Staff List</h2>
-          {/*  스탭 리스트*/}
+          <StaffList status={staffListStatus} />
         </div>
       </div>
     </section>
