@@ -109,7 +109,12 @@ public class AuthService {
 
     // 직원등록에 추가로 필요한 정보
     signUpRequestDTO.setInstitutionId(jwtClaimsDTO.getInstitutionId());
-    signUpRequestDTO.setAuthId("102"); // 기관관리자가 등록하는 직원의 권한코드 '102'
+    if (signUpRequestDTO.getWorkType().contains("센터장")) {
+      signUpRequestDTO.setAuthId("101");  // 직종에 '센터장'이 있으면 권한코드 '101'
+    } else {
+      signUpRequestDTO.setAuthId("102"); // 기관관리자가 등록하는 직원의 권한코드 '102'
+    }
+
     signUpRequestDTO.setRetireDate(null);
 
     // 2. 직원 등록 로직

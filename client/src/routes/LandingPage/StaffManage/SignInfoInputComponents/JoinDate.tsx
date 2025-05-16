@@ -25,6 +25,7 @@ export const JoinDate = ({
   return (
     <>
       <input
+        id={'joinDate'}
         type={'button'}
         className={'w-[18%] p-2 m-2 btn text-xs'}
         name={'joinDate'}

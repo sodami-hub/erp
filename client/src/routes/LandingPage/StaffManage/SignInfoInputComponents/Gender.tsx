@@ -1,14 +1,21 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, useEffect} from 'react';
 
 export const Gender = ({
   value01,
   value02,
-  changed
+  changed,
+  reset
 }: {
   value01: string;
   value02: string;
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
+  reset: boolean;
 }) => {
+  useEffect(() => {
+    const radios = document.getElementsByName('gender') as NodeListOf<HTMLInputElement>;
+    radios.forEach(radio => (radio.checked = false));
+  }, [reset]);
+
   return (
     <div
       className={

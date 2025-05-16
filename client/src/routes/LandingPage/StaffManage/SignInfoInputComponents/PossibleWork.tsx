@@ -5,11 +5,13 @@ import {useToggle} from '../../../../hooks';
 export const PossibleWork = ({
   value,
   workList,
-  changed
+  changed,
+  reset
 }: {
   value: string;
   workList: string[];
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
+  reset: boolean;
 }) => {
   const [workListModalOpen, toggleWorkListModal] = useToggle(false);
 
@@ -35,9 +37,11 @@ export const PossibleWork = ({
       <div>
         <CheckBoxModal open={workListModalOpen}>
           <CheckBoxComponent
+            name={'possibleWork'}
             toggle={toggleWorkListModal}
             checkList={workList}
             sendValue={selectPossibleWork}
+            reset={reset}
           />
         </CheckBoxModal>
       </div>

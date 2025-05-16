@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {ReactDivProps} from './ModalProps';
 
 export type CheckBoxModalProps = ReactDivProps & {
@@ -16,14 +16,22 @@ export const CheckBoxModal: FC<CheckBoxModalProps> = ({
 };
 
 export type CheckBoxProps = ReactDivProps & {
+  name: string;
   toggle: () => void;
   checkList: string[];
   sendValue: (value: string[]) => void;
+  reset: boolean;
 };
 
 const initialValue: string[] = [];
 
-export const CheckBoxComponent: FC<CheckBoxProps> = ({toggle, checkList, sendValue}) => {
+export const CheckBoxComponent: FC<CheckBoxProps> = ({
+  name,
+  toggle,
+  checkList,
+  sendValue,
+  reset
+}) => {
   const [checkedValue, setCheckedValue] = useState<string[]>(initialValue);
 
   const onSubmit = (value: string, checked: boolean) => {
@@ -37,9 +45,20 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({toggle, checkList, sendVal
     }
   };
 
+  useEffect(() => {
+    setCheckedValue([]);
+    const inputs = document.getElementsByName(name);
+    inputs.forEach(input => {
+      if (input instanceof HTMLInputElement) {
+        input.checked = false;
+      }
+    });
+  }, [reset]);
+
   const checkBoxes = checkList?.map((value, index) => (
     <label key={index} className="flex items-center space-x-2">
       <input
+        name={name}
         type="checkbox"
         value={value}
         onChange={e => {

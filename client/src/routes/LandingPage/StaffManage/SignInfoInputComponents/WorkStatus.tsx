@@ -5,11 +5,13 @@ import {useToggle} from '../../../../hooks';
 export const WorkStatus = ({
   value,
   workStatusList,
-  changed
+  changed,
+  reset
 }: {
   value: string;
   workStatusList: string[];
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
+  reset: boolean;
 }) => {
   const [workStatusModalOpen, toggleWorkStatusModal] = useToggle(false);
 
@@ -33,6 +35,7 @@ export const WorkStatus = ({
       <div>
         <C.RadioButtonModal open={workStatusModalOpen}>
           <C.RadioButtonComponent
+            reset={reset}
             name={'contract'}
             toggle={toggleWorkStatusModal}
             buttonList={workStatusList}

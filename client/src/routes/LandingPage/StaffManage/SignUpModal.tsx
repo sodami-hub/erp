@@ -118,6 +118,18 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       name, gender, birth, phone, password, email, address, joinDate,
       contractStatus, dependents, w4c, possibleWork, workType, workStatus
     };
+
+    if (newStaff.birth === '' || newStaff.birth === undefined) {
+      alert('생년월일을 입력해주세요.');
+      document.getElementById('birth')?.focus();
+      return;
+    }
+    if (newStaff.joinDate === '' || newStaff.joinDate === undefined) {
+      alert('입사일을 입력해주세요.');
+      document.getElementById('joinDate')?.focus();
+      return;
+    }
+
     if (jwt) {
       signup(newStaff, jwt, material);
     } else {
@@ -150,9 +162,9 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
       <div className={'flex flex-row flex-wrap justify-center jus w-full'}>
         <SI.Name changed={changed} value={name} />
 
-        <SI.Gender value01={'남'} value02={'여'} changed={changed} />
+        <SI.Gender value01={'남'} value02={'여'} changed={changed} reset={reset} />
 
-        <SI.Birth changed={changed} />
+        <SI.Birth value={birth} changed={changed} />
 
         <SI.Phone changed={changed} value={phone} />
 
@@ -163,23 +175,26 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
         <SI.Email value={email} changed={changed} />
 
         <SI.WorkType
+          reset={reset}
           value={workType}
           workTypeList={memoizedCommonCodeList.workTypeList}
           changed={changed}
         />
 
         <SI.PossibleWork
+          reset={reset}
           value={possibleWork}
           workList={memoizedCommonCodeList.workList}
           changed={changed}
         />
 
-        <SI.ContractStatus value={contractStatus} changed={changed} />
+        <SI.ContractStatus value={contractStatus} changed={changed} reset={reset} />
 
         <SI.WorkStatus
           value={workStatus}
           workStatusList={memoizedCommonCodeList.workStatusList}
           changed={changed}
+          reset={reset}
         />
 
         <SI.Dependents

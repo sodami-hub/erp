@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {ReactDivProps} from './ModalProps';
 
 export type RadioButtonModalProps = ReactDivProps & {
@@ -19,6 +19,7 @@ export type RadioButtonProps = ReactDivProps & {
   toggle: () => void;
   buttonList: string[];
   sendValue: (value: string) => void;
+  reset: boolean;
 };
 
 const initialValue: string = '';
@@ -27,13 +28,20 @@ export const RadioButtonComponent: FC<RadioButtonProps> = ({
   name,
   toggle,
   buttonList,
-  sendValue
+  sendValue,
+  reset
 }) => {
   const [checkedValue, setCheckedValue] = useState<string>(initialValue);
 
   const onSubmit = (value: string) => {
     setCheckedValue(value);
   };
+
+  useEffect(() => {
+    const radios = document.getElementsByName(name) as NodeListOf<HTMLInputElement>;
+    radios.forEach(radio => (radio.checked = false));
+    setCheckedValue('');
+  }, [reset]);
 
   const radioButton = buttonList?.map((value, index) => (
     <label key={index} className={'flex items-center space-x-2'}>
