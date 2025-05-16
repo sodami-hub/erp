@@ -1,6 +1,6 @@
 import {getServerUrl} from './getServerUrl';
 
-const getAndDel = (method: string) => (path: string, jwt?: string | null | undefined) => {
+const getAndDel = (method: string) => (path: string, jwt?: object | null | undefined) => {
   let headers = {'Content-Type': 'application/json'};
   let init: RequestInit = {
     method: method
@@ -8,7 +8,7 @@ const getAndDel = (method: string) => (path: string, jwt?: string | null | undef
   if (jwt) {
     init = {
       ...init,
-      headers: {...headers, Authorization: `${jwt}`}
+      headers: {...headers, Authorization: `${JSON.stringify(jwt)}`}
     };
   } else init = {...init, headers};
   return fetch(getServerUrl(path), init);
