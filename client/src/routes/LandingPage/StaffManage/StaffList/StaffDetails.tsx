@@ -1,6 +1,36 @@
-import {getStaffInfo} from './getStaffInfoType';
+import * as Info from './getStaffInfoType';
+import {useEffect, useState} from 'react';
+import {get} from '../../../../server';
+import {useAuth} from '../../../../context';
 
-export const StaffDetails = ({staffDetail}: {staffDetail: getStaffInfo}) => {
+export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) => {
+  const {jwt} = useAuth();
+
+  const [receiveCertificates, setReceiveCertificates] = useState<Info.certificateInfo[]>(
+    []
+  );
+  // staffDetail 이 변할 때마다 자격증 정보와 건강검진 통보서 정보 가져오기
+  useEffect(() => {
+    get(`/certificates/${staffDetail.staffId}`, jwt)
+      .then(res => res.json())
+      .then((result: Info.certificateInfo[] | undefined) => {
+        if (Array.isArray(result)) {
+          setReceiveCertificates(result);
+        } else {
+          setReceiveCertificates([]);
+        }
+      })
+      .catch(() => setReceiveCertificates([]));
+  }, [staffDetail]);
+
+  const myCertificates = receiveCertificates?.map((value, index) => (
+    <div key={index} className={'m-1 p-1'}>
+      <span>{value.certificateName}</span>
+      <span>{value.issueDate}</span>
+      <span>{value.organization}</span>
+    </div>
+  ));
+
   return (
     <div>
       <div className={'flex flex-row items-center justify-between m-1 p-1 bg-white'}>
@@ -68,11 +98,18 @@ export const StaffDetails = ({staffDetail}: {staffDetail: getStaffInfo}) => {
           <div className={'flex flex-col w-[50%] m-1 p-1'}>
             <div className={'flex flex-row items-center justify-start text-black'}>
               <h2>자격증 정보</h2>
+              <button className={'btn btn-circle bg-white size-5 ml-2'}>
+                <span className={'material-icons text-xl text-black'}>add</span>
+              </button>
+              {receiveCertificates && <>{myCertificates}</>}
             </div>
           </div>
           <div className={'flex flex-col w-[50%] m-1 p-1'}>
             <div className={'flex flex-row items-center justify-start text-black'}>
               <h2>건강검진 통보서</h2>
+              <button className={'btn btn-circle bg-white size-5 ml-2'}>
+                <span className={'material-icons text-xl text-black'}>add</span>
+              </button>
             </div>
           </div>
         </div>

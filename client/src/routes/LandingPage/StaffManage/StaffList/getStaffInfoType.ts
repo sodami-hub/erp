@@ -16,3 +16,9 @@ export type getStaffInfo = {
   workStatus: string;
   retireDate: string;
 };
+
+export type certificateInfo = {
+  certificateName: string;
+  organization: string;
+  issueDate: string;
+};

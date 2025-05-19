@@ -24,6 +24,7 @@ public class AttachedFileController {
     this.attachedFileService = attachedFileService;
   }
 
+  // 부양가족 관련 첨부 서류 처리
   @Transactional
   @PostMapping("/fileUpload")
   public ResponseEntity<FileUploadResponseDTO> fileUpload(
