@@ -13,10 +13,11 @@ export const StaffList = ({
 }) => {
   const {jwt} = useAuth();
   const [staffList, setStaffList] = useState<getStaffInfo[]>();
+  const [selectedStaff, setSelectedStaff] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (jwt) {
-      get(`/staffs/${status}`, jwt)
+      get(`/staffs/${status}`)
         .then(resp => resp.json())
         .then((result: getStaffInfo[]) => {
           setStaffList(result);
@@ -26,14 +27,26 @@ export const StaffList = ({
     }
   }, [status]);
 
-  // 시스템 관리자는 직원 정보에서 제외한다.
-  const list = staffList?.filter(value => value.name !== 'admin');
+  useEffect(() => {
+    const findStr = selectedStaff + 'staff';
+    const $staffInfo = document.getElementsByClassName('staffInfo');
+    Array.from($staffInfo).forEach(node => {
+      if (node.className.includes(findStr)) {
+        node.className = node.className.replace('bg-white', 'bg-amber-300');
+      } else {
+        node.className = node.className.replace('bg-amber-300', 'bg-white');
+      }
+    });
+  }, [selectedStaff]);
 
-  const children = list?.map((value, index) => (
+  const children = staffList?.map((value, index) => (
     <div
       key={index}
-      className={'mt-2 border-2 border-gray-700 w-[95%] cursor-pointer bg-white'}
-      onClick={() => getStaffId(value)}>
+      className={`staffInfo ${index + 'staff'}  mt-2 border-2 border-gray-700 w-[95%] cursor-pointer bg-white`}
+      onClick={() => {
+        setSelectedStaff(index ?? undefined);
+        getStaffId(value);
+      }}>
       <div
         className={
           'text text-xs text-black flex flex-row justify-evenly items-center w-full'

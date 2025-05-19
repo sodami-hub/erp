@@ -28,6 +28,35 @@ public class ManageStaffsController {
     return new ResponseEntity<>(allStaffs, HttpStatus.OK);
   }
 
+  @GetMapping("/staffs/onDuty")
+  public ResponseEntity<List<StaffInfoDTO>> getOnDutyStaffs() {
+    List<StaffInfoDTO> allStaffs = manageStaffsService.getOnDutyStaffs();
+
+    return new ResponseEntity<>(allStaffs, HttpStatus.OK);
+  }
+
+  @GetMapping("/staffs/offDuty")
+  public ResponseEntity<List<StaffInfoDTO>> getOffDutyStaffs() {
+    List<StaffInfoDTO> allStaffs = manageStaffsService.getOffDutyStaffs();
+
+    return new ResponseEntity<>(allStaffs, HttpStatus.OK);
+  }
+
+  @GetMapping("/staffs/break")
+  public ResponseEntity<List<StaffInfoDTO>> getBreakStaffs() {
+    List<StaffInfoDTO> allStaffs = manageStaffsService.getBreakStaffs();
+
+    return new ResponseEntity<>(allStaffs, HttpStatus.OK);
+  }
+
+  @GetMapping("/staffs/waiting")
+  public ResponseEntity<List<StaffInfoDTO>> getWaitingStaffs() {
+    List<StaffInfoDTO> allStaffs = manageStaffsService.getWaitingStaffs();
+
+    return new ResponseEntity<>(allStaffs, HttpStatus.OK);
+  }
+
+
   @GetMapping("/certificates/{staffId}")
   public ResponseEntity<List<certificateRequestDTO>> getCertificateByStaffId(
       @PathVariable Long staffId) {

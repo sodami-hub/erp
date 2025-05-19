@@ -1,4 +1,4 @@
-import {ChangeEvent, useCallback, useState} from 'react';
+import {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import {useToggle} from '../../../hooks';
 import {SignUpModal, SignUpModalContent} from './SignUpModal';
 import {
@@ -27,6 +27,17 @@ export default function StaffInfo() {
   const [staffListStatus, setStaffListStatus] = useState<
     'all' | 'onDuty' | 'offDuty' | 'break' | 'waiting'
   >('all');
+
+  useEffect(() => {
+    const $buttons = document.getElementsByName('workStatusBtn');
+    $buttons.forEach(
+      node =>
+        (node.className =
+          node.id === staffListStatus
+            ? node.className + ' underline underline-offset-4'
+            : node.className.replace(' underline underline-offset-4', ''))
+    );
+  }, [staffListStatus]);
 
   // 직원의 기본정보 클릭시 직원 상세정보의 세부 구분
   const [staffInfoStatus, setStaffInfoStatus] = useState<
@@ -59,6 +70,8 @@ export default function StaffInfo() {
 
           <div className={'flex flex-row w-full mb-1.5'}>
             <button
+              id={'all'}
+              name={'workStatusBtn'}
               className={'btn w-1/5 bg-blue-700 text-white text-xs'}
               onClick={() => {
                 setStaffListStatus('all');
@@ -66,6 +79,8 @@ export default function StaffInfo() {
               전체
             </button>
             <button
+              id={'onDuty'}
+              name={'workStatusBtn'}
               className={'btn w-1/5 bg-white text-black text-xs'}
               onClick={() => {
                 setStaffListStatus('onDuty');
@@ -73,6 +88,8 @@ export default function StaffInfo() {
               근무
             </button>
             <button
+              id={'waiting'}
+              name={'workStatusBtn'}
               className={'btn w-1/5 bg-white text-black text-xs'}
               onClick={() => {
                 setStaffListStatus('waiting');
@@ -80,6 +97,8 @@ export default function StaffInfo() {
               대기
             </button>
             <button
+              id={'break'}
+              name={'workStatusBtn'}
               className={'btn w-1/5 bg-white text-black text-xs'}
               onClick={() => {
                 setStaffListStatus('break');
@@ -87,6 +106,8 @@ export default function StaffInfo() {
               휴직
             </button>
             <button
+              id={'offDuty'}
+              name={'workStatusBtn'}
               className={'btn w-1/5 bg-white text-black text-xs'}
               onClick={() => {
                 setStaffListStatus('offDuty');

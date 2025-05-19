@@ -80,7 +80,7 @@ export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) =>
               <th>퇴사일</th>
               <td>{staffDetail.retireDate ?? '-'}</td>
               <th>부양가족</th>
-              <td>{staffDetail.dependents + '명' ?? '-'}</td>
+              <td>{staffDetail.dependents ?? '0'}명</td>
               <th>W4C</th>
               <td>{staffDetail.w4c}</td>
             </tr>
