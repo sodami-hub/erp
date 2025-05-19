@@ -60,3 +60,8 @@ code {
 .react-calendar__navigation__arrow {
   color: black;
 }
+
+th, td {
+  text-align: center;
+  border: 1px solid black;
+}

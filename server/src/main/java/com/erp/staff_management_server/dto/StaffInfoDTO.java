@@ -20,6 +20,7 @@ public class StaffInfoDTO {
   private String password;
   private String email;
   private String address;
+  private LocalDate birth;
   private LocalDate joinDate;
   private String contractStatus;
   private LocalDate retireDate;
@@ -43,6 +44,7 @@ public class StaffInfoDTO {
     this.password = staff.getPassword();
     this.email = staff.getEmail();
     this.address = staff.getAddress();
+    this.birth = staff.getBirth();
     this.joinDate = staff.getJoinDate();
     this.contractStatus = staff.getContractStatus();
     this.retireDate = staff.getRetireDate();
