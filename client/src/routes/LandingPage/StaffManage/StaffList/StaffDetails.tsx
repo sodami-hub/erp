@@ -2,9 +2,13 @@ import * as Info from './getStaffInfoType';
 import {useEffect, useState} from 'react';
 import {get} from '../../../../server';
 import {useAuth} from '../../../../context';
+import {useToggle} from '../../../../hooks';
+import {AddCerModalContents, AddCertModal} from './AddCertModal';
 
 export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) => {
   const {jwt} = useAuth();
+
+  const [addCertModalOpen, toggleAddCertModal] = useToggle(false);
 
   const [receiveCertificates, setReceiveCertificates] = useState<Info.certificateInfo[]>(
     []
@@ -98,11 +102,16 @@ export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) =>
           <div className={'flex flex-col w-[50%] m-1 p-1'}>
             <div className={'flex flex-row items-center justify-start text-black'}>
               <h2>자격증 정보</h2>
-              <button className={'btn btn-circle bg-white size-5 ml-2'}>
+              <button
+                className={'btn btn-circle bg-white size-5 ml-2'}
+                onClick={() => toggleAddCertModal()}>
                 <span className={'material-icons text-xl text-black'}>add</span>
               </button>
               {receiveCertificates && <>{myCertificates}</>}
             </div>
+            <AddCertModal open={addCertModalOpen}>
+              <AddCerModalContents modalToggle={toggleAddCertModal} />
+            </AddCertModal>
           </div>
           <div className={'flex flex-col w-[50%] m-1 p-1'}>
             <div className={'flex flex-row items-center justify-start text-black'}>
