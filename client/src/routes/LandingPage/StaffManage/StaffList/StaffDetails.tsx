@@ -1,9 +1,9 @@
-import * as Info from './getStaffInfoType';
+import * as Info from './staffInfoType';
 import {useEffect, useState} from 'react';
 import {get} from '../../../../server';
 import {useAuth} from '../../../../context';
 import {useToggle} from '../../../../hooks';
-import {AddCerModalContents, AddCertModal} from './AddCertModal';
+import {AddCertModal, AddCertModalContents} from './AddCertModal';
 
 export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) => {
   const {jwt} = useAuth();
@@ -110,7 +110,10 @@ export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) =>
               {receiveCertificates && <>{myCertificates}</>}
             </div>
             <AddCertModal open={addCertModalOpen}>
-              <AddCerModalContents modalToggle={toggleAddCertModal} />
+              <AddCertModalContents
+                modalToggle={toggleAddCertModal}
+                id={staffDetail.staffId}
+              />
             </AddCertModal>
           </div>
           <div className={'flex flex-col w-[50%] m-1 p-1'}>

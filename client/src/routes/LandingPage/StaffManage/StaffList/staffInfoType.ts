@@ -18,6 +18,7 @@ export type getStaffInfo = {
 };
 
 export type certificateInfo = {
+  staffId: string;
   certificateName: string;
   organization: string;
   issueDate: string;
