@@ -1,4 +1,4 @@
-export type staffInfo = {
+export type signupStaffInfo = {
   name: string;
   gender: string;
   birth: string;

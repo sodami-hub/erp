@@ -1,4 +1,4 @@
-import {FC, DetailedHTMLProps, ButtonHTMLAttributes, PropsWithChildren} from 'react';
+import {ButtonHTMLAttributes, DetailedHTMLProps, FC, PropsWithChildren} from 'react';
 
 export type ReactButtonProps = DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -24,7 +24,7 @@ export const MainMenu: FC<PropsWithChildren<ButtonProps>> = ({
     'border',
     'border-white',
     'h-8',
-    'text-xs',
+    'text-sm',
     _className
   ].join(' ');
   return (

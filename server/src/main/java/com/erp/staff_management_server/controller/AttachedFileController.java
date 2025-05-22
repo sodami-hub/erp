@@ -8,6 +8,7 @@ import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +45,19 @@ public class AttachedFileController {
     fileUploadResponseDTO = attachedFileService.dependentFileService(file01, file02, userId,
         jwtToken);
 
+    return ResponseEntity.ok(fileUploadResponseDTO);
+  }
+
+  // 자격증 첨부 서류 처리
+  @Transactional
+  @PostMapping("/saveCertFile/{certificateId}")
+  public ResponseEntity<FileUploadResponseDTO> saveCertFile(
+      @PathVariable Long certificateId,
+      @RequestParam(value = "file", required = true) MultipartFile file,
+      @RequestHeader(value = "Authorization", required = true) JwtToken jwtToken
+  ) throws FileUploadException {
+    FileUploadResponseDTO fileUploadResponseDTO = attachedFileService.certFileService(file,
+        certificateId, jwtToken);
     return ResponseEntity.ok(fileUploadResponseDTO);
   }
 

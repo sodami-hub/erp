@@ -1,9 +1,11 @@
 package com.erp.staff_management_server.service;
 
-import com.erp.staff_management_server.dto.DependencyDocumentDTO;
 import com.erp.staff_management_server.dto.FileUploadResponseDTO;
+import com.erp.staff_management_server.dto.SaveFileDTO;
 import com.erp.staff_management_server.dto.jwt.JwtToken;
+import com.erp.staff_management_server.entity.Certificates;
 import com.erp.staff_management_server.entity.DependencyDocuments;
+import com.erp.staff_management_server.repository.CertificatesRepository;
 import com.erp.staff_management_server.repository.DocumentRepository;
 import com.erp.staff_management_server.util.jwt.JwtTokenProvider;
 import java.io.File;
@@ -24,11 +26,13 @@ public class AttachedFileService {
 
   private final DocumentRepository documentRepository;
   private final JwtTokenProvider jwtTokenProvider;
+  private final CertificatesRepository certificatesRepository;
 
   public AttachedFileService(DocumentRepository documentRepository,
-      JwtTokenProvider jwtTokenProvider) {
+      JwtTokenProvider jwtTokenProvider, CertificatesRepository certificatesRepository) {
     this.documentRepository = documentRepository;
     this.jwtTokenProvider = jwtTokenProvider;
+    this.certificatesRepository = certificatesRepository;
   }
 
   // 서버에 저장할 파일 이름 생성
@@ -43,7 +47,8 @@ public class AttachedFileService {
   }
 
   // 서버 스토리지에 파일 저장
-  private DependencyDocumentDTO saveFileStorage(MultipartFile file) throws FileUploadException {
+  private SaveFileDTO saveFileStorage(MultipartFile file, String check)
+      throws FileUploadException {
     String originalName = file.getOriginalFilename();
 
     // 파일 타입 확인
@@ -52,18 +57,15 @@ public class AttachedFileService {
       throw new RuntimeException("File type not supported :" + mimeType);
     }
 
+    String dirPath = switch (check) {
+      case "dependent" -> "attachedFile/dependentDocuments";
+      case "certificate" -> "attachedFile/certificateDocuments";
+      default -> "";
+    };
     // 파일 저장 처리
-    String dependentDocumentDirPath = "attachedFile/dependentDocuments";
-    File directory = new File(dependentDocumentDirPath);
-    if (!directory.exists()) {
-      boolean check = directory.mkdirs();
-      if (!check) {
-        throw new RuntimeException("Failed to create directory: " + dependentDocumentDirPath);
-      }
-    }
 
     String saveName = generateUniqueFileName(originalName);
-    Path filePath = Paths.get(dependentDocumentDirPath + File.separator + saveName);
+    Path filePath = Paths.get(dirPath + File.separator + saveName);
 
     try {
       Files.copy(file.getInputStream(), filePath);
@@ -71,7 +73,7 @@ public class AttachedFileService {
       throw new FileUploadException("File upLoad exception. " + Arrays.toString(e.getStackTrace()));
     }
 
-    return new DependencyDocumentDTO(null, originalName, saveName);
+    return new SaveFileDTO(null, originalName, saveName);
   }
 
   public FileUploadResponseDTO dependentFileService(MultipartFile file01, MultipartFile file02,
@@ -81,22 +83,43 @@ public class AttachedFileService {
     Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
 
     if (!file01.isEmpty()) {
-      DependencyDocumentDTO dependencyDocumentDTO = saveFileStorage(file01);
-      dependencyDocumentDTO.setStaffId(userId);
+      SaveFileDTO saveFileDTO = saveFileStorage(file01, "dependent");
+      saveFileDTO.setId(userId);
 
       // 파일 정보 DB 저장 처리
       documentRepository.save(
-          new DependencyDocuments(dependencyDocumentDTO, managerId));
+          new DependencyDocuments(saveFileDTO, managerId));
     }
     if (!file02.isEmpty()) {
-      DependencyDocumentDTO dependencyDocumentDTO = saveFileStorage(file02);
-      dependencyDocumentDTO.setStaffId(userId);
+      SaveFileDTO saveFileDTO = saveFileStorage(file02, "dependent");
+      saveFileDTO.setId(userId);
 
       // 파일 정보 DB 저장 처리
       documentRepository.save(
-          new DependencyDocuments(dependencyDocumentDTO, managerId));
+          new DependencyDocuments(saveFileDTO, managerId));
     }
 
     return new FileUploadResponseDTO(true, null);
+  }
+
+  public FileUploadResponseDTO certFileService(MultipartFile file, Long certificateId,
+      JwtToken jwtToken) throws FileUploadException {
+
+    Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
+
+    SaveFileDTO saveFileDTO = saveFileStorage(file, "certificate");
+
+    Certificates cert = certificatesRepository.findById(certificateId).orElse(null);
+    if (cert == null) {
+      return new FileUploadResponseDTO(false, "파일의 정보를 저장할 자격증 정보가 없습니다.");
+    }
+    cert.setOriginalName(saveFileDTO.getOriginalName());
+    cert.setSaveName(saveFileDTO.getSaveName());
+    cert.setUpdaterId(managerId);
+    
+    certificatesRepository.save(cert);
+
+    return new FileUploadResponseDTO(true, null);
+
   }
 }

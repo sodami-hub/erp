@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DependencyDocumentDTO {
+public class SaveFileDTO {
 
-  private Long staffId;
+  private Long id;
   private String originalName;
   private String saveName;
 }

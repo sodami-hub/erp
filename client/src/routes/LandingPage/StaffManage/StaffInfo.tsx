@@ -44,6 +44,17 @@ export default function StaffInfo() {
     'basic' | 'payContract' | 'attendance' | undefined
   >(undefined);
 
+  useEffect(() => {
+    const $btn = document.getElementsByName('infoStatusBtn');
+    $btn.forEach(
+      node =>
+        (node.className =
+          node.id === staffInfoStatus
+            ? node.className + ' underline underline-offset-4'
+            : node.className.replace(' underline underline-offset-4', ''))
+    );
+  }, [staffInfoStatus]);
+
   // 기본정보 클릭시 직원의 상세정보 노출
   const [staffDetail, setStaffDetail] = useState<staffDetail>();
 
@@ -56,7 +67,7 @@ export default function StaffInfo() {
     <section className={'flex flex-row w-full h-full'}>
       <div
         className={
-          'flex flex-col justify-start items-center w-96 border-r-2 border-black bg-gray-200 h-[100%]'
+          'flex flex-col justify-start items-center w-96 min-w-[310px] max-w-[310px] border-r-2 border-black bg-gray-200 h-[100%]'
         }>
         <div className={'w-[96%] m-3'}>
           <button className={'btn btn-accent w-full mb-1.5'} onClick={toggleOpen}>
@@ -143,6 +154,8 @@ export default function StaffInfo() {
           <div className={'flex flex-row items-center justify-between m-1 bg-gray-200'}>
             <div className={''}>
               <button
+                name={'infoStatusBtn'}
+                id={'basic'}
                 className={'btn btn-secondary'}
                 onClick={() => {
                   setStaffInfoStatus('basic');
@@ -150,6 +163,8 @@ export default function StaffInfo() {
                 기본정보
               </button>
               <button
+                name={'infoStatusBtn'}
+                id={'payContract'}
                 className={'btn btn-secondary'}
                 onClick={() => {
                   setStaffInfoStatus('payContract');
@@ -157,6 +172,8 @@ export default function StaffInfo() {
                 급여계약
               </button>
               <button
+                name={'infoStatusBtn'}
+                id={'attendance'}
                 className={'btn btn-secondary'}
                 onClick={() => {
                   setStaffInfoStatus('attendance');

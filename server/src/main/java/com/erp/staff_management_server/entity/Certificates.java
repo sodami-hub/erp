@@ -1,5 +1,6 @@
 package com.erp.staff_management_server.entity;
 
+import com.erp.staff_management_server.dto.SaveCertificateReqDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +21,7 @@ public class Certificates extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "certificates_id")
+  @Column(name = "certificate_id")
   private Long certificatesId;
 
   @Column(name = "staff_id", nullable = false)
@@ -41,4 +42,12 @@ public class Certificates extends BaseEntity {
   @Column(name = "save_name")
   private String saveName;
 
+  public Certificates(SaveCertificateReqDTO dto, Long managerId) {
+    this.staffId = dto.getStaffId();
+    this.certificateName = dto.getCertificateName();
+    this.organization = dto.getOrganization();
+    this.issueDate = LocalDate.parse(dto.getIssueDate());
+    super.setCreatorId(managerId);
+    super.setUpdaterId(managerId);
+  }
 }

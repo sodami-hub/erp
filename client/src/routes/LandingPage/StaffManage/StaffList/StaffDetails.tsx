@@ -28,10 +28,16 @@ export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) =>
   }, [staffDetail]);
 
   const myCertificates = receiveCertificates?.map((value, index) => (
-    <div key={index} className={'m-1 p-1'}>
-      <span>{value.certificateName}</span>
-      <span>{value.issueDate}</span>
-      <span>{value.organization}</span>
+    <div
+      key={index}
+      className={
+        'bg-gray-200 rounded w-full flex flex-col justify-center items-start m-2 p-2'
+      }>
+      <span>자격증 명(번호) : {value.certificateName}</span>
+      <div className={'w-full flex flex-row justify-between items-center mt-2'}>
+        <span>발급일 : {value.issueDate}</span>
+        <span>발급기관 : {value.organization}</span>
+      </div>
     </div>
   ));
 
@@ -100,13 +106,15 @@ export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) =>
         </table>
         <div className={'flex flex-row '}>
           <div className={'flex flex-col w-[50%] m-1 p-1'}>
-            <div className={'flex flex-row items-center justify-start text-black'}>
-              <h2>자격증 정보</h2>
-              <button
-                className={'btn btn-circle bg-white size-5 ml-2'}
-                onClick={() => toggleAddCertModal()}>
-                <span className={'material-icons text-xl text-black'}>add</span>
-              </button>
+            <div className={'flex flex-col w-full items-center justify-start text-black'}>
+              <div className={'flex flex-row w-full items-center justify-start'}>
+                <h2>자격증 정보</h2>
+                <button
+                  className={'btn btn-circle bg-white size-5 ml-2'}
+                  onClick={() => toggleAddCertModal()}>
+                  <span className={'material-icons text-xl text-black'}>add</span>
+                </button>
+              </div>
               {receiveCertificates && <>{myCertificates}</>}
             </div>
             <AddCertModal open={addCertModalOpen}>

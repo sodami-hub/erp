@@ -1,11 +1,15 @@
 package com.erp.staff_management_server.service;
 
+import com.erp.staff_management_server.dto.SaveCertificateReqDTO;
+import com.erp.staff_management_server.dto.SaveCertificationResponseDTO;
 import com.erp.staff_management_server.dto.StaffInfoDTO;
 import com.erp.staff_management_server.dto.certificateRequestDTO;
+import com.erp.staff_management_server.dto.jwt.JwtToken;
 import com.erp.staff_management_server.entity.Certificates;
 import com.erp.staff_management_server.entity.Staff;
 import com.erp.staff_management_server.repository.CertificatesRepository;
 import com.erp.staff_management_server.repository.StaffRepository;
+import com.erp.staff_management_server.util.jwt.JwtTokenProvider;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,11 +20,13 @@ public class ManageStaffsService {
 
   private final StaffRepository staffRepository;
   private final CertificatesRepository certificatesRepository;
+  private final JwtTokenProvider jwtTokenProvider;
 
   public ManageStaffsService(StaffRepository staffRepository,
-      CertificatesRepository certificatesRepository) {
+      CertificatesRepository certificatesRepository, JwtTokenProvider jwtTokenProvider) {
     this.staffRepository = staffRepository;
     this.certificatesRepository = certificatesRepository;
+    this.jwtTokenProvider = jwtTokenProvider;
   }
 
   public List<StaffInfoDTO> getAllStaffs() {
@@ -64,4 +70,13 @@ public class ManageStaffsService {
   }
 
 
+  public SaveCertificationResponseDTO saveCertService(SaveCertificateReqDTO saveCertificateReqDTO,
+      JwtToken jwtToken) {
+
+    Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
+
+    Certificates cert = certificatesRepository.save(
+        new Certificates(saveCertificateReqDTO, managerId));
+    return new SaveCertificationResponseDTO(true, cert.getCertificatesId(), null);
+  }
 }

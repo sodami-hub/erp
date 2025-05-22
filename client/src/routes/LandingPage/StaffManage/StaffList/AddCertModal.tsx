@@ -9,6 +9,9 @@ import {
 import {certificateInfo} from './staffInfoType';
 import {fileUpload, post} from '../../../../server';
 import {useAuth} from '../../../../context';
+import {useToggle} from '../../../../hooks';
+import {CalendarModal, CalendarSelect, Value} from '../../../../components';
+import moment from 'moment/moment';
 
 export const AddCertModal = ({open, children}: PropsWithChildren<{open: boolean}>) => {
   const className = ['modal', open ? 'modal-open' : ''].join(' ');
@@ -32,7 +35,6 @@ export const AddCertModalContents = ({
   modalToggle: () => void;
   id: string;
 }) => {
-  const {jwt} = useAuth();
   const [{staffId, certificateName, organization, issueDate}, setCertInfo] =
     useState<addCertInfo>(initAddCertInfo);
 
@@ -49,9 +51,9 @@ export const AddCertModalContents = ({
   );
 
   const [file, setFile] = useState<File>();
-
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const {jwt} = useAuth();
   const clickSave = () => {
     const formData = new FormData();
     const newCert: addCertInfo = {
@@ -64,23 +66,25 @@ export const AddCertModalContents = ({
       formData.append('file', file);
     }
     if (jwt) {
-      post('/saveCertInfo', newCert)
+      post('/certificate/save', newCert, jwt)
         .then(res => res.json())
-        .then((result: {ok: boolean; errorMessage?: string}) => {
-          const {ok, errorMessage} = result;
+        .then((result: {ok: boolean; certificateId: string; errorMessage?: string}) => {
+          const {ok, certificateId, errorMessage} = result;
           if (ok) {
             if (formData) {
-              fileUpload(`/saveCertFile/${staffId}`, formData)
+              fileUpload(`/saveCertFile/${certificateId}`, formData, jwt)
                 .then(res => res.json())
                 .then((result: {ok: boolean; errorMessage?: string}) => {
                   const {ok, errorMessage} = result;
                   if (!ok) {
                     alert('첨부자료 저장 실패 : ' + errorMessage);
                   } else {
-                    alert('자격증 정보 저장 성공');
+                    alert('첨부자료 저장 성공');
                     return;
                   }
                 });
+            } else {
+              return;
             }
             alert('자격증 정보 저장 성공');
           } else {
@@ -94,16 +98,31 @@ export const AddCertModalContents = ({
     }
 
     modalToggle();
+    setCertInfo(initAddCertInfo);
+    setFile(undefined);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
   const clickCancel = () => {
     modalToggle();
+    setFile(undefined);
+    setCertInfo(initAddCertInfo);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
+
+  const [calendarOpen, toggleCalendar] = useToggle();
+  const selectIssueDate = useCallback((date: Value) => {
+    if (date && date instanceof Date) {
+      const formattedDate = moment(date).format('YYYY-MM-DD');
+      changed('issueDate')({
+        target: {value: formattedDate}
+      } as ChangeEvent<HTMLInputElement>);
+    }
+    toggleCalendar();
+  }, []);
 
   return (
     <div
@@ -125,9 +144,19 @@ export const AddCertModalContents = ({
         placeholder={'발급기관을 입력하세요.'}
         onChange={changed('organization')}
       />
-      <button className={'btn btn-primary bg-black text-white mt-2'} onClick={() => {}}>
-        발급일 :
-      </button>
+      <input
+        type={'button'}
+        className={'btn btn-primary bg-black text-white mt-2'}
+        onClick={toggleCalendar}
+        value={'발급일 : ' + issueDate}
+      />
+      <CalendarModal open={calendarOpen}>
+        <CalendarSelect
+          onDateChange={selectIssueDate}
+          toggle={toggleCalendar}
+          keyProp={'issueDate'}
+        />
+      </CalendarModal>
       <input
         type={'file'}
         ref={fileInputRef}

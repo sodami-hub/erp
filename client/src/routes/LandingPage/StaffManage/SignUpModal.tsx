@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useAuth} from '../../../context';
 import * as C from '../../../components';
-import * as SI from './SignInfoInputComponents';
+import * as SI from './SignupInputComponents';
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<C.ModalProps> = ({
@@ -15,7 +15,7 @@ export const SignUpModal: FC<C.ModalProps> = ({
 // ====================================================
 
 // ================= 신규 회원 등록을 위한 type 및 초깃값 정의 ============================
-type SignupFormType = SI.staffInfo & {
+type SignupFormType = SI.signupStaffInfo & {
   addr01?: string;
   addr02?: string;
 };

@@ -1,6 +1,6 @@
 package com.erp.staff_management_server.entity;
 
-import com.erp.staff_management_server.dto.DependencyDocumentDTO;
+import com.erp.staff_management_server.dto.SaveFileDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,10 +34,10 @@ public class DependencyDocuments extends BaseEntity {
   @Column(name = "save_name", nullable = false)
   private String saveName;
 
-  public DependencyDocuments(DependencyDocumentDTO dependencyDocumentDTO, Long managerId) {
-    this.staffId = dependencyDocumentDTO.getStaffId();
-    this.originalName = dependencyDocumentDTO.getOriginalName();
-    this.saveName = dependencyDocumentDTO.getSaveName();
+  public DependencyDocuments(SaveFileDTO saveFileDTO, Long managerId) {
+    this.staffId = saveFileDTO.getId();
+    this.originalName = saveFileDTO.getOriginalName();
+    this.saveName = saveFileDTO.getSaveName();
     super.setCreatorId(managerId);
     super.setUpdaterId(managerId);
   }

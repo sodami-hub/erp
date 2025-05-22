@@ -24,10 +24,10 @@ export default function SideMenuBar() {
     }
   };
   return (
-    <div className={'flex flex-col w-40 '}>
+    <div className={'flex flex-col min-w-40'}>
       <div
         className={
-          'flex justify-around cursor-pointer text-xs items-center rounded-b w-full h-10 border border-white bg-blue-950'
+          'flex justify-around cursor-pointer text-lg items-center rounded-b w-full h-10 border border-white bg-blue-950'
         }
         onClick={() => {
           navigate('/index');
