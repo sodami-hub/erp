@@ -183,7 +183,7 @@ export default function StaffInfo() {
             </div>
             <button className={'btn btn-primary'}>문서 목록</button>
           </div>
-          {staffInfoStatus === 'basic' && staffDetail && (
+          {staffInfoStatus && staffDetail && (
             <StaffDetailsView staffDetail={staffDetail} />
           )}
         </div>

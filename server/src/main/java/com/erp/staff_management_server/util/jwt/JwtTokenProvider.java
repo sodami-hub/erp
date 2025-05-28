@@ -1,7 +1,7 @@
 package com.erp.staff_management_server.util.jwt;
 
-import com.erp.staff_management_server.dto.jwt.JwtClaimsDTO;
-import com.erp.staff_management_server.dto.jwt.JwtToken;
+import com.erp.staff_management_server.staff_management.dto.jwt.JwtClaimsDTO;
+import com.erp.staff_management_server.staff_management.dto.jwt.JwtToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

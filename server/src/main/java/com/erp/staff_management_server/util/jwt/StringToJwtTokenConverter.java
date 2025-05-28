@@ -1,6 +1,6 @@
 package com.erp.staff_management_server.util.jwt;
 
-import com.erp.staff_management_server.dto.jwt.JwtToken;
+import com.erp.staff_management_server.staff_management.dto.jwt.JwtToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
