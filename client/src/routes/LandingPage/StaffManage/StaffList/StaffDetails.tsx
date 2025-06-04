@@ -15,7 +15,7 @@ export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) =>
   );
   // staffDetail 이 변할 때마다 자격증 정보와 건강검진 통보서 정보 가져오기
   useEffect(() => {
-    get(`/certificates/${staffDetail.staffId}`, jwt)
+    get(`/staff/certificates/${staffDetail.staffId}`, jwt)
       .then(res => res.json())
       .then((result: Info.certificateInfo[] | undefined) => {
         if (Array.isArray(result)) {

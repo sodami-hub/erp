@@ -9,7 +9,7 @@ export type CommonCode = {
 };
 
 export const loadCommonCodeList = async (jwt?: object) => {
-  const resp = await get('/commonCodeList', jwt);
+  const resp = await get('/staff/commonCodeList', jwt);
   const result: CommonCode = await resp.json();
   if (!result) {
     throw new Error('Failed to load common code list');

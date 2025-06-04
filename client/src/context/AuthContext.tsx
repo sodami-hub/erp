@@ -70,7 +70,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
           if (ok) {
             if (document) {
               document.append('userId', String(userId));
-              fileUpload('/fileUpload', document, currentJwt)
+              fileUpload('/staff/saveDependentDocument', document, currentJwt)
                 .then(res => res.json())
                 .then((result: {ok: boolean; errorMessage?: string}) => {
                   const {ok, errorMessage} = result;

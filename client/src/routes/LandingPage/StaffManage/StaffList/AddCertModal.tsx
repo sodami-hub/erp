@@ -66,13 +66,13 @@ export const AddCertModalContents = ({
       formData.append('file', file);
     }
     if (jwt) {
-      post('/certificate/save', newCert, jwt)
+      post('/staff/saveCertificate', newCert, jwt)
         .then(res => res.json())
         .then((result: {ok: boolean; certificateId: string; errorMessage?: string}) => {
           const {ok, certificateId, errorMessage} = result;
           if (ok) {
             if (formData) {
-              fileUpload(`/saveCertFile/${certificateId}`, formData, jwt)
+              fileUpload(`/staff/saveCertFile/${certificateId}`, formData, jwt)
                 .then(res => res.json())
                 .then((result: {ok: boolean; errorMessage?: string}) => {
                   const {ok, errorMessage} = result;
