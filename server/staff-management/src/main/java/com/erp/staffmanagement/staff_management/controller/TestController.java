@@ -18,7 +18,7 @@ public class TestController {
   private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
   // utility 클래스 및 기타 클래스들의 동작을 확인하기 위한 테스트용 컨트롤러
-  @GetMapping("/utiltest")
+  @GetMapping("/test")
   public String home() {
 
     // 현재 UTC 시간

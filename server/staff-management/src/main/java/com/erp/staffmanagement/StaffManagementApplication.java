@@ -36,6 +36,7 @@ public class StaffManagementApplication {
 
 
   public static void main(String[] args) {
+    System.out.println("hello world");
     SpringApplication.run(StaffManagementApplication.class, args);
   }
 
