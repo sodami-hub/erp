@@ -1,4 +1,4 @@
-package com.erp.beneficiarymanagement.config;
+package com.erp.commonutil.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

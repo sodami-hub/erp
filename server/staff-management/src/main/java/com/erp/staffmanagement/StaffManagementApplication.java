@@ -5,10 +5,12 @@ import java.io.File;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+@ComponentScan(basePackages = {"com.erp"})
 public class StaffManagementApplication {
 
   @PostConstruct
@@ -36,7 +38,7 @@ public class StaffManagementApplication {
 
 
   public static void main(String[] args) {
-    System.out.println("hello world");
+    System.out.println("직원관리 서버");
     SpringApplication.run(StaffManagementApplication.class, args);
   }
 
