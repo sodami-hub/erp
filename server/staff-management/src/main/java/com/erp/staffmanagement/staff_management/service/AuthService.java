@@ -1,15 +1,15 @@
 package com.erp.staffmanagement.staff_management.service;
 
+import com.erp.commonutil.jwt.JwtTokenProvider;
+import com.erp.commonutil.jwt.dto.JwtClaimsDTO;
+import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.LoginRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.LoginResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtClaimsDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
 import com.erp.staffmanagement.staff_management.entity.Staff;
 import com.erp.staffmanagement.staff_management.repository.StaffRepository;
-import com.erp.staffmanagement.util.jwt.JwtTokenProvider;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 

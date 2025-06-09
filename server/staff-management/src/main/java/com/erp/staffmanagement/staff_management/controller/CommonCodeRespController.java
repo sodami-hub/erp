@@ -1,7 +1,7 @@
 package com.erp.staffmanagement.staff_management.controller;
 
+import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.CommonCodeResponseDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
 import com.erp.staffmanagement.staff_management.service.CommonCodeRespService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

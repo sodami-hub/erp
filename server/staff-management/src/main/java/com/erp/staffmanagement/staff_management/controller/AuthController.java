@@ -1,10 +1,10 @@
 package com.erp.staffmanagement.staff_management.controller;
 
+import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.LoginRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.LoginResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpResponseDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
 import com.erp.staffmanagement.staff_management.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

@@ -1,8 +1,8 @@
 package com.erp.staffmanagement.staff_management.controller;
 
 
+import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.FileUploadResponseDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
 import com.erp.staffmanagement.staff_management.service.AttachedFileService;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.ResponseEntity;

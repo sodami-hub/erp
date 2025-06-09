@@ -1,10 +1,10 @@
 package com.erp.staffmanagement.staff_management.service;
 
+import com.erp.commonutil.jwt.JwtTokenProvider;
+import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.CommonCodeResponseDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
 import com.erp.staffmanagement.staff_management.entity.CommonCode;
 import com.erp.staffmanagement.staff_management.repository.CommonCodeRepository;
-import com.erp.staffmanagement.util.jwt.JwtTokenProvider;
 import java.util.List;
 import org.springframework.stereotype.Service;
 

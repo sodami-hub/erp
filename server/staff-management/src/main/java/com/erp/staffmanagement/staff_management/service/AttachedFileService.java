@@ -1,13 +1,13 @@
 package com.erp.staffmanagement.staff_management.service;
 
+import com.erp.commonutil.jwt.JwtTokenProvider;
+import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.FileUploadResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveFileDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
 import com.erp.staffmanagement.staff_management.entity.Certificates;
 import com.erp.staffmanagement.staff_management.entity.DependencyDocuments;
 import com.erp.staffmanagement.staff_management.repository.CertificatesRepository;
 import com.erp.staffmanagement.staff_management.repository.DocumentRepository;
-import com.erp.staffmanagement.util.jwt.JwtTokenProvider;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

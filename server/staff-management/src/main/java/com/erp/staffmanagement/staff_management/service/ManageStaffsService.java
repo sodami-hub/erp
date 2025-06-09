@@ -1,15 +1,15 @@
 package com.erp.staffmanagement.staff_management.service;
 
+import com.erp.commonutil.jwt.JwtTokenProvider;
+import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificateReqDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificationResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
 import com.erp.staffmanagement.staff_management.dto.certificateRequestDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
 import com.erp.staffmanagement.staff_management.entity.Certificates;
 import com.erp.staffmanagement.staff_management.entity.Staff;
 import com.erp.staffmanagement.staff_management.repository.CertificatesRepository;
 import com.erp.staffmanagement.staff_management.repository.StaffRepository;
-import com.erp.staffmanagement.util.jwt.JwtTokenProvider;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +25,7 @@ public class ManageStaffsService {
   public ManageStaffsService(StaffRepository staffRepository,
       CertificatesRepository certificatesRepository, JwtTokenProvider jwtTokenProvider) {
     this.staffRepository = staffRepository;
+
     this.certificatesRepository = certificatesRepository;
     this.jwtTokenProvider = jwtTokenProvider;
   }

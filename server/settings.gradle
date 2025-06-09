@@ -1,3 +1,4 @@
 rootProject.name = 'server'
 include 'beneficiary-management'
 include 'staff-management'
+include 'common-util'

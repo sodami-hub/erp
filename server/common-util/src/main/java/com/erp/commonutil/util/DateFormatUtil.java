@@ -1,4 +1,4 @@
-package com.erp.staffmanagement.util;
+package com.erp.commonutil.util;
 
 import java.time.format.DateTimeFormatter;
 

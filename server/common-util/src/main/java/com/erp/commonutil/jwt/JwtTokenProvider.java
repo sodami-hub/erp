@@ -1,7 +1,7 @@
-package com.erp.staffmanagement.util.jwt;
+package com.erp.commonutil.jwt;
 
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtClaimsDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
+import com.erp.commonutil.jwt.dto.JwtClaimsDTO;
+import com.erp.commonutil.jwt.dto.JwtToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@Configuration
 public class JwtTokenProvider {
 
   private final ObjectMapper objectMapper;

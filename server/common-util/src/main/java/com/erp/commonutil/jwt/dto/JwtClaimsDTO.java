@@ -1,4 +1,4 @@
-package com.erp.staffmanagement.staff_management.dto.jwt;
+package com.erp.commonutil.jwt.dto;
 /*
 저장 정보는 staff_id, institution_id, phone(로그인 id), auth_id(권한)
  */

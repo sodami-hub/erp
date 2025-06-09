@@ -1,4 +1,4 @@
-package com.erp.staffmanagement.staff_management.dto.jwt;
+package com.erp.commonutil.jwt.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

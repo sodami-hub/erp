@@ -1,10 +1,10 @@
 package com.erp.staffmanagement.staff_management.controller;
 
+import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificateReqDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificationResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
 import com.erp.staffmanagement.staff_management.dto.certificateRequestDTO;
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
 import com.erp.staffmanagement.staff_management.service.ManageStaffsService;
 import java.util.List;
 import org.springframework.http.HttpStatus;

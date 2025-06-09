@@ -1,6 +1,6 @@
 package com.erp.staffmanagement.staff_management.dto;
 
-import com.erp.staffmanagement.staff_management.dto.jwt.JwtToken;
+import com.erp.commonutil.jwt.dto.JwtToken;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
