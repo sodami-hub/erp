@@ -27,35 +27,35 @@ public class ManageStaffsController {
     this.manageStaffsService = manageStaffsService;
   }
 
-  @GetMapping("/staffs/all")
+  @GetMapping(value = "/staffs/all", produces = "application/json")
   public ResponseEntity<List<StaffInfoDTO>> getAllStaffs() {
     List<StaffInfoDTO> allStaffs = manageStaffsService.getAllStaffs();
 
     return new ResponseEntity<>(allStaffs, HttpStatus.OK);
   }
 
-  @GetMapping("/staffs/onDuty")
+  @GetMapping(value = "/staffs/onDuty", produces = "application/json")
   public ResponseEntity<List<StaffInfoDTO>> getOnDutyStaffs() {
     List<StaffInfoDTO> allStaffs = manageStaffsService.getOnDutyStaffs();
 
     return new ResponseEntity<>(allStaffs, HttpStatus.OK);
   }
 
-  @GetMapping("/staffs/offDuty")
+  @GetMapping(value = "/staffs/offDuty", produces = "application/json")
   public ResponseEntity<List<StaffInfoDTO>> getOffDutyStaffs() {
     List<StaffInfoDTO> allStaffs = manageStaffsService.getOffDutyStaffs();
 
     return new ResponseEntity<>(allStaffs, HttpStatus.OK);
   }
 
-  @GetMapping("/staffs/break")
+  @GetMapping(value = "/staffs/break", produces = "application/json")
   public ResponseEntity<List<StaffInfoDTO>> getBreakStaffs() {
     List<StaffInfoDTO> allStaffs = manageStaffsService.getBreakStaffs();
 
     return new ResponseEntity<>(allStaffs, HttpStatus.OK);
   }
 
-  @GetMapping("/staffs/waiting")
+  @GetMapping(value = "/staffs/waiting", produces = "application/json")
   public ResponseEntity<List<StaffInfoDTO>> getWaitingStaffs() {
     List<StaffInfoDTO> allStaffs = manageStaffsService.getWaitingStaffs();
 

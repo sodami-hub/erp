@@ -6,7 +6,7 @@ import com.erp.staffmanagement.staff_management.dto.FileUploadResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveFileDTO;
 import com.erp.staffmanagement.staff_management.entity.Certificates;
 import com.erp.staffmanagement.staff_management.entity.DependencyDocuments;
-import com.erp.staffmanagement.staff_management.repository.CertificatesRepository;
+import com.erp.staffmanagement.staff_management.repository.CertificateRepository;
 import com.erp.staffmanagement.staff_management.repository.DocumentRepository;
 import java.io.File;
 import java.io.IOException;
@@ -26,13 +26,13 @@ public class AttachedFileService {
 
   private final DocumentRepository documentRepository;
   private final JwtTokenProvider jwtTokenProvider;
-  private final CertificatesRepository certificatesRepository;
+  private final CertificateRepository certificateRepository;
 
   public AttachedFileService(DocumentRepository documentRepository,
-      JwtTokenProvider jwtTokenProvider, CertificatesRepository certificatesRepository) {
+      JwtTokenProvider jwtTokenProvider, CertificateRepository certificateRepository) {
     this.documentRepository = documentRepository;
     this.jwtTokenProvider = jwtTokenProvider;
-    this.certificatesRepository = certificatesRepository;
+    this.certificateRepository = certificateRepository;
   }
 
   // 서버에 저장할 파일 이름 생성
@@ -109,7 +109,7 @@ public class AttachedFileService {
 
     SaveFileDTO saveFileDTO = saveFileStorage(file, "certificate");
 
-    Certificates cert = certificatesRepository.findById(certificateId).orElse(null);
+    Certificates cert = certificateRepository.findById(certificateId).orElse(null);
     if (cert == null) {
       return new FileUploadResponseDTO(false, "파일의 정보를 저장할 자격증 정보가 없습니다.");
     }
@@ -117,7 +117,7 @@ public class AttachedFileService {
     cert.setSaveName(saveFileDTO.getSaveName());
     cert.setUpdaterId(managerId);
 
-    certificatesRepository.save(cert);
+    certificateRepository.save(cert);
 
     return new FileUploadResponseDTO(true, null);
 

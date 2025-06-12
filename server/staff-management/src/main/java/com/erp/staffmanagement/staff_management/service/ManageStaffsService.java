@@ -8,7 +8,7 @@ import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
 import com.erp.staffmanagement.staff_management.dto.certificateRequestDTO;
 import com.erp.staffmanagement.staff_management.entity.Certificates;
 import com.erp.staffmanagement.staff_management.entity.Staff;
-import com.erp.staffmanagement.staff_management.repository.CertificatesRepository;
+import com.erp.staffmanagement.staff_management.repository.CertificateRepository;
 import com.erp.staffmanagement.staff_management.repository.StaffRepository;
 import java.util.List;
 import java.util.Optional;
@@ -19,14 +19,14 @@ import org.springframework.stereotype.Service;
 public class ManageStaffsService {
 
   private final StaffRepository staffRepository;
-  private final CertificatesRepository certificatesRepository;
+  private final CertificateRepository certificateRepository;
   private final JwtTokenProvider jwtTokenProvider;
 
   public ManageStaffsService(StaffRepository staffRepository,
-      CertificatesRepository certificatesRepository, JwtTokenProvider jwtTokenProvider) {
+      CertificateRepository certificateRepository, JwtTokenProvider jwtTokenProvider) {
     this.staffRepository = staffRepository;
 
-    this.certificatesRepository = certificatesRepository;
+    this.certificateRepository = certificateRepository;
     this.jwtTokenProvider = jwtTokenProvider;
   }
 
@@ -66,7 +66,7 @@ public class ManageStaffsService {
 
   public List<certificateRequestDTO> getCertificates(Long staffId) {
     List<Certificates> certificatesList = Optional.ofNullable(
-        certificatesRepository.findCertificatesByStaffId(staffId)).orElse(List.of());
+        certificateRepository.findCertificatesByStaffId(staffId)).orElse(List.of());
     return certificatesList.stream().map(certificateRequestDTO::new).toList();
   }
 
@@ -76,7 +76,7 @@ public class ManageStaffsService {
 
     Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
 
-    Certificates cert = certificatesRepository.save(
+    Certificates cert = certificateRepository.save(
         new Certificates(saveCertificateReqDTO, managerId));
     return new SaveCertificationResponseDTO(true, cert.getCertificatesId(), null);
   }
