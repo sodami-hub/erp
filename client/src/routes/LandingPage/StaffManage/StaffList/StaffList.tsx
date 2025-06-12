@@ -1,6 +1,6 @@
 import {get} from '../../../../server';
 import {useAuth} from '../../../../context';
-import type {getStaffInfo} from '../../../../types';
+import type {GetStaffInfo} from '../../../../types';
 import {useEffect, useState} from 'react';
 
 // status all(전체) | onDuty(근무중) | offDuty(퇴사) | break(휴직) | waiting(대기)
@@ -9,17 +9,17 @@ export const StaffList = ({
   getStaffId
 }: {
   status: string;
-  getStaffId: (staffDetail: getStaffInfo) => void;
+  getStaffId: (staffDetail: GetStaffInfo) => void;
 }) => {
   const {jwt} = useAuth();
-  const [staffList, setStaffList] = useState<getStaffInfo[]>();
+  const [staffList, setStaffList] = useState<GetStaffInfo[]>();
   const [selectedStaff, setSelectedStaff] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (jwt) {
       get(`/staffs/${status}`)
         .then(resp => resp.json())
-        .then((result: getStaffInfo[]) => {
+        .then((result: GetStaffInfo[]) => {
           setStaffList(result);
         });
     } else {

@@ -1,4 +1,4 @@
-export type getBeneficiaryInfo = {
+export type GetBeneficiaryInfo = {
   beneficiaryId: string;
   name: string;
   gender: string;

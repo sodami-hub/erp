@@ -5,19 +5,19 @@ import {useAuth} from '../../../../context';
 import {useToggle} from '../../../../hooks';
 import {AddCertModal, AddCertModalContents} from './AddCertModal';
 
-export const StaffDetails = ({staffDetail}: {staffDetail: Info.getStaffInfo}) => {
+export const StaffDetails = ({staffDetail}: {staffDetail: Info.GetStaffInfo}) => {
   const {jwt} = useAuth();
 
   const [addCertModalOpen, toggleAddCertModal] = useToggle(false);
 
-  const [receiveCertificates, setReceiveCertificates] = useState<Info.certificateInfo[]>(
+  const [receiveCertificates, setReceiveCertificates] = useState<Info.CertificateInfo[]>(
     []
   );
   // staffDetail 이 변할 때마다 자격증 정보와 건강검진 통보서 정보 가져오기
   useEffect(() => {
     get(`/staff/certificates/${staffDetail.staffId}`, jwt)
       .then(res => res.json())
-      .then((result: Info.certificateInfo[] | undefined) => {
+      .then((result: Info.CertificateInfo[] | undefined) => {
         if (Array.isArray(result)) {
           setReceiveCertificates(result);
         } else {

@@ -6,7 +6,7 @@ import {
   useRef,
   useState
 } from 'react';
-import {certificateInfo} from '../../../../types';
+import {CertificateInfo} from '../../../../types';
 import {fileUpload, post} from '../../../../server';
 import {useAuth} from '../../../../context';
 import {useToggle} from '../../../../hooks';
@@ -19,7 +19,7 @@ export const AddCertModal = ({open, children}: PropsWithChildren<{open: boolean}
   return <div className={className}>{children}</div>;
 };
 
-type addCertInfo = certificateInfo & {};
+type addCertInfo = CertificateInfo & {};
 
 const initAddCertInfo: addCertInfo = {
   staffId: '',

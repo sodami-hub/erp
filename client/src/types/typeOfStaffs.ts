@@ -1,4 +1,4 @@
-export type signupStaffInfo = {
+export type SignupStaffInfo = {
   name: string;
   gender: string;
   birth: string;
@@ -15,7 +15,7 @@ export type signupStaffInfo = {
   workStatus: string;
 };
 
-export type getStaffInfo = {
+export type GetStaffInfo = {
   staffId: string;
   name: string;
   gender: string;
@@ -34,7 +34,7 @@ export type getStaffInfo = {
   retireDate: string;
 };
 
-export type certificateInfo = {
+export type CertificateInfo = {
   staffId: string;
   certificateName: string;
   organization: string;

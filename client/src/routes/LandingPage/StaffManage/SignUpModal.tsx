@@ -16,7 +16,7 @@ export const SignUpModal: FC<C.ModalProps> = ({
 // ====================================================
 
 // ================= 신규 회원 등록을 위한 type 및 초깃값 정의 ============================
-type SignupFormType = T.signupStaffInfo & {
+type SignupFormType = T.SignupStaffInfo & {
   addr01?: string;
   addr02?: string;
 };

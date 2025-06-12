@@ -10,7 +10,7 @@ import {
 import * as U from '../utils';
 import {fileUpload, post} from '../server';
 import {useNavigate} from 'react-router-dom';
-import type {signupStaffInfo} from '../types';
+import type {SignupStaffInfo} from '../types';
 
 export type LoggedUser = {institutionId: string; id: string; password: string};
 export type JwtToken = {
@@ -38,7 +38,7 @@ type ContextType = {
     password: string,
     callback?: Callback
   ) => void;
-  signup: (newStaff: signupStaffInfo, currentJwt: JwtToken, document?: FormData) => void;
+  signup: (newStaff: SignupStaffInfo, currentJwt: JwtToken, document?: FormData) => void;
 };
 
 export const AuthContext = createContext<ContextType>({
@@ -48,7 +48,7 @@ export const AuthContext = createContext<ContextType>({
     _password: string,
     _callback?: Callback
   ) => {},
-  signup: (_newStaff: signupStaffInfo, _currentJwt: JwtToken, _document?: FormData) => {}
+  signup: (_newStaff: SignupStaffInfo, _currentJwt: JwtToken, _document?: FormData) => {}
 });
 
 type AuthProviderProps = {};
@@ -61,7 +61,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const navigate = useNavigate();
 
   const signup = useCallback(
-    (newStaff: signupStaffInfo, currentJwt: JwtToken, document?: FormData) => {
+    (newStaff: SignupStaffInfo, currentJwt: JwtToken, document?: FormData) => {
       post('/auth/signup', newStaff, currentJwt)
         .then(res => res.json())
         .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
