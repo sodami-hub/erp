@@ -1,11 +1,8 @@
 import {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import {useToggle} from '../../../hooks';
 import {SignUpModal, SignUpModalContent} from './SignUpModal';
-import {
-  getStaffInfo as staffDetail,
-  StaffDetails as StaffDetailsView,
-  StaffList
-} from './StaffList';
+import {StaffDetails as StaffDetailsView, StaffList} from './StaffList';
+import {getStaffInfo as staffDetail} from '../../../types';
 
 type NameSearch = Record<'name', string>;
 const initialSearchState = {name: ''};

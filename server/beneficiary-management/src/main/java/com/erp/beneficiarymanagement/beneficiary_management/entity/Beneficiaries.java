@@ -82,7 +82,7 @@ public class Beneficiaries extends BaseEntity {
   private String serviceType; // 서비스 : 요양, 목욕, 간병 ... 등
 
   @Column(name = "basic_evaluation")
-  private String basicEvaluation; // 기초 평가
+  private String basicEvaluation; // 기초 평가 - 추후에 추가 테이블값으로 연결
 
   @Column(name = "this_month_plan")
   private String thisMonthPlan; // 이번달 계획

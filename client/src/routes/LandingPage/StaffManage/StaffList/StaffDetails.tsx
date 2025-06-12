@@ -1,4 +1,4 @@
-import * as Info from './staffInfoType';
+import * as Info from '../../../../types';
 import {useEffect, useState} from 'react';
 import {get} from '../../../../server';
 import {useAuth} from '../../../../context';

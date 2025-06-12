@@ -1,6 +1,6 @@
 import {get} from '../../../../server';
 import {useAuth} from '../../../../context';
-import type {getStaffInfo} from './staffInfoType';
+import type {getStaffInfo} from '../../../../types';
 import {useEffect, useState} from 'react';
 
 // status all(전체) | onDuty(근무중) | offDuty(퇴사) | break(휴직) | waiting(대기)

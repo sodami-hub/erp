@@ -6,7 +6,7 @@ import {
   useRef,
   useState
 } from 'react';
-import {certificateInfo} from './staffInfoType';
+import {certificateInfo} from '../../../../types';
 import {fileUpload, post} from '../../../../server';
 import {useAuth} from '../../../../context';
 import {useToggle} from '../../../../hooks';

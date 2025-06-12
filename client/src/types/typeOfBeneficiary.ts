@@ -1,0 +1,28 @@
+export type getBeneficiaryInfo = {
+  beneficiaryId: string;
+  name: string;
+  gender: string;
+  birth: string;
+  phone: string;
+  address: string;
+  rfid: string;
+  supplyStatus: string;
+  selfPaymentRate: string;
+  underDisease: string;
+  receiveMethod: string;
+  recognitionNumber: string;
+  recognitionBeginDate: string;
+  recognitionEndDate: string;
+  recognitionLevel: string;
+  contractDate: string;
+  contractBeginDate: string;
+  contractEndDate: string;
+  serviceType: string;
+  basicEvaluation: string;
+  thisMonthPlan: string;
+  nextMonthPlan: string;
+  supplyRevelationDate: string;
+  supplyStartDate: string;
+  supplyEndDate: string;
+  nursingCareWorker: string;
+};

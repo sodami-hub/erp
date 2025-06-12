@@ -9,8 +9,8 @@ import {
 } from 'react';
 import * as U from '../utils';
 import {fileUpload, post} from '../server';
-import type {signupStaffInfo} from '../routes/LandingPage/StaffManage/SignupInputComponents';
 import {useNavigate} from 'react-router-dom';
+import type {signupStaffInfo} from '../types';
 
 export type LoggedUser = {institutionId: string; id: string; password: string};
 export type JwtToken = {
