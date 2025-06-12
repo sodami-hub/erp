@@ -1,6 +1,6 @@
-import {CheckBoxComponent, CheckBoxModal} from '../../../../components';
+import {CheckBoxComponent, CheckBoxModal} from '../index';
 import React, {ChangeEvent, useCallback} from 'react';
-import {useToggle} from '../../../../hooks';
+import {useToggle} from '../../hooks';
 
 export const WorkType = ({
   value,

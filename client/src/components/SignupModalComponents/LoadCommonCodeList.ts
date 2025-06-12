@@ -1,12 +1,5 @@
-import {get} from '../../../../server';
-
-export type CommonCode = {
-  ok: boolean;
-  authList: string[];
-  workTypeList: string[];
-  workList: string[];
-  workStatusList: string[];
-};
+import {get} from '../../server';
+import {CommonCode} from '../../types';
 
 export const loadCommonCodeList = async (jwt?: object) => {
   const resp = await get('/staff/commonCodeList', jwt);

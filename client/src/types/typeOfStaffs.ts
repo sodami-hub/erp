@@ -40,3 +40,11 @@ export type certificateInfo = {
   organization: string;
   issueDate: string;
 };
+
+export type CommonCode = {
+  ok: boolean;
+  authList: string[];
+  workTypeList: string[];
+  workList: string[];
+  workStatusList: string[];
+};

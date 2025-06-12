@@ -1,5 +1,5 @@
 import {FC, useEffect, useRef, useState} from 'react';
-import {ReactDivProps} from '../../../../components';
+import {ReactDivProps} from '../index';
 
 export type DependentsModalProps = ReactDivProps & {
   open?: boolean;

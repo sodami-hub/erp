@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useAuth} from '../../../context';
 import * as C from '../../../components';
-import * as SI from './SignupModalComponents';
+import * as SI from '../../../components/SignupModalComponents';
 import * as T from '../../../types';
 
 // ============ 신규 직원 등록 모달 =====================
@@ -30,7 +30,7 @@ const initialFormState: SignupFormType = {
 // =========================================================================
 
 // ================= 공통코드 리스트 초깃값 정의 =============================
-const initialCommonCodeList: SI.CommonCode = {
+const initialCommonCodeList: T.CommonCode = {
   ok: false,
   authList: [],
   workTypeList: [],
@@ -67,11 +67,11 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
   어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
    */
   const [commonCodeList, setCommonCodeList] =
-    useState<SI.CommonCode>(initialCommonCodeList);
+    useState<T.CommonCode>(initialCommonCodeList);
 
   useEffect(() => {
     if (!jwt) return;
-    SI.loadCommonCodeList(jwt).then((data: SI.CommonCode) => {
+    SI.loadCommonCodeList(jwt).then((data: T.CommonCode) => {
       setCommonCodeList(data);
     });
   }, [jwt]);

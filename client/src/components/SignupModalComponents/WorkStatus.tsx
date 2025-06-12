@@ -1,29 +1,30 @@
-import * as C from '../../../../components';
+import * as C from '../index';
 import React, {ChangeEvent, useCallback} from 'react';
-import {useToggle} from '../../../../hooks';
+import {useToggle} from '../../hooks';
 
-export const ContractStatus = ({
+export const WorkStatus = ({
   value,
+  workStatusList,
   changed,
   reset
 }: {
   value: string;
+  workStatusList: string[];
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
   reset: boolean;
 }) => {
-  const [contractStatusModalOpen, toggleContractStatusModal] = useToggle(false);
+  const [workStatusModalOpen, toggleWorkStatusModal] = useToggle(false);
 
-  const selectContractStatus = useCallback((value: string) => {
-    const changeFunc = changed('contractStatus');
-    changeFunc({target: {value: value}} as ChangeEvent<HTMLInputElement>);
+  const selectWorkStatus = useCallback((value: string) => {
+    changed('workStatus')({target: {value: value}} as ChangeEvent<HTMLInputElement>);
   }, []);
 
   return (
     <>
       <button
         className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
-        onClick={toggleContractStatusModal}>
-        근무 구분
+        onClick={toggleWorkStatusModal}>
+        근무 상태
       </button>
       <span
         className={
@@ -32,13 +33,13 @@ export const ContractStatus = ({
         {value}
       </span>
       <div>
-        <C.RadioButtonModal open={contractStatusModalOpen}>
+        <C.RadioButtonModal open={workStatusModalOpen}>
           <C.RadioButtonComponent
             reset={reset}
             name={'contract'}
-            toggle={toggleContractStatusModal}
-            buttonList={['계약직', '정규직']}
-            sendValue={selectContractStatus}
+            toggle={toggleWorkStatusModal}
+            buttonList={workStatusList}
+            sendValue={selectWorkStatus}
           />
         </C.RadioButtonModal>
       </div>
