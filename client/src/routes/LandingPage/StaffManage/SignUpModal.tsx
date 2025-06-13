@@ -1,11 +1,10 @@
 import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useAuth} from '../../../context';
-import * as C from '../../../components';
 import * as SI from '../../../components/SignupModalComponents';
 import * as T from '../../../types';
 
 // ============ 신규 직원 등록 모달 =====================
-export const SignUpModal: FC<C.ModalProps> = ({
+export const SignUpModal: FC<T.ModalProps> = ({
   open,
   className: _className,
   ...props
@@ -39,21 +38,14 @@ const initialCommonCodeList: T.CommonCode = {
 };
 // ====================================================================
 
-export type ModalContentProps = C.ReactDivProps & {
-  onCloseIconClicked?: () => void;
-  closeIconClassName?: string;
-  isOpen: boolean;
-};
-export const SignUpModalContent: FC<ModalContentProps> = ({
+export const SignUpModalContent: FC<T.ModalContentProps> = ({
   onCloseIconClicked,
-  isOpen,
   closeIconClassName: _closeIconClassName,
   className: _className,
   children,
   ...props
 }) => {
-  const showCloseIcon = !!onCloseIconClicked;
-  const className = [showCloseIcon && 'relative', _className].join(' ');
+  const className = ['relative', _className].join(' ');
   const closeIconClassName =
     _closeIconClassName ?? 'btn-primary btn-outline material-icons';
 
@@ -144,8 +136,7 @@ export const SignUpModalContent: FC<ModalContentProps> = ({
     signup
   ]);
   // ==============================================================================
-
-  if (!showCloseIcon) return <div {...props} className={className} children={children} />;
+  
   return (
     <div {...props} className={className}>
       <div className={'absolute text-2xl text-black cursor-pointer'}>

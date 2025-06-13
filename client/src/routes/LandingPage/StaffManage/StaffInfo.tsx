@@ -72,7 +72,7 @@ export default function StaffInfo() {
           </button>
           <SignUpModal open={open}>
             <div className={'bg-gray-200 w-[65%] rounded-lg relative min-w-[830px]'}>
-              <SignUpModalContent onCloseIconClicked={toggleOpen} isOpen={open} />
+              <SignUpModalContent onCloseIconClicked={toggleOpen} />
             </div>
           </SignUpModal>
 

@@ -8,3 +8,8 @@ export type ReactDivProps = DetailedHTMLProps<
 export type ModalProps = ReactDivProps & {
   open?: boolean;
 };
+
+export type ModalContentProps = ReactDivProps & {
+  onCloseIconClicked: () => void;
+  closeIconClassName?: string;
+};
