@@ -1,4 +1,6 @@
 import {ChangeEvent, useEffect, useState} from 'react';
+import {useToggle} from '../../../hooks';
+import {RegisterModal, RegisterModalContents} from './RegisterModal';
 
 export default function BeneficiaryInfo() {
   const [beneficiaryListStatus, setBeneficiaryListStatus] = useState<
@@ -36,6 +38,8 @@ export default function BeneficiaryInfo() {
     setSearchValue(e.target.value);
   };
 
+  const [RegisterModalOpen, RegisterModalToggle] = useToggle();
+
   return (
     <section className={'flex flex-row w-full h-full'}>
       <div
@@ -44,14 +48,18 @@ export default function BeneficiaryInfo() {
         }>
         <div className={'w-[96%]'}>
           <div className={'flex flex-row items-center justify-between my-1'}>
-            <button className={'m-0.5 btn btn-accent w-[45%]'} onClick={() => {}}>
+            <button
+              className={'m-0.5 btn btn-accent w-[45%]'}
+              onClick={() => {
+                RegisterModalToggle();
+              }}>
               신규 수급자 등록
             </button>
-            {/*<SignUpModal open={open}>*/}
-            {/*  <div className={'bg-gray-200 w-[65%] rounded-lg relative min-w-[830px]'}>*/}
-            {/*    <SignUpModalContent onCloseIconClicked={toggleOpen} isOpen={open} />*/}
-            {/*  </div>*/}
-            {/*</SignUpModal>*/}
+            <RegisterModal open={RegisterModalOpen}>
+              <div className={'bg-gray-200 w-[65%] rounded-lg relative min-w-[830px]'}>
+                <RegisterModalContents onCloseIconClicked={RegisterModalToggle} />
+              </div>
+            </RegisterModal>
             <button
               className={'m-0.5 btn btn-primary w-[48%] bg-amber-800'}
               onClick={() => {}}>
