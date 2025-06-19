@@ -1,7 +1,8 @@
 import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useAuth} from '../../../context';
-import * as SI from '../../../components/SignupModalComponents';
+import * as C from '../../../components/SignupModalComponents';
 import * as T from '../../../types';
+import * as L from '../../../server';
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<T.ModalProps> = ({
@@ -63,9 +64,10 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
 
   useEffect(() => {
     if (!jwt) return;
-    SI.loadCommonCodeList(jwt).then((data: T.CommonCode) => {
-      setCommonCodeList(data);
-    });
+    L.get('/staff/commonCodeList', jwt)
+      .then(res => res.json())
+      .then((result: T.CommonCode) => setCommonCodeList(result));
+    console.log('CommonCode(Staff) Fetch Success');
   }, [jwt]);
 
   const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
@@ -136,7 +138,7 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
     signup
   ]);
   // ==============================================================================
-  
+
   return (
     <div {...props} className={className}>
       <div className={'absolute text-2xl text-black cursor-pointer'}>
@@ -152,53 +154,53 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
       </div>
       <div className={'text-center text-black text-xl font-bold mb-2'}>직원 등록</div>
       <div className={'flex flex-row flex-wrap justify-center jus w-full'}>
-        <SI.Name changed={changed} value={name} />
+        <C.Name changed={changed} value={name} />
 
-        <SI.Gender value01={'남'} value02={'여'} changed={changed} reset={reset} />
+        <C.Gender value01={'남'} value02={'여'} changed={changed} reset={reset} />
 
-        <SI.Birth value={birth} changed={changed} />
+        <C.Birth value={birth} changed={changed} />
 
-        <SI.Phone changed={changed} value={phone} />
+        <C.Phone changed={changed} value={phone} />
 
-        <SI.Password changed={changed} value={password} />
+        <C.Password changed={changed} value={password} />
 
-        <SI.Address addr02={addr02 ?? ''} changed={changed} initialize={reset} />
+        <C.Address addr02={addr02 ?? ''} changed={changed} initialize={reset} />
 
-        <SI.Email value={email} changed={changed} />
+        <C.Email value={email} changed={changed} />
 
-        <SI.WorkType
+        <C.WorkType
           reset={reset}
           value={workType}
           workTypeList={memoizedCommonCodeList.workTypeList}
           changed={changed}
         />
 
-        <SI.PossibleWork
+        <C.PossibleWork
           reset={reset}
           value={possibleWork}
           workList={memoizedCommonCodeList.workList}
           changed={changed}
         />
 
-        <SI.ContractStatus value={contractStatus} changed={changed} reset={reset} />
+        <C.ContractStatus value={contractStatus} changed={changed} reset={reset} />
 
-        <SI.WorkStatus
+        <C.WorkStatus
           value={workStatus}
           workStatusList={memoizedCommonCodeList.workStatusList}
           changed={changed}
           reset={reset}
         />
 
-        <SI.Dependents
+        <C.Dependents
           value={dependents}
           reset={reset}
           changed={changed}
           saveFile={submitMaterial}
         />
 
-        <SI.W4C value={w4c} changed={changed} />
+        <C.W4C value={w4c} changed={changed} />
 
-        <SI.JoinDate value={joinDate} changed={changed} />
+        <C.JoinDate value={joinDate} changed={changed} />
       </div>
 
       <div className={'flex flex-row justify-end items-center'}>

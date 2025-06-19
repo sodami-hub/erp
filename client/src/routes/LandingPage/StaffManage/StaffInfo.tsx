@@ -180,7 +180,7 @@ export default function StaffInfo() {
             </div>
             <button className={'btn btn-primary'}>문서 목록</button>
           </div>
-          {staffInfoStatus && staffDetail && (
+          {staffInfoStatus === 'basic' && staffDetail && (
             <StaffDetailsView staffDetail={staffDetail} />
           )}
         </div>

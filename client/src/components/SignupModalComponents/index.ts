@@ -1,4 +1,3 @@
-export * from './LoadCommonCodeList';
 export * from './DependentsModal';
 export * from './Name';
 export * from './Gender';

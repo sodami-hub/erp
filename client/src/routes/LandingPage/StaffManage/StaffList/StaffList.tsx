@@ -24,6 +24,7 @@ export const StaffList = ({
         });
     } else {
       alert('토큰이 확인되지 않습니다. 다시 로그인해주세요.');
+      // 로그아웃 처리 후, 로그인 화면으로
     }
   }, [status]);
 
