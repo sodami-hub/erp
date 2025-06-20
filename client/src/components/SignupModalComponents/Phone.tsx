@@ -2,15 +2,17 @@ import React, {ChangeEvent} from 'react';
 
 export const Phone = ({
   changed,
-  value
+  value,
+  className: _className
 }: {
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
   value: string;
+  className: string;
 }) => {
   return (
     <input
       type={'text'}
-      className={'w-1/6 p-2 m-2 input input-primary'}
+      className={_className}
       name={'phone'}
       placeholder={'전화번호(ID)'}
       value={value}

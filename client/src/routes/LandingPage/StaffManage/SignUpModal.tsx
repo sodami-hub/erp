@@ -154,19 +154,47 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
       </div>
       <div className={'text-center text-black text-xl font-bold mb-2'}>직원 등록</div>
       <div className={'flex flex-row flex-wrap justify-center jus w-full'}>
-        <C.Name changed={changed} value={name} />
+        <C.Name
+          changed={changed}
+          value={name}
+          className={'w-[15%] p-2 m-2 input input-primary'}
+        />
 
-        <C.Gender value01={'남'} value02={'여'} changed={changed} reset={reset} />
+        <C.Gender
+          value01={'남'}
+          value02={'여'}
+          changed={changed}
+          reset={reset}
+          className={
+            'flex justify-center items-center w-[13%] p-2 m-2 bg-black text-md font-bold h-10 border-2 border-gray-700 rounded'
+          }
+        />
 
-        <C.Birth value={birth} changed={changed} />
+        <C.Birth
+          value={birth}
+          changed={changed}
+          className={'w-[18%] p-2 m-2 btn text-xs'}
+        />
 
-        <C.Phone changed={changed} value={phone} />
+        <C.Phone
+          changed={changed}
+          value={phone}
+          className={'w-1/6 p-2 m-2 input input-primary'}
+        />
 
-        <C.Password changed={changed} value={password} />
+        <C.Password
+          changed={changed}
+          value={password}
+          className={'w-[20%] p-2 m-2 input input-primary'}
+        />
 
         <C.Address addr02={addr02 ?? ''} changed={changed} initialize={reset} />
 
-        <C.Email value={email} changed={changed} />
+        <C.Email
+          value={email}
+          changed={changed}
+          className={'w-[20%] p-2 m-2 input input-primary'}
+        />
 
         <C.WorkType
           reset={reset}

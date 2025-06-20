@@ -5,10 +5,12 @@ import moment from 'moment/moment';
 
 export const Birth = ({
   value,
-  changed
+  changed,
+  className: _className
 }: {
   value: string;
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
+  className: string;
 }) => {
   const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
 
@@ -27,7 +29,7 @@ export const Birth = ({
       <input
         id={'birth'}
         type={'button'}
-        className={'w-[18%] p-2 m-2 btn text-xs'}
+        className={_className}
         name={'birth'}
         value={'생년월일 : ' + value}
         onClick={toggleBirthCalOpen}

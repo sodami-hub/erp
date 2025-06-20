@@ -2,15 +2,17 @@ import {ChangeEvent} from 'react';
 
 export const Name = ({
   changed,
-  value
+  value,
+  className: _className
 }: {
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
   value: string;
+  className: string;
 }) => {
   return (
     <input
       type={'text'}
-      className={'w-[15%] p-2 m-2 input input-primary'}
+      className={_className}
       name={'name'}
       placeholder={'이름'}
       value={value}

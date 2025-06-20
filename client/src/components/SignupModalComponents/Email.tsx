@@ -2,15 +2,17 @@ import React, {ChangeEvent} from 'react';
 
 export const Email = ({
   value,
-  changed
+  changed,
+  className: _className
 }: {
   value: string;
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
+  className: string;
 }) => {
   return (
     <input
       type={'email'}
-      className={'w-[20%] p-2 m-2 input input-primary'}
+      className={_className}
       id={'email'}
       name={'email'}
       placeholder={'Email'}
