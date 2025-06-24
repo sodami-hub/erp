@@ -153,7 +153,7 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
         </span>
       </div>
       <div className={'text-center text-black text-xl font-bold mb-2'}>직원 등록</div>
-      <div className={'flex flex-row flex-wrap justify-center jus w-full'}>
+      <div className={'flex flex-row flex-wrap justify-center w-full'}>
         <C.Name
           changed={changed}
           value={name}
