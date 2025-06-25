@@ -40,11 +40,7 @@ export const SelectCalender = ({
       />
       <div>
         <CalendarModal open={birthCalOpen}>
-          <CalendarSelect
-            toggle={toggleBirthCalOpen}
-            onDateChange={selectedBirthDate}
-            keyProp={name}
-          />
+          <CalendarSelect toggle={toggleBirthCalOpen} onDateChange={selectedBirthDate} />
         </CalendarModal>
       </div>
     </>

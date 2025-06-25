@@ -35,12 +35,11 @@ export const AddCertModalContents = ({
   modalToggle: () => void;
   id: string;
 }) => {
-  const [{staffId, certificateName, organization, issueDate}, setCertInfo] =
-    useState<addCertInfo>(initAddCertInfo);
+  const [certInfo, setCertInfo] = useState<addCertInfo>(initAddCertInfo);
 
   useEffect(() => {
     setCertInfo(obj => ({...obj, staffId: id}));
-  }, [staffId]);
+  }, [certInfo.staffId]);
 
   const changed = useCallback(
     (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -56,17 +55,11 @@ export const AddCertModalContents = ({
   const {jwt} = useAuth();
   const clickSave = () => {
     const formData = new FormData();
-    const newCert: addCertInfo = {
-      staffId,
-      certificateName,
-      organization,
-      issueDate
-    };
     if (file) {
       formData.append('file', file);
     }
     if (jwt) {
-      post('/staff/saveCertificate', newCert, jwt)
+      post('/staff/saveCertificate', certInfo, jwt)
         .then(res => res.json())
         .then((result: {ok: boolean; certificateId: string; errorMessage?: string}) => {
           const {ok, certificateId, errorMessage} = result;
@@ -133,14 +126,14 @@ export const AddCertModalContents = ({
       <input
         type={'text'}
         className={'input input-primary mt-2 text-white'}
-        value={certificateName}
+        value={certInfo.certificateName}
         placeholder={'자격증명을 입력하세요.'}
         onChange={changed('certificateName')}
       />
       <input
         type={'text'}
         className={'input input-primary mt-2 text-white'}
-        value={organization}
+        value={certInfo.organization}
         placeholder={'발급기관을 입력하세요.'}
         onChange={changed('organization')}
       />
@@ -148,14 +141,10 @@ export const AddCertModalContents = ({
         type={'button'}
         className={'btn btn-primary bg-black text-white mt-2'}
         onClick={toggleCalendar}
-        value={'발급일 : ' + issueDate}
+        value={'발급일 : ' + certInfo.issueDate}
       />
       <CalendarModal open={calendarOpen}>
-        <CalendarSelect
-          onDateChange={selectIssueDate}
-          toggle={toggleCalendar}
-          keyProp={'issueDate'}
-        />
+        <CalendarSelect onDateChange={selectIssueDate} toggle={toggleCalendar} />
       </CalendarModal>
       <input
         type={'file'}

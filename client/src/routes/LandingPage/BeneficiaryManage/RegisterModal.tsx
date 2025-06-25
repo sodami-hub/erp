@@ -74,7 +74,7 @@ export const RegisterModalContents: FC<T.ModalContentProps> = ({
   const changeState = useCallback(
     (key: string) => (e: ChangeEvent<HTMLInputElement>) => {
       setRegisterForm(value => ({...value, [key]: e.target.value}));
-      console.log(e.target.value);
+      console.log('신규 수급자 정보 ' + key, e.target.value);
     },
     []
   );

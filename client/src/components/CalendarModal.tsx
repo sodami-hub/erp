@@ -26,7 +26,6 @@ export const CalendarSelect = ({
 }: {
   onDateChange: (date: Value) => void;
   toggle: () => void;
-  keyProp: string;
 }) => {
   const [calendarValue, setCalendarValue] = useState<Value>(new Date());
 

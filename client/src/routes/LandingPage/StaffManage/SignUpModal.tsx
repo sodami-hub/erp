@@ -76,10 +76,7 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
   //============= 직원등록 폼 정보 초깃값 설정 및 변경사항 저장 ==================
   //prettier-ignore
   const [
-    {
-      name, gender, birth, phone, password, email, address, joinDate, contractStatus,
-      dependents, w4c, possibleWork, workType, workStatus, addr01, addr02
-    },
+    signupForm,
     setSignupForm
   ] = useState<SignupFormType>(initialFormState);
 
@@ -109,33 +106,26 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
   // ============================== 회원가입 폼 제출 ========================
   //prettier-ignore
   const signupStaff = useCallback(() => {
-    const newStaff: SignupFormType = {
-      name, gender, birth, phone, password, email, address, joinDate,
-      contractStatus, dependents, w4c, possibleWork, workType, workStatus
-    };
-
-    if (newStaff.birth === '' || newStaff.birth === undefined) {
+    if (signupForm.birth === '' || signupForm.birth === undefined) {
       alert('생년월일을 입력해주세요.');
       document.getElementById('birth')?.focus();
       return;
     }
-    if (newStaff.joinDate === '' || newStaff.joinDate === undefined) {
+    if (signupForm.joinDate === '' || signupForm.joinDate === undefined) {
       alert('입사일을 입력해주세요.');
       document.getElementById('joinDate')?.focus();
       return;
     }
 
     if (jwt) {
-      signup(newStaff, jwt, material);
+      signup(signupForm, jwt, material);
     } else {
       alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.');
     }
     setSignupForm(initialFormState);
     setReset(prev => !prev);
   }, [
-    name, gender, birth, phone, password, email, address, joinDate,
-    contractStatus, dependents, w4c, possibleWork, workType, workStatus,
-    signup
+    signupForm, signup, jwt, material
   ]);
   // ==============================================================================
 
@@ -156,7 +146,7 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
       <div className={'flex flex-row flex-wrap justify-center w-full'}>
         <C.Name
           changed={changed}
-          value={name}
+          value={signupForm.name}
           className={'w-[15%] p-2 m-2 input input-primary'}
         />
 
@@ -171,7 +161,7 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
         />
 
         <C.SelectCalender
-          value={birth}
+          value={signupForm.birth}
           changed={changed}
           name={'birth'}
           valuePrefix={'생년월일'}
@@ -180,58 +170,66 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
 
         <C.Phone
           changed={changed}
-          value={phone}
+          value={signupForm.phone}
           className={'w-1/6 p-2 m-2 input input-primary'}
         />
 
         <C.Password
           changed={changed}
-          value={password}
+          value={signupForm.password}
           className={'w-[20%] p-2 m-2 input input-primary'}
         />
 
-        <C.Address addr02={addr02 ?? ''} changed={changed} initialize={reset} />
+        <C.Address
+          addr02={signupForm.addr02 ?? ''}
+          changed={changed}
+          initialize={reset}
+        />
 
         <C.Email
-          value={email}
+          value={signupForm.email}
           changed={changed}
           className={'w-[20%] p-2 m-2 input input-primary'}
         />
 
         <C.WorkType
           reset={reset}
-          value={workType}
+          value={signupForm.workType}
           workTypeList={memoizedCommonCodeList.workTypeList}
           changed={changed}
         />
 
         <C.PossibleWork
           reset={reset}
-          value={possibleWork}
+          value={signupForm.possibleWork}
           workList={memoizedCommonCodeList.workList}
           changed={changed}
         />
 
-        <C.ContractStatus value={contractStatus} changed={changed} reset={reset} />
+        <C.ContractStatus
+          value={signupForm.contractStatus}
+          changed={changed}
+          reset={reset}
+        />
 
         <C.WorkStatus
-          value={workStatus}
+          value={signupForm.workStatus}
           workStatusList={memoizedCommonCodeList.workStatusList}
           changed={changed}
           reset={reset}
         />
 
         <C.Dependents
-          value={dependents}
+          value={signupForm.dependents}
           reset={reset}
           changed={changed}
           saveFile={submitMaterial}
         />
 
-        <C.W4C value={w4c} changed={changed} />
+        <C.W4C value={signupForm.w4c} changed={changed} />
 
         <C.SelectCalender
-          value={joinDate}
+          value={signupForm.joinDate}
           changed={changed}
           name={'joinDate'}
           valuePrefix={'입사일'}
