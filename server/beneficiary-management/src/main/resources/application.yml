@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/erp
+    username: root
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: dXNlYSBasdfqwer2345dfgsdfg3245zZWN1cmUga2V5IHdpdGggYSBtaW5pbXVtIGxlbmd0aCBvZiA2NCBieXRlcwtesttesttesttesttest
+
+
+logging:
+  level:
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql: TRACE
+    com.app.salty.checklist: DEBUG
+    org.springframework.web: DEBUG
+
+server:
+  port: 8082
