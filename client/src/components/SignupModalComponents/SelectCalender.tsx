@@ -3,13 +3,17 @@ import React, {ChangeEvent, useCallback} from 'react';
 import {useToggle} from '../../hooks';
 import moment from 'moment/moment';
 
-export const Birth = ({
+export const SelectCalender = ({
   value,
   changed,
+  name,
+  valuePrefix,
   className: _className
 }: {
   value: string;
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
+  name: string;
+  valuePrefix: string;
   className: string;
 }) => {
   const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
@@ -17,7 +21,7 @@ export const Birth = ({
   const selectedBirthDate = useCallback((date: Value) => {
     if (date && date instanceof Date) {
       const formattedDate = moment(date).format('YYYY-MM-DD');
-      changed('birth')({
+      changed(name)({
         target: {value: formattedDate}
       } as ChangeEvent<HTMLInputElement>);
       toggleBirthCalOpen();
@@ -27,11 +31,11 @@ export const Birth = ({
   return (
     <>
       <input
-        id={'birth'}
+        id={name}
         type={'button'}
         className={_className}
-        name={'birth'}
-        value={'생년월일 : ' + value}
+        name={name}
+        value={valuePrefix + ' : ' + value}
         onClick={toggleBirthCalOpen}
       />
       <div>
@@ -39,7 +43,7 @@ export const Birth = ({
           <CalendarSelect
             toggle={toggleBirthCalOpen}
             onDateChange={selectedBirthDate}
-            keyProp={'birth'}
+            keyProp={name}
           />
         </CalendarModal>
       </div>

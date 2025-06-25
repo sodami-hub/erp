@@ -1,7 +1,7 @@
 export * from './DependentsModal';
 export * from './Name';
 export * from './Gender';
-export * from './Birth';
+export * from './SelectCalender';
 export * from './Phone';
 export * from './Password';
 export * from './Address';
@@ -11,5 +11,4 @@ export * from './PossibleWork';
 export * from './ContractStatus';
 export * from './WorkStatus';
 export * from './Dependents';
-export * from './JoinDate';
 export * from './W4C';

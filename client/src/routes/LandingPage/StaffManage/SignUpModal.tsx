@@ -170,9 +170,11 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
           }
         />
 
-        <C.Birth
+        <C.SelectCalender
           value={birth}
           changed={changed}
+          name={'birth'}
+          valuePrefix={'생년월일'}
           className={'w-[18%] p-2 m-2 btn text-xs'}
         />
 
@@ -228,7 +230,13 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
 
         <C.W4C value={w4c} changed={changed} />
 
-        <C.JoinDate value={joinDate} changed={changed} />
+        <C.SelectCalender
+          value={joinDate}
+          changed={changed}
+          name={'joinDate'}
+          valuePrefix={'입사일'}
+          className={'w-[18%] p-2 m-2 btn text-xs'}
+        />
       </div>
 
       <div className={'flex flex-row justify-end items-center'}>

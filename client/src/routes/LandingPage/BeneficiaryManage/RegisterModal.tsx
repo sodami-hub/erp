@@ -111,9 +111,11 @@ export const RegisterModalContents: FC<T.ModalContentProps> = ({
             'flex justify-center items-center w-[13%] p-2 m-2 bg-black text-md font-bold h-10 border-2 border-gray-700 rounded'
           }
         />
-        <C.Birth
+        <C.SelectCalender
           value={registerForm.birth}
           changed={changeState}
+          name={'birth'}
+          valuePrefix={'생년월일'}
           className={'w-[18%] p-2 m-2 btn text-xs'}
         />
         <C.Phone
@@ -129,6 +131,7 @@ export const RegisterModalContents: FC<T.ModalContentProps> = ({
           placeholder={'RFID'}
           className={'input input-primary w-[10%] py-2 my-2 -ml-2'}
           value={registerForm.rfid}
+          onChange={changeState('rfid')}
         />
         <C.Address
           addr02={registerForm.addr02 ?? ''}
