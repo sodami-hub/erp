@@ -34,6 +34,5 @@ logging:
     org.springframework: INFO
     org.springframework.web: INFO
 
-
 server:
   port: 8081
