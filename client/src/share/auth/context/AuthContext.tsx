@@ -7,61 +7,43 @@ import {
   useEffect,
   useState
 } from 'react';
-import * as U from '../utils';
-import {fileUpload, post} from '../server';
+import * as U from '../../../utils';
+import {fileUpload, post} from '../../../server';
 import {useNavigate} from 'react-router-dom';
-import type {SignupStaffInfo} from '../types';
+import type {SignupStaffInfo} from '../../../types';
+import * as T from '../type';
 
-export type LoggedUser = {institutionId: string; id: string; password: string};
-export type JwtToken = {
-  grantType: string;
-  accessToken: string;
-  refreshToken: string;
-};
-
-const initialJwtToken: JwtToken = {
+const initialJwtToken: T.JwtToken = {
   grantType: '',
   accessToken: '',
   refreshToken: ''
 };
 
-type Callback = () => void;
-
-type ContextType = {
-  jwt?: JwtToken;
-  authCode?: string;
-  errorMessage?: string;
-  loggedUser?: LoggedUser;
-  login: (
-    institutionId: string,
-    id: string,
-    password: string,
-    callback?: Callback
-  ) => void;
-  signup: (newStaff: SignupStaffInfo, currentJwt: JwtToken, document?: FormData) => void;
-};
-
-export const AuthContext = createContext<ContextType>({
+export const AuthContext = createContext<T.ContextType>({
   login: (
     _institutionId: string,
     _id: string,
     _password: string,
-    _callback?: Callback
+    _callback?: T.Callback
   ) => {},
-  signup: (_newStaff: SignupStaffInfo, _currentJwt: JwtToken, _document?: FormData) => {}
+  signup: (
+    _newStaff: SignupStaffInfo,
+    _currentJwt: T.JwtToken,
+    _document?: FormData
+  ) => {}
 });
 
 type AuthProviderProps = {};
 
 export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children}) => {
-  const [loggedUser, setLoggedUser] = useState<LoggedUser | undefined>(undefined);
-  const [jwt, setJwt] = useState<JwtToken>(initialJwtToken);
+  const [loggedUser, setLoggedUser] = useState<T.LoggedUser | undefined>(undefined);
+  const [jwt, setJwt] = useState<T.JwtToken>(initialJwtToken);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
   const navigate = useNavigate();
 
   const signup = useCallback(
-    (newStaff: SignupStaffInfo, currentJwt: JwtToken, document?: FormData) => {
+    (newStaff: SignupStaffInfo, currentJwt: T.JwtToken, document?: FormData) => {
       post('/auth/signup', newStaff, currentJwt)
         .then(res => res.json())
         .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
@@ -98,7 +80,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   );
 
   const login = useCallback(
-    (institutionId: string, id: string, password: string, callback?: Callback) => {
+    (institutionId: string, id: string, password: string, callback?: T.Callback) => {
       const user = {institutionId, id, password};
       const jwt = U.readObject('jwt');
       if (!jwt) {
@@ -107,7 +89,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
         );
         if (!receiveNewJwt) return;
       }
-      setJwt((jwt as JwtToken) ?? {});
+      setJwt((jwt as T.JwtToken) ?? {});
 
       post('/auth/login', user, jwt)
         .then(res => {
@@ -120,7 +102,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
         .then(
           (result: {
             ok: boolean;
-            body?: JwtToken | null;
+            body?: T.JwtToken | null;
             authCode?: string | null;
             errorMessage?: string | null;
           }) => {
@@ -150,7 +132,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     } else {
       // 새로고침해도 로그인 상태유지
       const storedJwt = U.readObject('jwt');
-      setJwt((storedJwt as JwtToken) ?? initialJwtToken);
+      setJwt((storedJwt as T.JwtToken) ?? initialJwtToken);
 
       const user = U.readStringP('user');
       setLoggedUser(

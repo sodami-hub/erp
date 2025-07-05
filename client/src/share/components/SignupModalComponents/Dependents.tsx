@@ -1,6 +1,6 @@
 import * as SI from './index';
 import React, {ChangeEvent, useCallback} from 'react';
-import {useToggle} from '../../hooks';
+import {useToggle} from '../../../hooks';
 
 export const Dependents = ({
   value,

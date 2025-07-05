@@ -1,5 +1,5 @@
 import {FC, useEffect, useState} from 'react';
-import {ReactDivProps} from '../types';
+import {ReactDivProps} from '../../types';
 
 export type RadioButtonModalProps = ReactDivProps & {
   open?: boolean;

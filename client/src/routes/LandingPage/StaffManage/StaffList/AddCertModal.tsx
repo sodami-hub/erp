@@ -8,9 +8,9 @@ import {
 } from 'react';
 import {CertificateInfo} from '../../../../types';
 import {fileUpload, post} from '../../../../server';
-import {useAuth} from '../../../../context';
+import {useAuth} from '../../../../share/auth/context';
 import {useToggle} from '../../../../hooks';
-import {CalendarModal, CalendarSelect, Value} from '../../../../components';
+import {CalendarModal, CalendarSelect, Value} from '../../../../share/components';
 import moment from 'moment/moment';
 
 export const AddCertModal = ({open, children}: PropsWithChildren<{open: boolean}>) => {

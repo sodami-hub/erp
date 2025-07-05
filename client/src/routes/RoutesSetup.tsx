@@ -1,8 +1,8 @@
 import {Route, Routes} from 'react-router-dom';
 import NoMatch from './NoMatch';
-import Layout from './Layout/MainFrame';
+import Layout from '../share/layout/MainFrame';
 import LandingPage from './LandingPage';
-import Login from './Auth/Login';
+import Login from '../share/auth/pages/Login';
 import StaffInfo from './LandingPage/StaffManage/StaffInfo';
 import BeneficiaryInfo from './LandingPage/BeneficiaryManage/BeneficiaryInfo';
 
