@@ -12,6 +12,7 @@ import {fileUpload, post} from '../../../server';
 import {useNavigate} from 'react-router-dom';
 import type {SignupStaffInfo} from '../../../types';
 import * as T from '../type';
+import { login as Signup } from '../api';
 
 const initialJwtToken: T.JwtToken = {
   grantType: '',
@@ -43,38 +44,42 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const navigate = useNavigate();
 
   const signup = useCallback(
-    (newStaff: SignupStaffInfo, currentJwt: T.JwtToken, document?: FormData) => {
-      post('/auth/signup', newStaff, currentJwt)
-        .then(res => res.json())
-        .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
-          const {ok, userId, errorMessage} = result;
-          console.log(ok, userId, errorMessage);
-          if (ok) {
-            if (document) {
-              document.append('userId', String(userId));
-              fileUpload('/staff/saveDependentDocument', document, currentJwt)
-                .then(res => res.json())
-                .then((result: {ok: boolean; errorMessage?: string}) => {
-                  const {ok, errorMessage} = result;
-                  if (!ok) {
-                    setErrorMessage(errorMessage ?? '');
-                    return;
-                  }
-                });
-            }
-            alert('회원가입이 완료되었습니다.');
-          } else {
-            setErrorMessage(errorMessage ?? '');
-            if (errorMessage?.includes('권한이')) {
-              navigate('/index');
-            } else if (errorMessage?.includes('로그인')) {
-              //로그아웃 로직 추가!!! 필요
-              navigate('/');
-            } else {
-              navigate('/index/staffInfo');
-            }
-          }
-        });
+    async (newStaff: SignupStaffInfo, currentJwt: T.JwtToken, document?: FormData) => {
+
+      console.log(newStaff, currentJwt);
+      const response = await Signup(newStaff.email, newStaff.password);
+      console.log(response);
+      // post('/auth/signup', newStaff, currentJwt)
+      //   .then(res => res.json())
+      //   .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
+      //     const {ok, userId, errorMessage} = result;
+      //     console.log(ok, userId, errorMessage);
+      //     if (ok) {
+      //       if (document) {
+      //         document.append('userId', String(userId));
+      //         fileUpload('/staff/saveDependentDocument', document, currentJwt)
+      //           .then(res => res.json())
+      //           .then((result: {ok: boolean; errorMessage?: string}) => {
+      //             const {ok, errorMessage} = result;
+      //             if (!ok) {
+      //               setErrorMessage(errorMessage ?? '');
+      //               return;
+      //             }
+      //           });
+      //       }
+      //       alert('회원가입이 완료되었습니다.');
+      //     } else {
+      //       setErrorMessage(errorMessage ?? '');
+      //       if (errorMessage?.includes('권한이')) {
+      //         navigate('/index');
+      //       } else if (errorMessage?.includes('로그인')) {
+      //         //로그아웃 로직 추가!!! 필요
+      //         navigate('/');
+      //       } else {
+      //         navigate('/index/staffInfo');
+      //       }
+      //     }
+      //   });
     },
     []
   );
