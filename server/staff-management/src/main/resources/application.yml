@@ -26,10 +26,6 @@ spring:
     include:
       - base
 
-jwt:
-  secret: dXNlYSBasdfqwer2345dfgsdfg3245zZWN1cmUga2V5IHdpdGggYSBtaW5pbXVtIGxlbmd0aCBvZiA2NCBieXRlcwtesttesttesttesttest
-
-
 logging:
   level:
     org.hibernate.SQL: INFO
