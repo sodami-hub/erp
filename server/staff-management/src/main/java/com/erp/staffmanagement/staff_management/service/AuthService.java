@@ -43,7 +43,7 @@ public class AuthService {
   private JwtToken genJwtToken(StaffInfoDTO staffInfo) {
     JwtClaimsDTO claims = new JwtClaimsDTO(staffInfo.getStaffId(), staffInfo.getInstitutionId(),
         staffInfo.getAuthId());
-    return jwtTokenProvider.generateToken(claims);
+    return jwtTokenProvider.generateAccessToken(claims);
   }
 
   public LoginResponseDTO login(LoginRequestDTO loginRequestDTO, JwtToken jwtToken) {

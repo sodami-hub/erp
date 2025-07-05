@@ -1,18 +1,28 @@
 package com.erp.commonutil.jwt;
 
+import com.erp.commonutil.config.security.UserContext;
 import com.erp.commonutil.jwt.dto.JwtClaimsDTO;
 import com.erp.commonutil.jwt.dto.JwtToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 
@@ -28,12 +38,20 @@ public class JwtTokenProvider {
 
   private final ObjectMapper objectMapper;
   private Key key;
+  private long accessTokenValiditySeconds;
+  private long refreshTokenValiditySeconds;
 
   // application.yml에 있는 jwt.secret 값을 가져와서 Base64로 디코딩 후 Key 객체를 생성
-  public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
+  public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
+                          @Value("${jwt.access-token-validity-seconds}") long accessTokenValiditySeconds,
+                          @Value("${jwt.refresh-token-validity-seconds}") long refreshTokenValiditySeconds,
+                          ObjectMapper objectMapper)
+  {
+      this.objectMapper = objectMapper;
+      this.accessTokenValiditySeconds = accessTokenValiditySeconds;
+      this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
 
-    if (secretKey == null || secretKey.isEmpty()) {
+      if (secretKey == null || secretKey.isEmpty()) {
       // 키가 제공되지 않은 경우 안전한 키를 생성
       this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
       log.warn("No secret key provided. A secure random key has been generated.");
@@ -46,8 +64,96 @@ public class JwtTokenProvider {
     }
   }
 
+  /**
+   * AccessToken 생성
+   * @param context UserContext
+   * @return String
+   */
+  public String generateAccessToken(UserContext context) {
+    return Jwts.builder()
+            .setSubject(context.getUsername())
+            .claim("staffId", context.getStaffId())
+            .claim("institutionId", context.getInstitutionId())
+            .claim("roles", getAuthorities(context))
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + accessTokenValiditySeconds * 1000))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
+  }
+
+  /**
+   * RefreshToken 생성
+   * @param context UserContext
+   * @return String
+   */
+  public String generateRefreshToken(UserContext context) {
+    return Jwts.builder()
+            .setSubject(context.getUsername())
+            .claim("staffId", context.getStaffId())
+            .claim("institutionId", context.getInstitutionId())
+            .claim("roles", getAuthorities(context))
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValiditySeconds * 1000))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
+  }
+
+  /**
+   * UserContext 권한 조회
+   * @param context UserContext
+   * @return String
+   */
+  private String getAuthorities(UserContext context) {
+      return context.getAuthorities().stream().filter(Objects::nonNull)
+              .map(GrantedAuthority::getAuthority)
+              .collect(Collectors.joining(","));
+  }
+
+  /**
+   * 토큰에서 UserContext 생성
+   * @param token
+   * @return UserContext
+   */
+  public UserContext getUserContext(String token) {
+    Claims claims = parseClaims(token);
+
+    String username = claims.getSubject();
+    Long staffId = claims.get("staffId", Long.class);
+    String institutionId = claims.get("institutionId", String.class);
+    String roles = claims.get("roles", String.class);
+
+    List<GrantedAuthority> authorities = (roles != null) ? Arrays.stream(roles.split(","))
+                          .map(SimpleGrantedAuthority::new)
+                          .collect(Collectors.toList()) : Collections.emptyList();
+
+    return UserContext.builder()
+        .phone(username)
+        .staffId(staffId)
+        .institutionId(institutionId)
+        .authorities(authorities)
+        .build();
+  }
+
+  /**
+   * 토큰에서 Claims 파싱
+   * @param token
+   * @return Claims
+   */
+  private Claims parseClaims(String token) {
+    try {
+      return Jwts.parserBuilder()
+          .setSigningKey(key)
+          .build()
+          .parseClaimsJws(token)
+          .getBody();
+    } catch (Exception e) {
+      log.error("JWT token parsing error: {}", e.getMessage());
+      throw new RuntimeException("Invalid JWT token", e);
+    }
+  }
+
   // JWT 토큰을 생성하는 메서드
-  public JwtToken generateToken(JwtClaimsDTO claims) {
+  public JwtToken generateAccessToken(JwtClaimsDTO claims) {
     long now = System.currentTimeMillis();
 
     Date accessTokenExpiresIn = new Date(now + 864000000); // 10일
