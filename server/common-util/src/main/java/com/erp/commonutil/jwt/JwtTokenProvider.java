@@ -5,6 +5,7 @@ import com.erp.commonutil.jwt.dto.JwtClaimsDTO;
 import com.erp.commonutil.jwt.dto.JwtToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -31,7 +32,6 @@ import org.springframework.stereotype.Component;
     * 토큰에 들어갈 정보는 Claims에 저장 Map<String, Object> 형태로 저장
     저장 정보는 staff_id, institution_id, phone(로그인 id), auth_id(권한)
  */
-
 @Slf4j
 @Component
 public class JwtTokenProvider {
@@ -99,6 +99,24 @@ public class JwtTokenProvider {
   }
 
   /**
+   * 토큰 생성
+   * @param context UserContext
+   * @param tokenValiditySeconds 토큰 유효 시간 (초 단위)
+   * @return 토큰
+   */
+  public String generateToken(UserContext context, long tokenValiditySeconds) {
+    return Jwts.builder()
+            .setSubject(context.getUsername())
+            .claim("staffId", context.getStaffId())
+            .claim("institutionId", context.getInstitutionId())
+            .claim("roles", getAuthorities(context))
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + tokenValiditySeconds * 1000))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
+  }
+
+  /**
    * UserContext 권한 조회
    * @param context UserContext
    * @return String
@@ -135,6 +153,20 @@ public class JwtTokenProvider {
   }
 
   /**
+   * AccessToken 재발급 (RefreshToken 사용)
+   * @param refreshToken Refresh Token
+   * @return Token
+   */
+  public String reissueAccessToken(String refreshToken) {
+    if(!validateToken(refreshToken) || isExpired(refreshToken)) {
+      return null;
+    }
+
+    UserContext userContext = getUserContext(refreshToken);
+    return generateToken(userContext, accessTokenValiditySeconds);
+  }
+
+  /**
    * 토큰에서 Claims 파싱
    * @param token
    * @return Claims
@@ -152,7 +184,32 @@ public class JwtTokenProvider {
     }
   }
 
-  // JWT 토큰을 생성하는 메서드
+  /**
+   * 토큰이 만료되었는지 확인
+   * @param token 토큰
+   * @return 만료여부
+   */
+  public boolean isExpired(String token) {
+    try {
+      Claims body = Jwts.parserBuilder().setSigningKey(key).build()
+              .parseClaimsJws(token)
+              .getBody();
+
+      return body.getExpiration().before(new Date());
+    } catch (ExpiredJwtException e) {
+      log.warn("JWT token is expired: {}", e.getMessage());
+      return true;
+    } catch (Exception e) {
+      log.error("token validation error: {}", e.getMessage());
+      return false;
+    }
+  }
+
+  /**
+   * JWT 토큰을 생성하는 메서드
+   * @param claims JwtClaimsDTO
+   * @return JwtToken
+   */
   public JwtToken generateAccessToken(JwtClaimsDTO claims) {
     long now = System.currentTimeMillis();
 
@@ -171,7 +228,11 @@ public class JwtTokenProvider {
     return new JwtToken("Bearer", accessToken, refreshToken);
   }
 
-  // jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+  /**
+   * jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+   * @param token 토큰
+   * @return JwtClaimsDTO
+   */
   public JwtClaimsDTO getClaims(String token) {
     return objectMapper.convertValue(
         Jwts.parserBuilder()
@@ -185,8 +246,11 @@ public class JwtTokenProvider {
     );
   }
 
-
-  // 토큰 검증
+  /**
+   * 토큰 검증
+   * @param token
+   * @return
+   */
   public boolean validateToken(String token) {
     try {
       Jwts.parserBuilder()
@@ -199,4 +263,5 @@ public class JwtTokenProvider {
       return false;
     }
   }
+
 }
