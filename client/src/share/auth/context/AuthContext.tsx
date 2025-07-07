@@ -20,106 +20,114 @@ const initialJwtToken: T.JwtToken = {
 };
 
 export const AuthContext = createContext<T.ContextType>({
-  login: (
-    _institutionId: string,
-    _id: string,
-    _password: string,
-    _callback?: T.Callback
-  ) => {},
-  signup: (
-    _newStaff: SignupStaffInfo,
-    _currentJwt: T.JwtToken,
-    _document?: FormData
-  ) => {}
+  login: async () => Promise.resolve(),
+  signup: async () => Promise.resolve(),
+  logout: () => {}
 });
 
 type AuthProviderProps = {};
 
 export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children}) => {
   const [loggedUser, setLoggedUser] = useState<T.LoggedUserInfo | undefined>(undefined);
-  const [jwt, setJwt] = useState<T.JwtToken>(initialJwtToken);
+  const [jwt, setJwt] = useState<T.JwtToken | undefined>(initialJwtToken);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
+  const [deleteStorage, setDeleteStorage] = useState<boolean>(false); // 로컬 스토리지 정보(jwtToken,user)를 초기화(logout)할 때 사용
   const navigate = useNavigate();
 
-  const signup = useCallback(
-    async (newStaff: SignupStaffInfo, currentJwt: T.JwtToken, document?: FormData) => {
-      console.log(newStaff, currentJwt);
-      const response = await Signup(newStaff.email, newStaff.password);
-      console.log(response);
-      // post('/auth/signup', newStaff, currentJwt)
-      //   .then(res => res.json())
-      //   .then((result: {ok: boolean; userId: number; errorMessage?: string}) => {
-      //     const {ok, userId, errorMessage} = result;
-      //     console.log(ok, userId, errorMessage);
-      //     if (ok) {
-      //       if (document) {
-      //         document.append('userId', String(userId));
-      //         fileUpload('/staff/saveDependentDocument', document, currentJwt)
-      //           .then(res => res.json())
-      //           .then((result: {ok: boolean; errorMessage?: string}) => {
-      //             const {ok, errorMessage} = result;
-      //             if (!ok) {
-      //               setErrorMessage(errorMessage ?? '');
-      //               return;
-      //             }
-      //           });
-      //       }
-      //       alert('회원가입이 완료되었습니다.');
-      //     } else {
-      //       setErrorMessage(errorMessage ?? '');
-      //       if (errorMessage?.includes('권한이')) {
-      //         navigate('/index');
-      //       } else if (errorMessage?.includes('로그인')) {
-      //         //로그아웃 로직 추가!!! 필요
-      //         navigate('/');
-      //       } else {
-      //         navigate('/index/staffInfo');
-      //       }
-      //     }
-      //   });
+  const signup = useCallback(async (newStaff: SignupStaffInfo, document?: FormData) => {
+    // 직원 정보 등록
+    const response = await API.staffSignup(newStaff);
+    if (!response.ok) {
+      if (response.errorMessage) {
+        setErrorMessage('error message : ' + response.errorMessage);
+      } else {
+        setErrorMessage('staff signup failed');
+      }
+    } else {
+      console.log('직원 정보 저장 성공');
+    }
+    // 첨부 서류 업로드
+    const staffId: string = response.staffId ? response.staffId : '';
+    if (document) {
+      document.append('staffId', staffId);
+      const response = await API.staffFileUpload(document);
+      if (!response.ok) {
+        if (response.errorMessage) {
+          setErrorMessage('error message : ' + response.errorMessage);
+        } else {
+          setErrorMessage('file upload failed');
+        }
+      } else {
+        console.log('file upload succeed');
+      }
+    }
+    alert('직원 등록이 완료됐습니다.');
+  }, []);
+
+  const login = useCallback(
+    async (
+      institutionId: string,
+      id: string,
+      password: string,
+      callback?: T.Callback
+    ) => {
+      const info: T.LoginInfo = {institutionId, id, password};
+      const response: T.Response = await API.staffLogin(info);
+      if (!response.ok) {
+        if (response.errorMessage) {
+          setErrorMessage('Error Message : ' + response.errorMessage);
+        } else {
+          setErrorMessage('login failed');
+        }
+      } else {
+        const loggedUserInfo: T.LoggedUserInfo = {
+          institutionId: info.institutionId,
+          id: info.id,
+          authCode: response.authCode ?? ''
+        };
+        U.writeObject('user', loggedUserInfo);
+        setLoggedUser(loggedUserInfo);
+        U.writeStringP('accessToken', response.token?.accessToken ?? '');
+        U.writeStringP('refreshToken', response.token?.refreshToken ?? '');
+        U.writeObject('jwt', response.token ?? {});
+        setJwt(response.token ?? undefined);
+        setAuthCode(response.authCode ?? '');
+        callback && callback();
+        console.log('login success');
+      }
     },
     []
   );
 
-  const login = useCallback(async (info: T.LoginInfo, callback?: T.Callback) => {
-    const response: T.Response = await API.staffLogin(info);
-    if (!response.ok) {
-      if (response.errorMessage) {
-        alert('Error Message : ' + response.errorMessage);
-      } else {
-        alert('login failed');
-      }
-    } else {
-      const loggedUserInfo: T.LoggedUserInfo = {
-        institutionId: info.institutionId,
-        id: info.id,
-        authCode: response.authCode
-      };
-      U.writeObject('user', loggedUserInfo);
-      setLoggedUser(loggedUserInfo);
-      U.writeStringP('accessToken', response.body?.accessToken ?? '');
-      U.writeStringP('refreshToken', response.body?.refreshToken ?? '');
-      setJwt(response.body);
-      setAuthCode(response.authCode);
-      callback && callback();
-    }
+  const logout = useCallback(() => {
+    U.writeObject('user', {});
+    U.writeStringP('accessToken', '');
+    U.writeStringP('refreshToken', '');
+    setJwt(undefined);
+    setAuthCode('');
+    setLoggedUser(undefined);
+    navigate('/');
   }, []);
 
   useEffect(() => {
-    // localStorage 의 jwt 값을 초기화할 때 사용
-    const deleteToken = false;
-    if (deleteToken) {
-      U.writeObject('jwt', {});
+    // localStorage 의 값을 초기화할 때 사용 logout?
+    if (deleteStorage) {
+      U.writeObject('user', {});
+      U.writeStringP('accessToken', '');
+      U.writeStringP('refreshToken', '');
+      setJwt(undefined);
+      setAuthCode('');
+      setLoggedUser(undefined);
+      navigate('/');
+      setDeleteStorage(!deleteStorage);
     } else {
       // 새로고침해도 로그인 상태유지
-      const storedJwt = U.readObject('jwt');
-      setJwt((storedJwt as T.JwtToken) ?? initialJwtToken);
-
-      const user = U.readStringP('user');
-      setLoggedUser(
-        user === null ? undefined : user === '{}' ? undefined : JSON.parse(user)
-      );
+      const storedJwt: T.JwtToken = U.readObject('jwt');
+      setJwt(storedJwt ?? initialJwtToken);
+      const user: T.LoggedUserInfo = U.readObject('user');
+      setLoggedUser(user);
+      setAuthCode(user.authCode);
     }
   }, []);
 
@@ -136,7 +144,8 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     errorMessage,
     loggedUser,
     login,
-    signup
+    signup,
+    logout
   };
   return <AuthContext.Provider value={value} children={children} />;
 };

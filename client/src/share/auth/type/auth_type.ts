@@ -8,9 +8,10 @@ export type LoginInfo = {
 
 export type Response = {
   ok: boolean;
-  body: T.JwtToken;
-  authCode: string;
-  errorMessage?: string | null;
+  staffId?: string; // 직원 등록후 등록한 직원의 id 가져오기. -> 파일등록에 사용.
+  token?: T.JwtToken;
+  authCode?: string;
+  errorMessage?: string;
 };
 
 export type LoggedUserInfo = {institutionId: string; id: string; authCode: string};
@@ -51,5 +52,6 @@ export type ContextType = {
     password: string,
     callback?: Callback
   ) => void;
-  signup: (newStaff: SignupStaffInfo, currentJwt: JwtToken, document?: FormData) => void;
+  signup: (newStaff: SignupStaffInfo, document?: FormData) => void;
+  logout: () => void;
 };
