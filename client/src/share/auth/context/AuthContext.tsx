@@ -7,12 +7,11 @@ import {
   useEffect,
   useState
 } from 'react';
-import * as U from '../../../utils';
-import {fileUpload, post} from '../../../server';
+import * as U from '../../utils';
 import {useNavigate} from 'react-router-dom';
 import type {SignupStaffInfo} from '../../../types';
 import * as T from '../type';
-import { login as Signup } from '../api';
+import * as API from '../api';
 
 const initialJwtToken: T.JwtToken = {
   grantType: '',
@@ -37,7 +36,7 @@ export const AuthContext = createContext<T.ContextType>({
 type AuthProviderProps = {};
 
 export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children}) => {
-  const [loggedUser, setLoggedUser] = useState<T.LoggedUser | undefined>(undefined);
+  const [loggedUser, setLoggedUser] = useState<T.LoggedUserInfo | undefined>(undefined);
   const [jwt, setJwt] = useState<T.JwtToken>(initialJwtToken);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
@@ -45,7 +44,6 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
 
   const signup = useCallback(
     async (newStaff: SignupStaffInfo, currentJwt: T.JwtToken, document?: FormData) => {
-
       console.log(newStaff, currentJwt);
       const response = await Signup(newStaff.email, newStaff.password);
       console.log(response);
@@ -84,50 +82,29 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     []
   );
 
-  const login = useCallback(
-    (institutionId: string, id: string, password: string, callback?: T.Callback) => {
-      const user = {institutionId, id, password};
-      const jwt = U.readObject('jwt');
-      if (!jwt) {
-        const receiveNewJwt = window.confirm(
-          `로그인 인증 정보가 없습니다.\n 새로운 기기에서 로그인 하시겠습니까?`
-        );
-        if (!receiveNewJwt) return;
+  const login = useCallback(async (info: T.LoginInfo, callback?: T.Callback) => {
+    const response: T.Response = await API.staffLogin(info);
+    if (!response.ok) {
+      if (response.errorMessage) {
+        alert('Error Message : ' + response.errorMessage);
+      } else {
+        alert('login failed');
       }
-      setJwt((jwt as T.JwtToken) ?? {});
-
-      post('/auth/login', user, jwt)
-        .then(res => {
-          if (res === undefined) {
-            setErrorMessage('res is undefined');
-          } else {
-            return res.json();
-          }
-        })
-        .then(
-          (result: {
-            ok: boolean;
-            body?: T.JwtToken | null;
-            authCode?: string | null;
-            errorMessage?: string | null;
-          }) => {
-            console.log(result);
-            const {ok, body, errorMessage, authCode} = result;
-            if (ok) {
-              U.writeObject('user', user);
-              U.writeObject('jwt', body ?? {});
-              setJwt(body ?? initialJwtToken);
-              setLoggedUser(() => user);
-              setAuthCode(() => authCode ?? '');
-              callback && callback();
-            } else {
-              setErrorMessage(errorMessage ?? '');
-            }
-          }
-        );
-    },
-    []
-  );
+    } else {
+      const loggedUserInfo: T.LoggedUserInfo = {
+        institutionId: info.institutionId,
+        id: info.id,
+        authCode: response.authCode
+      };
+      U.writeObject('user', loggedUserInfo);
+      setLoggedUser(loggedUserInfo);
+      U.writeStringP('accessToken', response.body?.accessToken ?? '');
+      U.writeStringP('refreshToken', response.body?.refreshToken ?? '');
+      setJwt(response.body);
+      setAuthCode(response.authCode);
+      callback && callback();
+    }
+  }, []);
 
   useEffect(() => {
     // localStorage 의 jwt 값을 초기화할 때 사용

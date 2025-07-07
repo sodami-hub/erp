@@ -12,12 +12,12 @@ export const axiosClient = axios.create({
 // axios 인스턴스를 가져와 API 호출에 사용할 때마다 헤더가 Authorization자동으로 인터셉터에 포함됩니다
 axiosClient.interceptors.request.use(
   async config => {
-    const token = readStringP('accessToken');
+    const accessToken = readStringP('accessToken');
     const refreshToken = readStringP('refreshToken');
     // const locale = localStorage.getItem('locale');
 
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token || ''}`;
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken || ''}`;
       config.headers['language'] = 'KR';
     }
     return config;

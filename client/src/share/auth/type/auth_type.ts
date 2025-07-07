@@ -1,4 +1,19 @@
-export type LoggedUser = {institutionId: string; id: string; password: string};
+import * as T from './index';
+
+export type LoginInfo = {
+  institutionId: string;
+  id: string;
+  password: string;
+};
+
+export type Response = {
+  ok: boolean;
+  body: T.JwtToken;
+  authCode: string;
+  errorMessage?: string | null;
+};
+
+export type LoggedUserInfo = {institutionId: string; id: string; authCode: string};
 
 export type JwtToken = {
   grantType: string;
@@ -29,7 +44,7 @@ export type ContextType = {
   jwt?: JwtToken;
   authCode?: string;
   errorMessage?: string;
-  loggedUser?: LoggedUser;
+  loggedUser?: LoggedUserInfo;
   login: (
     institutionId: string,
     id: string,
