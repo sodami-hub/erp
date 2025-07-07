@@ -28,29 +28,57 @@ public class UserContext implements UserDetails {
     /** 권한 */
     private Collection<? extends GrantedAuthority> authorities;
 
+    /**
+     * 권한을 반환하는 메소드
+     * @return authorities
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
+    /**
+     * 비밀번호 반환하는 메소드
+     * @return password
+     */
     @Override
     public String getPassword() {
         return password;
     }
 
+    /**
+     * 사용자 이름(전화번호)을 반환하는 메소드
+     * @return phone
+     */
     @Override
     public String getUsername() {
         return phone;
     }
 
+    /**
+     * 스태프 ID 를 반환하는 메소드
+     * @return staffId
+     */
     public Long getStaffId() {
         return staffId;
     }
 
+    /**
+     * 요양기관번호를 반환하는 메소드
+     * @return institutionId
+     */
     public String getInstitutionId() {
         return institutionId;
     }
 
+    /**
+     * UserContext 생성자
+     * @param staffId
+     * @param institutionId
+     * @param phone
+     * @param password
+     * @param authorities
+     */
     @Builder
     public UserContext(
             Long staffId, String institutionId, String phone, String password, Collection<? extends GrantedAuthority> authorities
@@ -62,6 +90,10 @@ public class UserContext implements UserDetails {
         this.authorities = authorities;
     }
 
+    /**
+     * toString 메소드
+     * @return UserContext 정보 문자열
+     */
     @Override
     public String toString() {
         return "UserContext{" +

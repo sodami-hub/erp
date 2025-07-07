@@ -1,11 +1,13 @@
 package com.erp.commonutil.config;
 
+import com.erp.commonutil.config.security.CustomAuthenticationProvider;
 import com.erp.commonutil.config.security.JwtAuthenticationFilter;
 import com.erp.commonutil.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,8 +34,15 @@ public class SecurityConfig {
   private final JwtTokenProvider jwtTokenProvider;
   private final UserDetailsService userDetailsService;
 
+  /**
+   * SecurityFilterChain 등록
+   * @param http HttpSecurity
+   * @return SecurityFilterChain
+   * @throws Exception
+   */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    //TODO 인증 성공/실패에 대한 추가적인 처리 필요
     http
         .authorizeHttpRequests(authorize -> {
           authorize.requestMatchers(PERMIT_ALL_PATHS).permitAll();
@@ -56,6 +65,15 @@ public class SecurityConfig {
   }
 
   /**
+   * 사용자 인증 Provider 등록
+   * @return AuthenticationProvider
+   */
+  @Bean
+  public AuthenticationProvider authenticationProvider() {
+    return new CustomAuthenticationProvider(passwordEncoder(), userDetailsService);
+  }
+
+  /**
    * AuthenticationManager 설정
    * @param http
    * @return
@@ -64,18 +82,23 @@ public class SecurityConfig {
   @Bean
   public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
     AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-
-    builder.userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder());
-
+    builder.authenticationProvider(authenticationProvider());
     return builder.build();
   }
 
+  /**
+   * 비밀번호 암호화 등록
+   * @return PasswordEncoder
+   */
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
+  /**
+   * CORS 설정
+   * @return CorsConfigurationSource
+   */
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();

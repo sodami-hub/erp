@@ -41,22 +41,61 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = resolveToken(request);
 
-        if(StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
-            // 토큰이 유효한 경우 인증 정보를 설정
-            UserContext userContext = tokenProvider.getUserContext(token);
-            if (userContext != null) {
-                logger.info("JWT 인증 정보 설정: {}", userContext.getUsername());
+        if(StringUtils.hasText(token)) {
+            if(tokenProvider.validateToken(token)) {
+                // 토큰이 유효한 경우 인증 정보를 설정
+                applyTokenAuthentication(token);
+            } else if(tokenProvider.isExpired(token)) {
+                // 토큰이 만료되었을 경우에 리프레시 토큰 시도
+                logger.warn("만료된 JWT 토큰: {}", token);
+                // TODO 리프레시 토큰을 데이터베이스에 저장 할지? 일단 헤더에 리프레스 토큰을 받는다고 생각하고 코딩 진행
+                String refreshToken = request.getHeader(Constants.REFRESH_TOKEN_HEADER);
 
-                // UsernamePasswordAuthenticationToken 객체를 생성하여 인증 정보를 설정 (패스워드는 필요 없음)
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
+                if(StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken)) {
+                    String newAccessToken = tokenProvider.reissueAccessToken(token);
+                    if (StringUtils.hasText(newAccessToken)) {
+                        logger.info("새로운 액세스 토큰 발급: {}", newAccessToken);
+                        // 새로운 토큰 헤더 응답
+                        response.setHeader(HttpHeaders.AUTHORIZATION, Constants.BEARER_PREFIX + newAccessToken);
 
-                // SecurityContextHolder에 인증 정보를 저장
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                        // 인증 설정
+                        applyTokenAuthentication(newAccessToken);
+                    } else {
+                        logger.warn("새로운 액세스 토큰 발급 실패: {}", token);
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                        return;
+                    }
+                } else {
+                    logger.warn("유효하지 않은 리프레시 토큰: {}", refreshToken);
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
+            } else {
+                logger.warn("유효하지 않은 JWT 토큰: {}", token);
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
 
         // 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * JWT 토큰을 기반으로 인증 정보를 설정
+     * @param token 토큰
+     */
+    private void applyTokenAuthentication(String token) {
+        UserContext userContext = tokenProvider.getUserContext(token);
+        if (userContext != null) {
+            logger.info("JWT 인증 정보 설정: {}", userContext.getUsername());
+
+            // UsernamePasswordAuthenticationToken 객체를 생성하여 인증 정보를 설정
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
+
+            // SecurityContextHolder 인증 정보를 저장
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        }
     }
 
     /**
