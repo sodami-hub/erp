@@ -1,5 +1,5 @@
 import {ChangeEvent, useEffect, useState} from 'react';
-import {useToggle} from '../../../hooks';
+import {useToggle} from '../../../share/hooks';
 import {RegisterModal, RegisterModalContents} from './RegisterModal';
 
 export default function BeneficiaryInfo() {

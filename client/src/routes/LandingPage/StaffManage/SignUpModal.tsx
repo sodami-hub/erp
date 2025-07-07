@@ -2,7 +2,7 @@ import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 
 import {useAuth} from '../../../share/auth/context';
 import * as C from '../../../share/components/SignupModalComponents';
 import * as T from '../../../types';
-import * as L from '../../../server';
+import * as L from '../../../share/server';
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<T.ModalProps> = ({

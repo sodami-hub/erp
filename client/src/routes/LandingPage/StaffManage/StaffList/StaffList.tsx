@@ -1,4 +1,4 @@
-import {get} from '../../../../server';
+import {get} from '../../../../share/server';
 import {useAuth} from '../../../../share/auth/context';
 import type {GetStaffInfo} from '../../../../types';
 import {useEffect, useState} from 'react';

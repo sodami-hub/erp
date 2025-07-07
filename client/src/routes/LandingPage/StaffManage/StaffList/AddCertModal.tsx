@@ -7,9 +7,9 @@ import {
   useState
 } from 'react';
 import {CertificateInfo} from '../../../../types';
-import {fileUpload, post} from '../../../../server';
+import {fileUpload, post} from '../../../../share/server';
 import {useAuth} from '../../../../share/auth/context';
-import {useToggle} from '../../../../hooks';
+import {useToggle} from '../../../../share/hooks';
 import {CalendarModal, CalendarSelect, Value} from '../../../../share/components';
 import moment from 'moment/moment';
 

@@ -1,5 +1,5 @@
 import {ChangeEvent, useCallback, useEffect, useState} from 'react';
-import {useToggle} from '../../../hooks';
+import {useToggle} from '../../../share/hooks';
 import {SignUpModal, SignUpModalContent} from './SignUpModal';
 import {StaffDetails as StaffDetailsView, StaffList} from './StaffList';
 import {GetStaffInfo as staffDetail} from '../../../types';

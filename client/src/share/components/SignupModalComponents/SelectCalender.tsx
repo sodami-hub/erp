@@ -1,6 +1,6 @@
 import {CalendarModal, CalendarSelect, Value} from '../index';
 import React, {ChangeEvent, useCallback} from 'react';
-import {useToggle} from '../../../hooks';
+import {useToggle} from '../../hooks';
 import moment from 'moment/moment';
 
 export const SelectCalender = ({

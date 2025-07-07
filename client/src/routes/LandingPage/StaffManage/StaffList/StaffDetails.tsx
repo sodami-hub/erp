@@ -1,8 +1,8 @@
 import * as Info from '../../../../types';
 import {useEffect, useState} from 'react';
-import {get} from '../../../../server';
+import {get} from '../../../../share/server';
 import {useAuth} from '../../../../share/auth/context';
-import {useToggle} from '../../../../hooks';
+import {useToggle} from '../../../../share/hooks';
 import {AddCertModal, AddCertModalContents} from './AddCertModal';
 
 export const StaffDetails = ({staffDetail}: {staffDetail: Info.GetStaffInfo}) => {
