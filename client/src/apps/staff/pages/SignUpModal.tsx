@@ -118,7 +118,7 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
     }
 
     if (jwt) {
-      signup(signupForm, jwt, material);
+      signup(signupForm, material);
     } else {
       alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.');
     }
