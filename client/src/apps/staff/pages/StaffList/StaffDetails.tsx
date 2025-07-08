@@ -1,23 +1,21 @@
-import * as Info from '../../../../types';
+import * as T from '../../types';
 import {useEffect, useState} from 'react';
 import {get} from '../../../../share/server';
 import {useAuth} from '../../../../share/auth/context';
 import {useToggle} from '../../../../share/hooks';
 import {AddCertModal, AddCertModalContents} from './AddCertModal';
 
-export const StaffDetails = ({staffDetail}: {staffDetail: Info.GetStaffInfo}) => {
+export const StaffDetails = ({staffDetail}: {staffDetail: T.GetStaffInfo}) => {
   const {jwt} = useAuth();
 
   const [addCertModalOpen, toggleAddCertModal] = useToggle(false);
 
-  const [receiveCertificates, setReceiveCertificates] = useState<Info.CertificateInfo[]>(
-    []
-  );
+  const [receiveCertificates, setReceiveCertificates] = useState<T.CertificateInfo[]>([]);
   // staffDetail 이 변할 때마다 자격증 정보와 건강검진 통보서 정보 가져오기
   useEffect(() => {
     get(`/staff/certificates/${staffDetail.staffId}`, jwt)
       .then(res => res.json())
-      .then((result: Info.CertificateInfo[] | undefined) => {
+      .then((result: T.CertificateInfo[] | undefined) => {
         if (Array.isArray(result)) {
           setReceiveCertificates(result);
         } else {

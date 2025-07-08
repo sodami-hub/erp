@@ -1,11 +1,12 @@
 import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useAuth} from '../../../share/auth/context';
 import * as C from '../../../share/components/SignupModalComponents';
-import * as T from '../../../types';
+import * as T from '../types';
+import * as ST from '../../../share/types';
 import * as L from '../../../share/server';
 
 // ============ 신규 직원 등록 모달 =====================
-export const SignUpModal: FC<T.ModalProps> = ({
+export const SignUpModal: FC<ST.ModalProps> = ({
   open,
   className: _className,
   ...props
@@ -39,7 +40,7 @@ const initialCommonCodeList: T.CommonCode = {
 };
 // ====================================================================
 
-export const SignUpModalContent: FC<T.ModalContentProps> = ({
+export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   onCloseIconClicked,
   closeIconClassName: _closeIconClassName,
   className: _className,

@@ -2,7 +2,7 @@ import {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import {useToggle} from '../../../share/hooks';
 import {SignUpModal, SignUpModalContent} from './SignUpModal';
 import {StaffDetails as StaffDetailsView, StaffList} from './StaffList';
-import {GetStaffInfo as staffDetail} from '../../../types';
+import * as T from '../types';
 
 type NameSearch = Record<'name', string>;
 const initialSearchState = {name: ''};
@@ -53,9 +53,9 @@ export default function StaffInfo() {
   }, [staffInfoStatus]);
 
   // 기본정보 클릭시 직원의 상세정보 노출
-  const [staffDetail, setStaffDetail] = useState<staffDetail>();
+  const [staffDetail, setStaffDetail] = useState<T.GetStaffInfo>();
 
-  const getStaffInfo = useCallback((clickedStaff: staffDetail) => {
+  const getStaffInfo = useCallback((clickedStaff: T.GetStaffInfo) => {
     setStaffDetail(clickedStaff);
     setStaffInfoStatus('basic');
   }, []);

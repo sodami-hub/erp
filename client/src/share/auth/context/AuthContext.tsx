@@ -9,7 +9,6 @@ import {
 } from 'react';
 import * as U from '../../utils';
 import {useNavigate} from 'react-router-dom';
-import type {SignupStaffInfo} from '../../../types';
 import * as T from '../type';
 import * as API from '../api';
 
@@ -32,10 +31,11 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [jwt, setJwt] = useState<T.JwtToken | undefined>(initialJwtToken);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [authCode, setAuthCode] = useState<string>('');
-  const [deleteStorage, setDeleteStorage] = useState<boolean>(false); // 로컬 스토리지 정보(jwtToken,user)를 초기화(logout)할 때 사용
+  // 로컬 스토리지 정보(jwtToken,user)를 초기화(logout)할 때 사용
+  const [deleteStorage, setDeleteStorage] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const signup = useCallback(async (newStaff: SignupStaffInfo, document?: FormData) => {
+  const signup = useCallback(async (newStaff: T.SignupStaffInfo, document?: FormData) => {
     // 직원 정보 등록
     const response = await API.staffSignup(newStaff);
     if (!response.ok) {
@@ -107,6 +107,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     setJwt(undefined);
     setAuthCode('');
     setLoggedUser(undefined);
+    console.log('logout');
     navigate('/');
   }, []);
 
