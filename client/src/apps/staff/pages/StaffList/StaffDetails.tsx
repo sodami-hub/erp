@@ -10,12 +10,14 @@ export const StaffDetails = ({staffDetail}: {staffDetail: T.GetStaffInfo}) => {
 
   const [addCertModalOpen, toggleAddCertModal] = useToggle(false);
 
-  const [receiveCertificates, setReceiveCertificates] = useState<T.CertificateInfo[]>([]);
+  const [receiveCertificates, setReceiveCertificates] = useState<T.saveCertInfoRequest[]>(
+    []
+  );
   // staffDetail 이 변할 때마다 자격증 정보와 건강검진 통보서 정보 가져오기
   useEffect(() => {
     get(`/staff/certificates/${staffDetail.staffId}`, jwt)
       .then(res => res.json())
-      .then((result: T.CertificateInfo[] | undefined) => {
+      .then((result: T.saveCertInfoRequest[] | undefined) => {
         if (Array.isArray(result)) {
           setReceiveCertificates(result);
         } else {

@@ -1,7 +1,6 @@
 import * as ST from '../../../share/types';
 import * as T from '../types';
 import React, {ChangeEvent, FC, useCallback, useState} from 'react';
-import {useAuth} from '../../../share/auth/context';
 import * as C from '../../../share/components/SignupModalComponents';
 
 export const RegisterModal: FC<ST.ModalProps> = ({
@@ -66,8 +65,6 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
   const className = ['relative', _className].join(' ');
   const closeIconClassName =
     _closeIconClassName ?? 'btn-primary btn-outline material-icons';
-
-  const {jwt} = useAuth();
 
   const [registerForm, setRegisterForm] =
     useState<RegisterBeneficiaryFormType>(initialFormState);

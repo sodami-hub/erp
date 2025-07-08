@@ -34,11 +34,22 @@ export type GetStaffInfo = {
   retireDate: string;
 };
 
-export type CertificateInfo = {
+export type saveCertInfoRequest = {
   staffId: string;
   certificateName: string;
   organization: string;
   issueDate: string;
+};
+
+export type saveCertInfoResponse = {
+  ok: boolean;
+  certificateId: string;
+  errorMessage?: string;
+};
+
+export type saveCertFileResponse = {
+  ok: boolean;
+  errorMessage?: string;
 };
 
 export type CommonCode = {

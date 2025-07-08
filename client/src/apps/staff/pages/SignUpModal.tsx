@@ -3,7 +3,7 @@ import {useAuth} from '../../../share/auth/context';
 import * as C from '../../../share/components/SignupModalComponents';
 import * as T from '../types';
 import * as ST from '../../../share/types';
-import * as L from '../../../share/server';
+import * as API from '../api';
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<ST.ModalProps> = ({
@@ -64,12 +64,16 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
     useState<T.CommonCode>(initialCommonCodeList);
 
   useEffect(() => {
-    if (!jwt) return;
-    L.get('/staff/commonCodeList', jwt)
-      .then(res => res.json())
-      .then((result: T.CommonCode) => setCommonCodeList(result));
-    console.log('CommonCode(Staff) Fetch Success');
-  }, [jwt]);
+    const commonCodeList = async () => {
+      const res = await API.loadCommonCode();
+      if (res.ok) {
+        setCommonCodeList(res);
+      } else {
+        console.log('CommonCode(Staff) Load Failure');
+      }
+    };
+    commonCodeList().then(() => console.log('CommonCode(Staff) Load Succeed'));
+  }, []);
 
   const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
   //===================================================

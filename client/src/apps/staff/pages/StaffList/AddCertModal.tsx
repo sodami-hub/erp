@@ -6,11 +6,10 @@ import {
   useRef,
   useState
 } from 'react';
-import {CertificateInfo} from '../../types';
-import {fileUpload, post} from '../../../../share/server';
-import {useAuth} from '../../../../share/auth/context';
+import {saveCertInfoRequest} from '../../types';
 import {useToggle} from '../../../../share/hooks';
 import {CalendarModal, CalendarSelect, Value} from '../../../../share/components';
+import * as API from '../../api';
 import moment from 'moment/moment';
 
 export const AddCertModal = ({open, children}: PropsWithChildren<{open: boolean}>) => {
@@ -19,7 +18,7 @@ export const AddCertModal = ({open, children}: PropsWithChildren<{open: boolean}
   return <div className={className}>{children}</div>;
 };
 
-type addCertInfo = CertificateInfo & {};
+type addCertInfo = saveCertInfoRequest & {};
 
 const initAddCertInfo: addCertInfo = {
   staffId: '',
@@ -52,44 +51,25 @@ export const AddCertModalContents = ({
   const [file, setFile] = useState<File>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const {jwt} = useAuth();
-  const clickSave = () => {
+  const clickSave = async () => {
     const formData = new FormData();
     if (file) {
       formData.append('file', file);
     }
-    if (jwt) {
-      post('/staff/saveCertificate', certInfo, jwt)
-        .then(res => res.json())
-        .then((result: {ok: boolean; certificateId: string; errorMessage?: string}) => {
-          const {ok, certificateId, errorMessage} = result;
-          if (ok) {
-            if (formData) {
-              fileUpload(`/staff/saveCertFile/${certificateId}`, formData, jwt)
-                .then(res => res.json())
-                .then((result: {ok: boolean; errorMessage?: string}) => {
-                  const {ok, errorMessage} = result;
-                  if (!ok) {
-                    alert('첨부자료 저장 실패 : ' + errorMessage);
-                  } else {
-                    alert('첨부자료 저장 성공');
-                    return;
-                  }
-                });
-            } else {
-              return;
-            }
-            alert('자격증 정보 저장 성공');
-          } else {
-            alert('error : ' + errorMessage);
-          }
-        });
-    } else {
-      alert('인증 정보가 없습니다. 다시 로그인해주세요.');
-      // 로그아웃 로직
-      // 로그인 화면으로
-    }
 
+    const res01 = await API.saveCertInfo(certInfo);
+    const id = res01.certificateId;
+    if (res01.ok) {
+      console.log('직원 자격증 정보 저장 성공');
+      if (formData) {
+        const res02 = await API.saveCertFile(formData, id);
+        if (!res02.ok) {
+          alert(res02.errorMessage ?? '자격증 첨부문서 저장 에러');
+        }
+      }
+    } else {
+      alert(res01.errorMessage ?? '자격증 정보 저장 에러');
+    }
     modalToggle();
     setCertInfo(initAddCertInfo);
     setFile(undefined);
