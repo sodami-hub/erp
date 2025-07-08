@@ -21,7 +21,9 @@ const initialJwtToken: T.JwtToken = {
 export const AuthContext = createContext<T.ContextType>({
   login: async () => Promise.resolve(),
   signup: async () => Promise.resolve(),
-  logout: () => {}
+  logout: () => {},
+  clearJwt: () => {},
+  newJwt: () => {}
 });
 
 type AuthProviderProps = {};
@@ -34,6 +36,16 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   // 로컬 스토리지 정보(jwtToken,user)를 초기화(logout)할 때 사용
   const [deleteStorage, setDeleteStorage] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const clearJwt = useCallback(() => {
+    U.writeStringP('accessToken', '');
+    U.writeStringP('refreshToken', '');
+    setJwt(undefined);
+  }, []);
+
+  const newJwt = useCallback((newJwt: T.JwtToken) => {
+    setJwt(newJwt);
+  }, []);
 
   const signup = useCallback(async (newStaff: T.SignupStaffInfo, document?: FormData) => {
     // 직원 정보 등록
@@ -146,7 +158,9 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     loggedUser,
     login,
     signup,
-    logout
+    logout,
+    clearJwt,
+    newJwt
   };
   return <AuthContext.Provider value={value} children={children} />;
 };

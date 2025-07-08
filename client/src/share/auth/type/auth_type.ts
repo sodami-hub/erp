@@ -54,4 +54,6 @@ export type ContextType = {
   ) => void;
   signup: (newStaff: SignupStaffInfo, document?: FormData) => void;
   logout: () => void;
+  clearJwt: () => void;
+  newJwt: (jwt: JwtToken) => void;
 };
