@@ -53,7 +53,7 @@ export default function StaffInfo() {
   }, [staffInfoStatus]);
 
   // 기본정보 클릭시 직원의 상세정보 노출
-  const [staffDetail, setStaffDetail] = useState<T.GetStaffInfo>();
+  const [staffDetail, setStaffDetail] = useState<T.GetStaffInfo | undefined>(undefined);
 
   const getStaffInfo = useCallback((clickedStaff: T.GetStaffInfo) => {
     setStaffDetail(clickedStaff);

@@ -21,3 +21,15 @@ export const saveCertFile = async (file: FormData, certificateId: string) => {
   );
   return res.data;
 };
+
+export const loadStaffInfoList = async (status: string) => {
+  const res = await axiosClient.get<T.GetStaffInfo[]>(`/staffs/${status}`);
+  return res.data;
+};
+
+export const loadStaffCertInfo = async (staffId: string) => {
+  const res = await axiosClient.get<T.saveCertInfoRequest[]>(
+    `/staff/certificates/${staffId}`
+  );
+  return res.data;
+};

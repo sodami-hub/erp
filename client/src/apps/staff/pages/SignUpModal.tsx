@@ -64,16 +64,16 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
     useState<T.CommonCode>(initialCommonCodeList);
 
   useEffect(() => {
-    const commonCodeList = async () => {
+    (async () => {
       const res = await API.loadCommonCode();
       if (res.ok) {
         setCommonCodeList(res);
       } else {
         console.log('CommonCode(Staff) Load Failure');
       }
-    };
-    commonCodeList().then(() => console.log('CommonCode(Staff) Load Succeed'));
-  }, []);
+      console.log('CommonCode(Staff) Load Succeed');
+    })();
+  });
 
   const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
   //===================================================

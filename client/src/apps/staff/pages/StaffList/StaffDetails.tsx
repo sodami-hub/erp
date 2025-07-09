@@ -1,9 +1,9 @@
 import * as T from '../../types';
 import {useEffect, useState} from 'react';
-import {get} from '../../../../share/server';
 import {useAuth} from '../../../../share/auth/context';
 import {useToggle} from '../../../../share/hooks';
 import {AddCertModal, AddCertModalContents} from './AddCertModal';
+import * as API from '../../api';
 
 export const StaffDetails = ({staffDetail}: {staffDetail: T.GetStaffInfo}) => {
   const {jwt} = useAuth();
@@ -14,17 +14,12 @@ export const StaffDetails = ({staffDetail}: {staffDetail: T.GetStaffInfo}) => {
     []
   );
   // staffDetail 이 변할 때마다 자격증 정보와 건강검진 통보서 정보 가져오기
+  // 자격증정보에대한 api 구현
   useEffect(() => {
-    get(`/staff/certificates/${staffDetail.staffId}`, jwt)
-      .then(res => res.json())
-      .then((result: T.saveCertInfoRequest[] | undefined) => {
-        if (Array.isArray(result)) {
-          setReceiveCertificates(result);
-        } else {
-          setReceiveCertificates([]);
-        }
-      })
-      .catch(() => setReceiveCertificates([]));
+    (async (staffId: string) => {
+      const certInfo = await API.loadStaffCertInfo(staffId);
+      setReceiveCertificates(certInfo);
+    })(staffDetail.staffId);
   }, [staffDetail]);
 
   const myCertificates = receiveCertificates?.map((value, index) => (

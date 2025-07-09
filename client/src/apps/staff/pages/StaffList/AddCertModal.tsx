@@ -56,19 +56,18 @@ export const AddCertModalContents = ({
     if (file) {
       formData.append('file', file);
     }
-
-    const res01 = await API.saveCertInfo(certInfo);
-    const id = res01.certificateId;
-    if (res01.ok) {
+    const saveInfo = await API.saveCertInfo(certInfo);
+    const id = saveInfo.certificateId;
+    if (saveInfo.ok) {
       console.log('직원 자격증 정보 저장 성공');
       if (formData) {
-        const res02 = await API.saveCertFile(formData, id);
-        if (!res02.ok) {
-          alert(res02.errorMessage ?? '자격증 첨부문서 저장 에러');
+        const saveFile = await API.saveCertFile(formData, id);
+        if (!saveFile.ok) {
+          alert(saveFile.errorMessage ?? '자격증 첨부문서 저장 에러');
         }
       }
     } else {
-      alert(res01.errorMessage ?? '자격증 정보 저장 에러');
+      alert(saveInfo.errorMessage ?? '자격증 정보 저장 에러');
     }
     modalToggle();
     setCertInfo(initAddCertInfo);
@@ -77,6 +76,7 @@ export const AddCertModalContents = ({
       fileInputRef.current.value = '';
     }
   };
+
   const clickCancel = () => {
     modalToggle();
     setFile(undefined);

@@ -1,6 +1,5 @@
-import {get} from '../../../../share/server';
-import {useAuth} from '../../../../share/auth/context';
 import type {GetStaffInfo} from '../../types';
+import * as API from '../../api';
 import {useEffect, useState} from 'react';
 
 // status all(전체) | onDuty(근무중) | offDuty(퇴사) | break(휴직) | waiting(대기)
@@ -11,21 +10,14 @@ export const StaffList = ({
   status: string;
   getStaffId: (staffDetail: GetStaffInfo) => void;
 }) => {
-  const {jwt} = useAuth();
   const [staffList, setStaffList] = useState<GetStaffInfo[]>();
   const [selectedStaff, setSelectedStaff] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    if (jwt) {
-      get(`/staffs/${status}`)
-        .then(resp => resp.json())
-        .then((result: GetStaffInfo[]) => {
-          setStaffList(result);
-        });
-    } else {
-      alert('토큰이 확인되지 않습니다. 다시 로그인해주세요.');
-      // 로그아웃 처리 후, 로그인 화면으로
-    }
+    (async (status: string) => {
+      const staffList = await API.loadStaffInfoList(status);
+      setStaffList(staffList);
+    })(status);
   }, [status]);
 
   useEffect(() => {
