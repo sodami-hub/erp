@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {readStringP} from '../utils';
-import {useAuth} from '../auth/context';
+import * as U from '../utils';
+import {readStringP, writeObject} from '../utils';
 import * as T from '../auth/type';
 
 export const axiosClient = axios.create({
@@ -34,7 +34,6 @@ axiosClient.interceptors.response.use(
   async err => {
     const currentPath = window.location.pathname; // 현재 경로를 가져옴
     const originalConfig = err.config; // 에러난 api 요청 정보
-    const {clearJwt, newJwt, logout} = useAuth();
 
     // TODO : 로그인 페이지일 경우 토큰 갱신 시도하지 않음
     if (currentPath === '/auth/login') {
@@ -55,7 +54,8 @@ axiosClient.interceptors.response.use(
       // 이미 재시도한 경우는 다시 시도하지 않음
       if (originalConfig._retry) {
         // clearLocalStorage() jwt 초기화
-        clearJwt();
+        U.writeStringP('accessToken', '');
+        U.writeStringP('refreshToken', '');
         // window.location.href = login + '?expired=true&from=' + currentPath
         return Promise.reject(err);
       }
@@ -88,7 +88,7 @@ axiosClient.interceptors.response.use(
         if (newAccessToken) {
           localStorage.setItem('AccessToken', newAccessToken);
           localStorage.setItem('refreshToken', newRefreshToken);
-          newJwt(result);
+          writeObject('jwt', result);
 
           // 실패했던 원래 요청 다시 시도
           originalConfig.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -100,7 +100,9 @@ axiosClient.interceptors.response.use(
         // refresh token도 만료되었거나 갱신 실패한 경우 로그아웃
         // clearLocalStorage() jwt 초기화
         // window.location.href = login + '?expired=true&from=' + currentPath 로그인 페이지로 이동
-        logout();
+
+        // 로그아웃 로직~ 컴포넌트에서...
+
         return Promise.reject(refreshError);
       }
     } else if (err.response.status === 404 || err.response.status === 500) {
