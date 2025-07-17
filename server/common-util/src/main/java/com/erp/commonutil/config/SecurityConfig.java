@@ -1,5 +1,6 @@
 package com.erp.commonutil.config;
 
+import com.erp.commonutil.config.security.CustomAuthenticationEntryPoint;
 import com.erp.commonutil.config.security.CustomAuthenticationProvider;
 import com.erp.commonutil.config.security.JwtAuthenticationFilter;
 import com.erp.commonutil.jwt.JwtTokenProvider;
@@ -30,9 +31,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+  /** Security 제외 URL 목록 */
   private static final String[] PERMIT_ALL_PATHS = {"/staff/commonCodeList", "/auth/login"};
+
+  /** JWT Token */
   private final JwtTokenProvider jwtTokenProvider;
+
+  /** 사용자 인증 */
   private final UserDetailsService userDetailsService;
+
+  /** 인증 실패 */
+  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
   /**
    * SecurityFilterChain 등록
@@ -48,6 +57,9 @@ public class SecurityConfig {
           authorize.requestMatchers(PERMIT_ALL_PATHS).permitAll();
           authorize.anyRequest().authenticated();
         })
+        .exceptionHandling(exception ->
+                exception.authenticationEntryPoint(customAuthenticationEntryPoint)
+        )
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화

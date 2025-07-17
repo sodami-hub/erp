@@ -4,6 +4,7 @@ import com.erp.commonutil.Constants;
 import com.erp.commonutil.config.security.UserContext;
 import com.erp.commonutil.jwt.JwtTokenProvider;
 import com.erp.commonutil.jwt.dto.JwtToken;
+import com.erp.commonutil.response.ApiResponse;
 import com.erp.staffmanagement.staff_management.dto.LoginRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.LoginResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpRequestDTO;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -38,7 +40,7 @@ public class AuthController {
   }
 
   @PostMapping(value = "/auth/login")
-  public ResponseEntity<LoginResponseDTO> login(
+  public ResponseEntity<ApiResponse> login(
       @RequestBody LoginRequestDTO loginRequestDTO) {
     Authentication authenticate = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginRequestDTO.getId(), loginRequestDTO.getPassword())
@@ -48,19 +50,21 @@ public class AuthController {
     String accessToken = jwtTokenProvider.generateAccessToken(userContext);
     String refreshToken = jwtTokenProvider.generateRefreshToken(userContext);
 
-    JwtToken token = JwtToken.builder().
-            grantType(Constants.BEARER_PREFIX.trim())
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
+    JwtToken token = JwtToken.builder()
+              .grantType(Constants.BEARER_PREFIX.trim())
+              .accessToken(accessToken)
+              .refreshToken(refreshToken)
             .build();
 
     Collection<? extends GrantedAuthority> authorities = userContext.getAuthorities();
 
     String roles = authorities.stream()
+            .filter(Objects::nonNull)
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(","));
 
-    return ResponseEntity.ok(new LoginResponseDTO(true, token, roles, null));
+    LoginResponseDTO response = new LoginResponseDTO(true, token, roles, null);
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   @PostMapping(value = "/auth/signup", produces = "application/json")

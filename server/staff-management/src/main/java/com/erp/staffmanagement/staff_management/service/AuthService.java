@@ -1,5 +1,6 @@
 package com.erp.staffmanagement.staff_management.service;
 
+import com.erp.commonutil.config.security.UserContext;
 import com.erp.commonutil.jwt.JwtTokenProvider;
 import com.erp.commonutil.jwt.dto.JwtClaimsDTO;
 import com.erp.commonutil.jwt.dto.JwtToken;
@@ -95,12 +96,13 @@ public class AuthService {
 
   public SignUpResponseDTO staffSignUp(SignUpRequestDTO signUpRequestDTO, JwtToken jwtToken) {
 
-    JwtClaimsDTO jwtClaimsDTO;
+    UserContext userContext = null;
 
     // 1. 토큰 검증 로직 -> 유효한지(유효하지 않으면 다시 로그인) // 직원등록 권한이 있는지
     if (jwtTokenProvider.validateToken(jwtToken.getAccessToken())) {
-      jwtClaimsDTO = jwtTokenProvider.getClaims(jwtToken.getAccessToken());
-      if (jwtClaimsDTO.getAuthId().equals("102")) {
+      //jwtClaimsDTO = jwtTokenProvider.getClaims(jwtToken.getAccessToken());
+      userContext = jwtTokenProvider.getUserContext(jwtToken.getAccessToken());
+      if (userContext.getAuthorities().contains("102")) {
         return new SignUpResponseDTO(false, null, "직원등록 권한이 없습니다.");
       }
     } else {
@@ -108,7 +110,7 @@ public class AuthService {
     }
 
     // 직원등록에 추가로 필요한 정보
-    signUpRequestDTO.setInstitutionId(jwtClaimsDTO.getInstitutionId());
+    signUpRequestDTO.setInstitutionId(userContext.getInstitutionId());
     if (signUpRequestDTO.getWorkType().contains("센터장")) {
       signUpRequestDTO.setAuthId("101");  // 직종에 '센터장'이 있으면 권한코드 '101'
     } else {
@@ -118,7 +120,7 @@ public class AuthService {
     signUpRequestDTO.setRetireDate(null);
 
     // 2. 직원 등록 로직
-    Staff newStaff = new Staff(signUpRequestDTO, jwtClaimsDTO.getStaffId());
+    Staff newStaff = new Staff(signUpRequestDTO, userContext.getUsername());
     Staff staff = staffRepository.save(newStaff);
     return new SignUpResponseDTO(true, staff.getStaffId(), null);
   }

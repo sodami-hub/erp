@@ -51,8 +51,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // TODO 리프레시 토큰을 데이터베이스에 저장 할지? 일단 헤더에 리프레스 토큰을 받는다고 생각하고 코딩 진행
                 String refreshToken = request.getHeader(Constants.REFRESH_TOKEN_HEADER);
 
+                // 리프레시 토큰이 존재하고 유효한 경우 새로운 액세스 토큰 발급
                 if(StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken)) {
                     String newAccessToken = tokenProvider.reissueAccessToken(token);
+                    // 새로운 액세스 토큰이 발급되면 헤더에 설정하고 인증 정보 적용
                     if (StringUtils.hasText(newAccessToken)) {
                         logger.info("새로운 액세스 토큰 발급: {}", newAccessToken);
                         // 새로운 토큰 헤더 응답
@@ -61,16 +63,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         // 인증 설정
                         applyTokenAuthentication(newAccessToken);
                     } else {
+                        // 새로운 액세스 토큰 발급 실패
                         logger.warn("새로운 액세스 토큰 발급 실패: {}", token);
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                         return;
                     }
                 } else {
+                    // 리프레시 토큰이 없거나 유효하지 않은 경우
                     logger.warn("유효하지 않은 리프레시 토큰: {}", refreshToken);
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
                 }
             } else {
+                // 유효하지 않은 JWT 토큰인 경우
                 logger.warn("유효하지 않은 JWT 토큰: {}", token);
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
