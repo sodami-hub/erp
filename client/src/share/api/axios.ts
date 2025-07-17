@@ -3,6 +3,20 @@ import * as U from '../utils';
 import {readStringP, writeObject} from '../utils';
 import * as T from '../auth/type';
 
+// 새로운 토큰을 요청하는 API
+const requestNewToken = async (refreshToken: string) => {
+  const res = await axios.post<T.JwtToken>(
+    'auth/newToken',
+    {},
+    {
+      headers: {
+        'X-Refresh-Token': refreshToken
+      }
+    }
+  );
+  return res.data;
+};
+
 export const axiosClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
@@ -36,7 +50,7 @@ axiosClient.interceptors.response.use(
     const originalConfig = err.config; // 에러난 api 요청 정보
 
     // TODO : 로그인 페이지일 경우 토큰 갱신 시도하지 않음
-    if (currentPath === '/auth/login') {
+    if (currentPath === '/') {
       return Promise.reject(err);
     }
 
@@ -70,20 +84,12 @@ axiosClient.interceptors.response.use(
         }
 
         // refresh token으로 새로운 token 요청
-        const response = await axios.post<T.JwtToken>(
-          '', // 새로운 토큰 요청 url `${import.meta.env.VITE_AUTH_URL}/v1/auth/refresh`,
-          {},
-          {
-            headers: {
-              'X-Refresh-Token': refreshToken
-            }
-          }
-        );
+        const newToken = await requestNewToken(refreshToken);
 
         // 새로운 토큰 저장
-        const result: T.JwtToken = response.data;
-        const newAccessToken = result.accessToken;
-        const newRefreshToken = result.refreshToken;
+        const result: T.JwtToken = newToken;
+        const newAccessToken = newToken.accessToken;
+        const newRefreshToken = newToken.refreshToken;
 
         if (newAccessToken) {
           localStorage.setItem('AccessToken', newAccessToken);

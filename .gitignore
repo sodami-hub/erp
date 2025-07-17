@@ -52,7 +52,6 @@ bin/
 ### IntelliJ IDEA ###
 .idea
 *.iws
-*.iml
 *.ipr
 out/
 !**/src/main/**/out/
@@ -68,3 +67,6 @@ out/
 ### VS Code ###
 .vscode/
 .env.properties
+.env
+
+.gitignore
