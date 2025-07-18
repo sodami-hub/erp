@@ -6,7 +6,7 @@ export type LoginInfo = {
   password: string;
 };
 
-export type Response = {
+export type signupStaffResponse = {
   ok: boolean;
   staffId?: string; // 직원 등록후 등록한 직원의 id 가져오기. -> 파일등록에 사용.
   token?: T.JwtToken;

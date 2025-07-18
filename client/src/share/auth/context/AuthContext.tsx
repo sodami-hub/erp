@@ -85,7 +85,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       callback?: T.Callback
     ) => {
       const info: T.LoginInfo = {institutionId, id, password};
-      const response: T.Response = await API.staffLogin(info);
+      const response: T.signupStaffResponse = await API.staffLogin(info);
       if (!response.ok) {
         if (response.errorMessage) {
           setErrorMessage('Error Message : ' + response.errorMessage);
