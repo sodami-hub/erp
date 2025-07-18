@@ -4,9 +4,10 @@ import {readStringP, writeObject} from '../utils';
 import * as T from '../auth/type';
 
 // 새로운 토큰을 요청하는 API
+// 참고 : 새로운 토큰 요청 url `${import.meta.env.VITE_AUTH_URL}/v1/auth/refresh`
 const requestNewToken = async (refreshToken: string) => {
   const res = await axios.post<T.JwtToken>(
-    'auth/newToken',
+    `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/auth/newToken`,
     {},
     {
       headers: {
