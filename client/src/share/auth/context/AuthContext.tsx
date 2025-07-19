@@ -85,26 +85,25 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       callback?: T.Callback
     ) => {
       const info: T.LoginInfo = {institutionId, id, password};
-      const response: T.signupStaffResponse = await API.staffLogin(info);
+      const response: T.LoginResponse = await API.staffLogin(info);
       if (!response.ok) {
-        if (response.errorMessage) {
-          setErrorMessage('Error Message : ' + response.errorMessage);
+        if (response.message) {
+          setErrorMessage('Message : ' + response.message);
         } else {
           setErrorMessage('login failed');
         }
       } else {
         const loggedUserInfo: T.LoggedUserInfo = {
           institutionId: info.institutionId,
-          id: info.id,
-          authCode: response.authCode ?? ''
+          id: info.id
         };
         U.writeObject('user', loggedUserInfo);
         setLoggedUser(loggedUserInfo);
-        U.writeStringP('accessToken', response.token?.accessToken ?? '');
-        U.writeStringP('refreshToken', response.token?.refreshToken ?? '');
-        U.writeObject('jwt', response.token ?? {});
-        setJwt(response.token ?? undefined);
-        setAuthCode(response.authCode ?? '');
+        U.writeStringP('accessToken', response.data.body.accessToken ?? '');
+        U.writeStringP('refreshToken', response.data.body.refreshToken ?? '');
+        //U.writeObject('jwt', response.token ?? {});
+        setJwt(undefined);
+        setAuthCode('');
         callback && callback();
         console.log('login success');
       }
@@ -140,7 +139,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       setJwt(storedJwt ?? initialJwtToken);
       const user: T.LoggedUserInfo = U.readObject('user');
       setLoggedUser(user);
-      setAuthCode(user.authCode);
+      setAuthCode('');
     }
   }, []);
 

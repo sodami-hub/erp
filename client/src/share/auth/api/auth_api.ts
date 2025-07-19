@@ -2,7 +2,7 @@ import * as T from '../type';
 import {axiosClient} from '../../api/axios';
 
 export const staffLogin = async (info: T.LoginInfo) => {
-  const res = await axiosClient.post<T.signupStaffResponse>(
+  const res = await axiosClient.post<T.LoginResponse>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/auth/login`,
     info
   );
