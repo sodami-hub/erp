@@ -1,10 +1,10 @@
 import {Route, Routes} from 'react-router-dom';
 import NoMatch from './NoMatch';
-import Layout from './Layout/MainFrame';
-import LandingPage from './LandingPage';
-import Login from './Auth/Login';
-import StaffInfo from './LandingPage/StaffManage/StaffInfo';
-import BeneficiaryInfo from './LandingPage/BeneficiaryManage/BeneficiaryInfo';
+import Layout from '../share/layout/MainFrame';
+import LandingPage from './index';
+import Login from '../share/auth/pages/Login';
+import StaffInfo from '../apps/staff/pages/StaffInfo';
+import BeneficiaryInfo from '../apps/beneficiary/pages/BeneficiaryInfo';
 
 export default function RoutesSetup() {
   return (

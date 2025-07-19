@@ -3,7 +3,7 @@ import {Provider} from 'react-redux';
 import {BrowserRouter} from 'react-router-dom';
 import RoutesSetup from './routes/RoutesSetup';
 import {useStore} from './store';
-import {AuthProvider} from './context';
+import {AuthProvider} from './share/auth/context';
 
 function App() {
   const store = useStore();

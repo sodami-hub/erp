@@ -1,4 +1,4 @@
-import {MainMenu, SecondaryMenu} from '../../components';
+import {MainMenu, SecondaryMenu} from '../components';
 import {useNavigate} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppState} from '../../store';

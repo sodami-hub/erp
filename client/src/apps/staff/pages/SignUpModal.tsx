@@ -1,11 +1,12 @@
 import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
-import {useAuth} from '../../../context';
-import * as C from '../../../components/SignupModalComponents';
-import * as T from '../../../types';
-import * as L from '../../../server';
+import {useAuth} from '../../../share/auth/context';
+import * as C from '../../../share/components/SignupModalComponents';
+import * as T from '../types';
+import * as ST from '../../../share/types';
+import * as API from '../api';
 
 // ============ 신규 직원 등록 모달 =====================
-export const SignUpModal: FC<T.ModalProps> = ({
+export const SignUpModal: FC<ST.ModalProps> = ({
   open,
   className: _className,
   ...props
@@ -39,7 +40,7 @@ const initialCommonCodeList: T.CommonCode = {
 };
 // ====================================================================
 
-export const SignUpModalContent: FC<T.ModalContentProps> = ({
+export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   onCloseIconClicked,
   closeIconClassName: _closeIconClassName,
   className: _className,
@@ -63,12 +64,16 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
     useState<T.CommonCode>(initialCommonCodeList);
 
   useEffect(() => {
-    if (!jwt) return;
-    L.get('/staff/commonCodeList', jwt)
-      .then(res => res.json())
-      .then((result: T.CommonCode) => setCommonCodeList(result));
-    console.log('CommonCode(Staff) Fetch Success');
-  }, [jwt]);
+    (async () => {
+      const res = await API.loadCommonCode();
+      if (res.ok) {
+        setCommonCodeList(res);
+      } else {
+        console.log('CommonCode(Staff) Load Failure');
+      }
+      console.log('CommonCode(Staff) Load Succeed');
+    })();
+  });
 
   const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
   //===================================================
@@ -118,7 +123,7 @@ export const SignUpModalContent: FC<T.ModalContentProps> = ({
     }
 
     if (jwt) {
-      signup(signupForm, jwt, material);
+      signup(signupForm, material);
     } else {
       alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.');
     }
