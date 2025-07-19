@@ -1,5 +1,6 @@
 package com.erp.staffmanagement.staff_management.service;
 
+import com.erp.commonutil.config.security.UserContext;
 import com.erp.commonutil.jwt.JwtTokenProvider;
 import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.FileUploadResponseDTO;
@@ -80,7 +81,8 @@ public class AttachedFileService {
       Long userId, JwtToken jwtToken)
       throws FileUploadException {
 
-    Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
+    //Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
+    UserContext userContext = jwtTokenProvider.getUserContext(jwtToken.getAccessToken());
 
     if (!file01.isEmpty()) {
       SaveFileDTO saveFileDTO = saveFileStorage(file01, "dependent");
@@ -88,7 +90,7 @@ public class AttachedFileService {
 
       // 파일 정보 DB 저장 처리
       documentRepository.save(
-          new DependencyDocuments(saveFileDTO, managerId));
+          new DependencyDocuments(saveFileDTO, userContext.getUsername()));
     }
     if (!file02.isEmpty()) {
       SaveFileDTO saveFileDTO = saveFileStorage(file02, "dependent");
@@ -96,7 +98,7 @@ public class AttachedFileService {
 
       // 파일 정보 DB 저장 처리
       documentRepository.save(
-          new DependencyDocuments(saveFileDTO, managerId));
+          new DependencyDocuments(saveFileDTO, userContext.getUsername()));
     }
 
     return new FileUploadResponseDTO(true, null);
@@ -105,7 +107,8 @@ public class AttachedFileService {
   public FileUploadResponseDTO certFileService(MultipartFile file, Long certificateId,
       JwtToken jwtToken) throws FileUploadException {
 
-    Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
+    //Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
+    UserContext userContext = jwtTokenProvider.getUserContext(jwtToken.getAccessToken());
 
     SaveFileDTO saveFileDTO = saveFileStorage(file, "certificate");
 
@@ -115,7 +118,7 @@ public class AttachedFileService {
     }
     cert.setOriginalName(saveFileDTO.getOriginalName());
     cert.setSaveName(saveFileDTO.getSaveName());
-    cert.setUpdaterId(managerId);
+    cert.setUpdaterId(userContext.getUsername());
 
     certificateRepository.save(cert);
 

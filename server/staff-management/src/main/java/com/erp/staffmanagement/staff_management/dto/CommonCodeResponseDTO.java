@@ -13,9 +13,5 @@ import lombok.Setter;
 public class CommonCodeResponseDTO {
 
   private boolean ok;
-  private List<String> authList;
-  private List<String> workTypeList;
-  private List<String> workList;
-  private List<String> workStatusList;
-
+  private List<String> codeNames;
 }

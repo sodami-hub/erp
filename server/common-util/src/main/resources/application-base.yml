@@ -1,0 +1,10 @@
+spring:
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
+jwt:
+  secret: dXNlYSBasdfqwer2345dfgsdfg3245zZWN1cmUga2V5IHdpdGggYSBtaW5pbXVtIGxlbmd0aCBvZiA2NCBieXRlcwtesttesttesttesttest
+  access-token-validity-seconds: 3600      # 1??
+  refresh-token-validity-seconds: 86400    # 24??

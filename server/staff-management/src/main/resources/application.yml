@@ -1,23 +1,38 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   datasource:
-    url: jdbc:mysql://localhost:3306/erp
+    url: jdbc:postgresql://1.234.4.11/erp
     username: root
-    password: admin
+    password: carlos20250705!
+    driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
-jwt:
-  secret: dXNlYSBasdfqwer2345dfgsdfg3245zZWN1cmUga2V5IHdpdGggYSBtaW5pbXVtIGxlbmd0aCBvZiA2NCBieXRlcwtesttesttesttesttest
-
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none                                   # none, validate, update, create, create-drop
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true                                 # 실행되는 SQL 쿼리를 콘솔에 출력 (개발용)
+        format_sql: true                               # SQL 쿼리를 보기 좋게 포맷하여 출력
+        use_sql_comments: true                         # 쿼리에 Hibernate 내부 주석 추가 (예: 엔티티 정보 등)
+        query:
+          plan_cache_max_size: 384                     # 쿼리 실행 계획(plan) 캐시 최대 크기 (기본값보다 작게 설정하여 메모리 사용 조절 가능)
+          plan_parameter_metadata_max_size: 24         # 파라미터 메타데이터 캐시 최대 크기 (성능 최적화)
+          in_clause_parameter_padding: true            # IN 절 파라미터 개수를 일정하게 패딩하여 SQL 캐시 hit율 향상
+        default_schema: users
+  profiles:
+    include:
+      - base
 
 logging:
   level:
     org.hibernate.SQL: INFO
-    org.hibernate.type.descriptor.sql: TRACE
-    com.app.salty.checklist: DEBUG
-    org.springframework.web: DEBUG
+    org.hibernate.type.descriptor.sql: INFO
+    com.app.salty.checklist: INFO
+    org.springframework: INFO
+    org.springframework.web: INFO
 
 server:
   port: 8081

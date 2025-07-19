@@ -74,10 +74,12 @@ public class ManageStaffsService {
   public SaveCertificationResponseDTO saveCertService(SaveCertificateReqDTO saveCertificateReqDTO,
       JwtToken jwtToken) {
 
-    Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
+    //Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
+    String username = jwtTokenProvider.getUserContext(jwtToken.getAccessToken()).getUsername();
+
 
     Certificates cert = certificateRepository.save(
-        new Certificates(saveCertificateReqDTO, managerId));
+        new Certificates(saveCertificateReqDTO, username));
     return new SaveCertificationResponseDTO(true, cert.getCertificatesId(), null);
   }
 }
