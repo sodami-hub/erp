@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenFInderImpl implements RefreshTokenFinder {
+public class CustomRefreshTokenFinder implements RefreshTokenFinder {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public String findRefreshToken(Long staffId) {
-        RefreshToken findRefreshToken = refreshTokenRepository.findByStaffId(staffId);
+        RefreshToken findRefreshToken = refreshTokenRepository.findByStaffIdAndRevoked(staffId, false);
         if(findRefreshToken != null) {
             return findRefreshToken.getRefreshToken();
         }
