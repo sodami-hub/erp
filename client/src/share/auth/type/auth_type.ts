@@ -16,6 +16,8 @@ export type LoginResponse = {
       accessToken: string;
       refreshToken: string;
     };
+    authCode: string;
+    errorMessage: string;
   };
 };
 
@@ -38,6 +40,7 @@ export type signupStaffResponse = {
 
 export type LoggedUserInfo = {institutionId: string; id: string};
 
+// 실제로는 accessToken 필드만 사용됨
 export type JwtToken = {
   grantType: string;
   accessToken: string;

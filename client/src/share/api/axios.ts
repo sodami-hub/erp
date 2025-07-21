@@ -4,16 +4,10 @@ import {readStringP, writeObject} from '../utils';
 import * as T from '../auth/type';
 
 // 새로운 토큰을 요청하는 API
-// 참고 : 새로운 토큰 요청 url `${import.meta.env.VITE_AUTH_URL}/v1/auth/refresh`
-const requestNewToken = async (refreshToken: string) => {
+const requestNewToken = async (userId: string) => {
   const res = await axios.post<T.JwtToken>(
-    `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/auth/newToken`,
-    {},
-    {
-      headers: {
-        'X-Refresh-Token': refreshToken
-      }
-    }
+    `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/auth/newToken/${userId}`,
+    {}
   );
   return res.data;
 };
@@ -83,9 +77,9 @@ axiosClient.interceptors.response.use(
         if (!refreshToken) {
           throw new Error('No refresh token');
         }
-
+        const userInfo: T.LoggedUserInfo = U.readObject('user');
         // refresh token으로 새로운 token 요청
-        const newToken = await requestNewToken(refreshToken);
+        const newToken = await requestNewToken(userInfo.id);
 
         // 새로운 토큰 저장
         const result: T.JwtToken = newToken;
