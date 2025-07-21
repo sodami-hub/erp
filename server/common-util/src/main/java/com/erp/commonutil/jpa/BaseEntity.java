@@ -1,4 +1,4 @@
-package com.erp.staffmanagement.staff_management.entity;
+package com.erp.commonutil.jpa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -7,30 +7,32 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+
 @Getter
 @Setter
+@MappedSuperclass
 @NoArgsConstructor
+@EntityListeners(CustomAuditingEntityListener.class)
 public class BaseEntity {
 
   @Column(name = "created_at")
   @CreatedDate
   private LocalDateTime createdAt;
 
-  @Column(name = "updated_at")
   @LastModifiedDate
+  @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
+  @CreatedBy
   @Column(name = "creator_id")
-  // @CreatedBy  User ID 를 인식하려면, AuditorAware 를 구현한 클래스를 만들어야 된다. 실패!! 나중에 구현해보도록
   private String creatorId;
 
+  @LastModifiedBy
   @Column(name = "updater_id")
-  // @LastModifiedBy
   private String updaterId;
 }

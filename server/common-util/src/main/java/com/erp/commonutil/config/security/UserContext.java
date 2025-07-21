@@ -16,6 +16,9 @@ public class UserContext implements UserDetails {
     /** 직원번호 */
     private Long staffId;
 
+    /** 이름 */
+    private String name;
+
     /** 요양기관번호 */
     private String institutionId;
 
@@ -72,6 +75,14 @@ public class UserContext implements UserDetails {
     }
 
     /**
+     * 사용자 이름
+     * @return 사용자이름
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * UserContext 생성자
      * @param staffId
      * @param institutionId
@@ -81,9 +92,10 @@ public class UserContext implements UserDetails {
      */
     @Builder
     public UserContext(
-            Long staffId, String institutionId, String phone, String password, Collection<? extends GrantedAuthority> authorities
+            Long staffId, String name, String institutionId, String phone, String password, Collection<? extends GrantedAuthority> authorities
     ) {
         this.staffId = staffId;
+        this.name = name;
         this.institutionId = institutionId;
         this.phone = phone;
         this.password = password;
@@ -98,8 +110,10 @@ public class UserContext implements UserDetails {
     public String toString() {
         return "UserContext{" +
                 "staffId=" + staffId +
+                ", name='" + name + '\'' +
                 ", institutionId='" + institutionId + '\'' +
                 ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
                 ", authorities=" + authorities +
                 '}';
     }

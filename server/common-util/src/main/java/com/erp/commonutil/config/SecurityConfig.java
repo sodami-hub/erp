@@ -3,6 +3,7 @@ package com.erp.commonutil.config;
 import com.erp.commonutil.config.security.CustomAuthenticationEntryPoint;
 import com.erp.commonutil.config.security.CustomAuthenticationProvider;
 import com.erp.commonutil.config.security.JwtAuthenticationFilter;
+import com.erp.commonutil.config.security.RefreshTokenFinder;
 import com.erp.commonutil.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +44,9 @@ public class SecurityConfig {
   /** 인증 실패 */
   private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
+  /** 리프레시 토큰 finder */
+  private final RefreshTokenFinder refreshTokenFinder;
+
   /**
    * SecurityFilterChain 등록
    * @param http HttpSecurity
@@ -73,7 +77,7 @@ public class SecurityConfig {
    */
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter(jwtTokenProvider);
+    return new JwtAuthenticationFilter(jwtTokenProvider, refreshTokenFinder);
   }
 
   /**

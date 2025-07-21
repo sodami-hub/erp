@@ -1,5 +1,6 @@
 package com.erp.staffmanagement.staff_management.entity;
 
+import com.erp.commonutil.jpa.BaseEntity;
 import com.erp.staffmanagement.staff_management.dto.SaveFileDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

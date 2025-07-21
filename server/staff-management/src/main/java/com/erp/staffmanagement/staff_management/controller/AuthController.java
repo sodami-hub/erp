@@ -10,6 +10,7 @@ import com.erp.staffmanagement.staff_management.dto.LoginResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpResponseDTO;
 import com.erp.staffmanagement.staff_management.service.AuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,44 +28,15 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
+@RequiredArgsConstructor
 public class AuthController {
 
   private final AuthService authService;
-  private final AuthenticationManager authenticationManager;
-  private final JwtTokenProvider jwtTokenProvider;
-
-  public AuthController(AuthService authService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
-    this.authService = authService;
-      this.authenticationManager = authenticationManager;
-      this.jwtTokenProvider = jwtTokenProvider;
-  }
 
   @PostMapping(value = "/auth/login")
   public ResponseEntity<ApiResponse> login(
       @RequestBody LoginRequestDTO loginRequestDTO) {
-    Authentication authenticate = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequestDTO.getId(), loginRequestDTO.getPassword())
-    );
-
-    UserContext userContext = (UserContext) authenticate.getPrincipal();
-    String accessToken = jwtTokenProvider.generateAccessToken(userContext);
-    String refreshToken = jwtTokenProvider.generateRefreshToken(userContext);
-
-    JwtToken token = JwtToken.builder()
-              .grantType(Constants.BEARER_PREFIX.trim())
-              .accessToken(accessToken)
-              .refreshToken(refreshToken)
-            .build();
-
-    Collection<? extends GrantedAuthority> authorities = userContext.getAuthorities();
-
-    String roles = authorities.stream()
-            .filter(Objects::nonNull)
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(","));
-
-    LoginResponseDTO response = new LoginResponseDTO(true, token, roles, null);
-    return ResponseEntity.ok(ApiResponse.success(response));
+    return ResponseEntity.ok(ApiResponse.success(authService.login(loginRequestDTO)));
   }
 
   @PostMapping(value = "/auth/signup", produces = "application/json")
