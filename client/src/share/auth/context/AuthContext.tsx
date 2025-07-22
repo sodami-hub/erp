@@ -50,7 +50,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const signup = useCallback(
     async (newStaff: T.SignupStaffRequest, document?: FormData) => {
       // 직원 정보 등록
-      const response = await API.staffSignup(newStaff);
+      const response: T.ResponseType<any> = await API.staffSignup(newStaff);
       if (!response.ok) {
         if (response.message) {
           setErrorMessage('Message ' + response.message);
@@ -69,7 +69,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
         const response = await API.staffFileUpload(document);
         if (!response.ok) {
           if (response.message) {
-            setErrorMessage('error message : ' + response.message);
+            setErrorMessage('Message : ' + response.message);
             return;
           } else {
             setErrorMessage('file upload failed');
@@ -92,7 +92,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       callback?: T.Callback
     ) => {
       const info: T.LoginInfo = {institutionId, id, password};
-      const response: T.LoginResponse = await API.staffLogin(info);
+      const response: T.ResponseType<any> = await API.staffLogin(info);
       if (!response.ok) {
         if (response.message) {
           setErrorMessage('Message : ' + response.message);

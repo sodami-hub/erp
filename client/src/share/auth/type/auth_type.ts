@@ -1,5 +1,3 @@
-// 타입의 중복되는 내용을 제네릭을 쓴다던지 방법을 찾아서 심플하게.
-
 type CustomResponse = Record<string, unknown>;
 
 export type ResponseType<T extends CustomResponse> = {
@@ -15,6 +13,7 @@ export type LoginInfo = {
   password: string;
 };
 
+/* ResponseType<T> 를 사용하면서 사용하지 않는 타입들
 export type LoginResponse = {
   ok: boolean;
   status: string;
@@ -30,6 +29,17 @@ export type LoginResponse = {
     message: string;
   };
 };
+export type signupStaffResponse = {
+  ok: boolean;
+  status: string;
+  message: string;
+  data: {
+    ok: boolean;
+    staffID: string;
+    message: string;
+  };
+};
+ */
 
 export type SignupStaffRequest = {
   name: string;
@@ -46,17 +56,6 @@ export type SignupStaffRequest = {
   possibleWork: string;
   workType: string;
   workStatus: string;
-};
-
-export type signupStaffResponse = {
-  ok: boolean;
-  status: string;
-  message: string;
-  data: {
-    ok: boolean;
-    staffID: string;
-    message: string;
-  };
 };
 
 export type LoggedUserInfo = {institutionId: string; id: string; authCode: string};

@@ -14,5 +14,5 @@ import lombok.ToString;
 public class FileUploadResponseDTO {
 
   private boolean ok;
-  private String errorMessage;
+  private String message;
 }

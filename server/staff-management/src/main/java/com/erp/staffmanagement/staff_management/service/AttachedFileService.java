@@ -78,30 +78,32 @@ public class AttachedFileService {
   }
 
   public FileUploadResponseDTO dependentFileService(MultipartFile file01, MultipartFile file02,
-      Long userId, JwtToken jwtToken)
+      Long userId, String accessToken)
       throws FileUploadException {
 
-    //Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
-    UserContext userContext = jwtTokenProvider.getUserContext(jwtToken.getAccessToken());
+    UserContext userContext = jwtTokenProvider.getUserContext(accessToken);
 
-    if (!file01.isEmpty()) {
-      SaveFileDTO saveFileDTO = saveFileStorage(file01, "dependent");
-      saveFileDTO.setId(userId);
+    try {
+      if (!file01.isEmpty()) {
+        SaveFileDTO saveFileDTO = saveFileStorage(file01, "dependent");
+        saveFileDTO.setId(userId);
+        // 파일 정보 DB 저장 처리
+        documentRepository.save(
+            new DependencyDocuments(saveFileDTO, userContext.getUsername()));
+      }
+      if (!file02.isEmpty()) {
+        SaveFileDTO saveFileDTO = saveFileStorage(file02, "dependent");
+        saveFileDTO.setId(userId);
 
-      // 파일 정보 DB 저장 처리
-      documentRepository.save(
-          new DependencyDocuments(saveFileDTO, userContext.getUsername()));
+        // 파일 정보 DB 저장 처리
+        documentRepository.save(
+            new DependencyDocuments(saveFileDTO, userContext.getUsername()));
+      }
+    } catch (RuntimeException e) {
+      return new FileUploadResponseDTO(false, e.getMessage());
     }
-    if (!file02.isEmpty()) {
-      SaveFileDTO saveFileDTO = saveFileStorage(file02, "dependent");
-      saveFileDTO.setId(userId);
 
-      // 파일 정보 DB 저장 처리
-      documentRepository.save(
-          new DependencyDocuments(saveFileDTO, userContext.getUsername()));
-    }
-
-    return new FileUploadResponseDTO(true, null);
+    return new FileUploadResponseDTO(true, "첨부문서 저장 성공");
   }
 
   public FileUploadResponseDTO certFileService(MultipartFile file, Long certificateId,

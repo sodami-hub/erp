@@ -99,12 +99,13 @@ public class AuthController {
   @PostMapping(value = "/auth/signup", produces = "application/json")
   public ResponseEntity<ApiResponse<SignUpResponseDTO>> signup(
       @RequestBody SignUpRequestDTO signUpRequestDTO,
-      @RequestHeader(value = "Authorization") String accessToken
+      @RequestHeader(value = "Authorization") String token
   ) {
     // 클라이언트에서 넘어오는 데이터 확인 완료
     System.out.println(signUpRequestDTO.toString());
-    System.out.println(accessToken);
+    System.out.println(token);
 
+    String accessToken = token.replace("Bearer ", "");
     SignUpResponseDTO signUpResponseDTO = authService.staffSignUp(signUpRequestDTO, accessToken);
 
     if (!signUpResponseDTO.isOk()) {
