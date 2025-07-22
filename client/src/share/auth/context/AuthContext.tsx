@@ -95,15 +95,15 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       } else {
         const loggedUserInfo: T.LoggedUserInfo = {
           institutionId: info.institutionId,
-          id: info.id
+          id: info.id,
+          authCode: response.data.authCode
         };
         U.writeObject('user', loggedUserInfo);
         setLoggedUser(loggedUserInfo);
-        U.writeStringP('accessToken', response.data.body.accessToken ?? '');
-        U.writeStringP('refreshToken', response.data.body.refreshToken ?? '');
-        //U.writeObject('jwt', response.token ?? {});
-        setJwt(undefined);
-        setAuthCode('');
+        U.writeStringP('accessToken', response.data.body.accessToken);
+        U.writeObject('jwt', response.data.body);
+        setJwt(response.data.body);
+        setAuthCode(response.data.authCode);
         callback && callback();
         console.log('login success');
       }
@@ -114,7 +114,6 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const logout = useCallback(() => {
     U.writeObject('user', {});
     U.writeStringP('accessToken', '');
-    U.writeStringP('refreshToken', '');
     setJwt(undefined);
     setAuthCode('');
     setLoggedUser(undefined);

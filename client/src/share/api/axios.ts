@@ -64,15 +64,16 @@ axiosClient.interceptors.response.use(
       if (originalConfig._retry) {
         // clearLocalStorage() jwt 초기화
         U.writeStringP('accessToken', '');
-        U.writeStringP('refreshToken', '');
-        // window.location.href = login + '?expired=true&from=' + currentPath
+        /*
+          로그아웃 -> 로그인 페이지로 이동 // 다시 로그인해서 새로운 토큰을 받아야 됨.
+           */
+
         return Promise.reject(err);
       }
 
       originalConfig._retry = true;
 
       try {
-        // localStorage에서 refresh token 가져오기
         const refreshToken = readStringP('refreshToken');
         if (!refreshToken) {
           throw new Error('No refresh token');
@@ -84,11 +85,9 @@ axiosClient.interceptors.response.use(
         // 새로운 토큰 저장
         const result: T.JwtToken = newToken;
         const newAccessToken = newToken.accessToken;
-        const newRefreshToken = newToken.refreshToken;
 
         if (newAccessToken) {
-          localStorage.setItem('AccessToken', newAccessToken);
-          localStorage.setItem('refreshToken', newRefreshToken);
+          U.writeStringP('AccessToken', newAccessToken);
           writeObject('jwt', result);
 
           // 실패했던 원래 요청 다시 시도
@@ -99,8 +98,7 @@ axiosClient.interceptors.response.use(
         }
       } catch (refreshError) {
         // refresh token도 만료되었거나 갱신 실패한 경우 로그아웃
-        // clearLocalStorage() jwt 초기화
-        // window.location.href = login + '?expired=true&from=' + currentPath 로그인 페이지로 이동
+        // 로그인 페이지로 이동
 
         // 로그아웃 로직~ 컴포넌트에서...
 

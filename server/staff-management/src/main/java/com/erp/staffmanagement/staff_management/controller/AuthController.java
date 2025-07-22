@@ -69,8 +69,10 @@ public class AuthController {
     );
 
     UserContext userContext = (UserContext) authenticate.getPrincipal();
+
     String accessToken = jwtTokenProvider.generateAccessToken(userContext);
-    String refreshToken = jwtTokenProvider.generateRefreshToken(userContext);
+
+    String refreshToken = jwtTokenProvider.generateRefreshToken(userContext);  // 서버 DB에 저장 및 관리
 
     JwtToken token = JwtToken.builder()
         .grantType(Constants.BEARER_PREFIX.trim())
@@ -85,7 +87,7 @@ public class AuthController {
         .map(GrantedAuthority::getAuthority)
         .collect(Collectors.joining(","));
 
-    LoginResponseDTO response = new LoginResponseDTO(true, token, roles, null);
+    LoginResponseDTO response = new LoginResponseDTO(true, token, roles);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
