@@ -47,35 +47,42 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     setJwt(newJwt);
   }, []);
 
-  const signup = useCallback(async (newStaff: T.SignupStaffInfo, document?: FormData) => {
-    // 직원 정보 등록
-    const response = await API.staffSignup(newStaff);
-    if (!response.ok) {
-      if (response.errorMessage) {
-        setErrorMessage('error message : ' + response.errorMessage);
-      } else {
-        setErrorMessage('staff signup failed');
-      }
-    } else {
-      console.log('직원 정보 저장 성공');
-    }
-    // 첨부 서류 업로드
-    const staffId: string = response.staffId ? response.staffId : '';
-    if (document) {
-      document.append('staffId', staffId);
-      const response = await API.staffFileUpload(document);
+  const signup = useCallback(
+    async (newStaff: T.SignupStaffRequest, document?: FormData) => {
+      // 직원 정보 등록
+      const response = await API.staffSignup(newStaff);
       if (!response.ok) {
-        if (response.errorMessage) {
-          setErrorMessage('error message : ' + response.errorMessage);
+        if (response.message) {
+          setErrorMessage('Message ' + response.message);
+          return;
         } else {
-          setErrorMessage('file upload failed');
+          setErrorMessage('staff signup failed');
+          return;
         }
       } else {
-        console.log('file upload succeed');
+        console.log('직원 정보 저장 성공');
       }
-    }
-    alert('직원 등록이 완료됐습니다.');
-  }, []);
+      // 첨부 서류 업로드
+      const staffId: string = response.data.staffID;
+      if (document) {
+        document.append('staffId', staffId);
+        const response = await API.staffFileUpload(document);
+        if (!response.ok) {
+          if (response.message) {
+            setErrorMessage('error message : ' + response.message);
+            return;
+          } else {
+            setErrorMessage('file upload failed');
+            return;
+          }
+        } else {
+          console.log('file upload succeed');
+        }
+      }
+      alert('직원 등록이 완료됐습니다.');
+    },
+    []
+  );
 
   const login = useCallback(
     async (
@@ -126,7 +133,6 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     if (deleteStorage) {
       U.writeObject('user', {});
       U.writeStringP('accessToken', '');
-      U.writeStringP('refreshToken', '');
       setJwt(undefined);
       setAuthCode('');
       setLoggedUser(undefined);

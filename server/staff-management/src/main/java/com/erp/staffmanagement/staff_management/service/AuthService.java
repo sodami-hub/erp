@@ -11,7 +11,6 @@ import com.erp.staffmanagement.staff_management.dto.SignUpResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
 import com.erp.staffmanagement.staff_management.entity.Staff;
 import com.erp.staffmanagement.staff_management.repository.StaffRepository;
-import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,7 +46,7 @@ public class AuthService {
     return jwtTokenProvider.generateAccessToken(claims);
   }
 
-  public LoginResponseDTO login(LoginRequestDTO loginRequestDTO, JwtToken jwtToken) {
+  public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
     // 1.
     StaffInfoDTO staffInfo = getStaffInfoByPhone(loginRequestDTO.getId());
     if (staffInfo == null) {
@@ -59,54 +58,22 @@ public class AuthService {
       // DB 정보와 로그인 정보가 일치하지 않음
       return new LoginResponseDTO(false, null, null, "로그인 정보를 확인해주세요.");
     }
-
-    // 2. 로그인 정보와 DB에서 조회한 정보가 일치하는 경우
-    if (jwtToken == null) {
-      //클라이언트에 토큰이 없다. 토큰을 새로 생성해서 전달한다.
-      System.out.println("로그인 정보와 DB에서 조회한 정보가 일치하지만 토큰이 없습니다. 토큰을 생성합니다.");
-      JwtToken token = genJwtToken(staffInfo);
-      return new LoginResponseDTO(true, token, staffInfo.getAuthId(), null);
-    } else {
-      // 토큰이 있는 경우 토큰의 유효성 확인 및 토큰의 정보와 로그인 정보가 같은지 확인
-      System.out.println("로그인 정보와 DB에서 조회한 정보가 일치하고 토큰이 있습니다. 토큰을 확인합니다.");
-      boolean valid = jwtTokenProvider.validateToken(jwtToken.getAccessToken());
-      if (!valid) {
-        // 만료된 토큰인 경우 - 다시 생성해서 전달
-        System.out.println("토큰이 만료되었습니다. 새로운 토큰을 생성합니다.");
-        JwtToken token = genJwtToken(staffInfo);
-        return new LoginResponseDTO(true, token, staffInfo.getAuthId(), null);
-      } else {
-        // 유효한 토큰인 경우 - 토큰의 정보와 로그인 정보를 비교한다.
-        System.out.println("토큰이 유효합니다. 토큰의 정보를 확인합니다.");
-        JwtClaimsDTO claims = jwtTokenProvider.getClaims(jwtToken.getAccessToken());
-        if (Objects.equals(claims.getStaffId(), staffInfo.getStaffId())) {
-          // 토큰의 정보와 로그인 정보가 같은 경우
-          System.out.println("토큰의 정보와 로그인 정보가 같습니다. 로그인 성공.");
-          return new LoginResponseDTO(true, jwtToken, staffInfo.getAuthId(), null);
-        } else {
-          // 토큰의 정보와 로그인 정보가 다른 경우 - 다시 생성해서 전달
-          System.out.println("토큰의 정보와 로그인 정보가 다릅니다. 새로운 토큰을 생성합니다.");
-          JwtToken token = genJwtToken(staffInfo);
-          return new LoginResponseDTO(true, token, staffInfo.getAuthId(), null);
-        }
-      }
-    }
+    return new LoginResponseDTO(true, null, null, "로그인 성공");
   }
 
 
-  public SignUpResponseDTO staffSignUp(SignUpRequestDTO signUpRequestDTO, JwtToken jwtToken) {
+  public SignUpResponseDTO staffSignUp(SignUpRequestDTO signUpRequestDTO, String accessToken) {
 
     UserContext userContext = null;
 
     // 1. 토큰 검증 로직 -> 유효한지(유효하지 않으면 다시 로그인) // 직원등록 권한이 있는지
-    if (jwtTokenProvider.validateToken(jwtToken.getAccessToken())) {
-      //jwtClaimsDTO = jwtTokenProvider.getClaims(jwtToken.getAccessToken());
-      userContext = jwtTokenProvider.getUserContext(jwtToken.getAccessToken());
+    if (jwtTokenProvider.validateToken(accessToken)) {
+      userContext = jwtTokenProvider.getUserContext(accessToken);
       if (userContext.getAuthorities().contains("102")) {
         return new SignUpResponseDTO(false, null, "직원등록 권한이 없습니다.");
       }
     } else {
-      return new SignUpResponseDTO(false, null, "사용자 인증이 만료됐습니다. 다시 로그인해주세요.");
+      return new SignUpResponseDTO(false, -1L, "토큰의 유효성 에러");
     }
 
     // 직원등록에 추가로 필요한 정보
@@ -116,7 +83,6 @@ public class AuthService {
     } else {
       signUpRequestDTO.setAuthId("102"); // 기관관리자가 등록하는 직원의 권한코드 '102'
     }
-
     signUpRequestDTO.setRetireDate(null);
 
     // 2. 직원 등록 로직

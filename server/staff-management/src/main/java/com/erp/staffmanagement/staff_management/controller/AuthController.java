@@ -87,21 +87,36 @@ public class AuthController {
         .map(GrantedAuthority::getAuthority)
         .collect(Collectors.joining(","));
 
-    LoginResponseDTO response = new LoginResponseDTO(true, token, roles);
-    return ResponseEntity.ok(ApiResponse.success(response));
+    LoginResponseDTO resp = authService.login(loginRequestDTO);
+    if (!resp.isOk()) {
+      return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST, resp.getMessage()));
+    }
+    resp.setBody(token);
+    resp.setAuthCode(roles);
+    return ResponseEntity.ok(ApiResponse.success(resp));
   }
 
   @PostMapping(value = "/auth/signup", produces = "application/json")
-  public ResponseEntity<SignUpResponseDTO> signup(
+  public ResponseEntity<ApiResponse<SignUpResponseDTO>> signup(
       @RequestBody SignUpRequestDTO signUpRequestDTO,
-      @RequestHeader(value = "Authorization") JwtToken jwtToken
+      @RequestHeader(value = "Authorization") String accessToken
   ) {
     // 클라이언트에서 넘어오는 데이터 확인 완료
     System.out.println(signUpRequestDTO.toString());
-    System.out.println(jwtToken.toString());
+    System.out.println(accessToken);
 
-    SignUpResponseDTO signUpResponseDTO = authService.staffSignUp(signUpRequestDTO, jwtToken);
+    SignUpResponseDTO signUpResponseDTO = authService.staffSignUp(signUpRequestDTO, accessToken);
 
-    return ResponseEntity.ok(signUpResponseDTO);
+    if (!signUpResponseDTO.isOk()) {
+      if (signUpResponseDTO.getStaffId() == -1L) {
+        return ResponseEntity.ok(
+            ApiResponse.error(HttpStatus.UNAUTHORIZED, signUpResponseDTO.getMessage()));
+      } else {
+        return ResponseEntity.ok(
+            ApiResponse.error(HttpStatus.BAD_REQUEST, signUpResponseDTO.getMessage()));
+      }
+    }
+
+    return ResponseEntity.ok(ApiResponse.success(signUpResponseDTO));
   }
 }

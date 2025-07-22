@@ -9,7 +9,7 @@ export const staffLogin = async (info: T.LoginInfo) => {
   return res.data;
 };
 
-export const staffSignup = async (newStaff: T.SignupStaffInfo) => {
+export const staffSignup = async (newStaff: T.SignupStaffRequest) => {
   const res = await axiosClient.post<T.signupStaffResponse>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/auth/signup`,
     newStaff

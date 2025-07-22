@@ -1,4 +1,14 @@
 // 타입의 중복되는 내용을 제네릭을 쓴다던지 방법을 찾아서 심플하게.
+
+type CustomResponse = Record<string, unknown>;
+
+export type ResponseType<T extends CustomResponse> = {
+  ok: boolean;
+  status: string;
+  message: string;
+  data: T;
+};
+
 export type LoginInfo = {
   institutionId: string;
   id: string;
@@ -17,38 +27,11 @@ export type LoginResponse = {
       refreshToken: string;
     };
     authCode: string;
+    message: string;
   };
 };
 
-export type signupStaffResponse = {
-  ok: boolean;
-  status: string;
-  staffId?: string; // 직원 등록후 등록한 직원의 id 가져오기. -> 파일등록에 사용.
-  message: string;
-  data: {
-    ok: boolean;
-    body: {
-      grantType: string;
-      accessToken: string;
-      refreshToken: string;
-    };
-  };
-  authCode?: string;
-  errorMessage?: string;
-};
-
-export type LoggedUserInfo = {institutionId: string; id: string; authCode: string};
-
-// 실제로는 accessToken 필드만 사용됨
-export type JwtToken = {
-  grantType: string;
-  accessToken: string;
-  refreshToken: string;
-};
-
-export type Callback = () => void;
-
-export type SignupStaffInfo = {
+export type SignupStaffRequest = {
   name: string;
   gender: string;
   birth: string;
@@ -65,6 +48,28 @@ export type SignupStaffInfo = {
   workStatus: string;
 };
 
+export type signupStaffResponse = {
+  ok: boolean;
+  status: string;
+  message: string;
+  data: {
+    ok: boolean;
+    staffID: string;
+    message: string;
+  };
+};
+
+export type LoggedUserInfo = {institutionId: string; id: string; authCode: string};
+
+// 실제로는 accessToken 필드만 사용됨
+export type JwtToken = {
+  grantType: string;
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type Callback = () => void;
+
 export type ContextType = {
   jwt?: JwtToken;
   authCode?: string;
@@ -76,7 +81,7 @@ export type ContextType = {
     password: string,
     callback?: Callback
   ) => void;
-  signup: (newStaff: SignupStaffInfo, document?: FormData) => void;
+  signup: (newStaff: SignupStaffRequest, document?: FormData) => void;
   logout: () => void;
   clearJwt: () => void;
   newJwt: (jwt: JwtToken) => void;
