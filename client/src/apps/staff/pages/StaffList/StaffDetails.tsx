@@ -1,13 +1,10 @@
 import * as T from '../../types';
 import {useEffect, useState} from 'react';
-import {useAuth} from '../../../../share/auth/context';
 import {useToggle} from '../../../../share/hooks';
 import {AddCertModal, AddCertModalContents} from './AddCertModal';
 import * as API from '../../api';
 
 export const StaffDetails = ({staffDetail}: {staffDetail: T.GetStaffInfo}) => {
-  const {jwt} = useAuth();
-
   const [addCertModalOpen, toggleAddCertModal] = useToggle(false);
 
   const [receiveCertificates, setReceiveCertificates] = useState<T.saveCertInfoRequest[]>(

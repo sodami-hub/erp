@@ -70,8 +70,6 @@ export type JwtToken = {
 export type Callback = () => void;
 
 export type ContextType = {
-  jwt?: JwtToken;
-  authCode?: string;
   errorMessage?: string;
   loggedUser?: LoggedUserInfo;
   login: (
@@ -83,5 +81,4 @@ export type ContextType = {
   signup: (newStaff: SignupStaffRequest, document?: FormData) => void;
   logout: () => void;
   clearJwt: () => void;
-  newJwt: (jwt: JwtToken) => void;
 };

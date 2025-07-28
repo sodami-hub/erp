@@ -51,7 +51,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   const closeIconClassName =
     _closeIconClassName ?? 'btn-primary btn-outline material-icons';
 
-  const {signup, jwt} = useAuth();
+  const {signup} = useAuth();
 
   // form 정보 리셋을 위한 값
   const [reset, setReset] = useState(false);
@@ -122,15 +122,12 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       return;
     }
 
-    if (jwt) {
-      signup(signupForm, material);
-    } else {
-      alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.');
-    }
+    signup(signupForm, material);
+
     setSignupForm(initialFormState);
     setReset(prev => !prev);
   }, [
-    signupForm, signup, jwt, material
+    signupForm, signup, material
   ]);
   // ==============================================================================
 
