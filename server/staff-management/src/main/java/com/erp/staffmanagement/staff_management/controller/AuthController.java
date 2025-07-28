@@ -23,7 +23,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -46,21 +45,6 @@ public class AuthController {
   public ResponseEntity<ApiResponse<LoginResponseDTO>> login(
       @RequestBody LoginRequestDTO loginRequestDTO) {
 
-    /*
-    authenticationManager는 내부적으로 authenticationProvider를 사용해 인증을 처리한다. 과정은 다음과 같다.
-
-    SecurityConfig에서 authenticationManager를 Bean으로 등록할 때,
-    builder.authenticationProvider(authenticationProvider())로 커스텀 AuthenticationProvider를 등록한다.
-
-    AuthController의 login 메서드에서 authenticationManager.authenticate(...)를 호출하면,
-    등록된 CustomAuthenticationProvider의 authenticate 메서드가 실행됩니다.
-
-    CustomAuthenticationProvider는 전달받은 아이디/비밀번호로 UserDetailsService를 통해 사용자를 조회하고,
-    비밀번호를 검증한 뒤 인증 객체를 반환합니다.
-
-    즉, AuthenticationManager는 여러 AuthenticationProvider 중 적합한 것을 찾아 인증을 위임
-    실제 인증 로직(아이디/비밀번호 확인)은 CustomAuthenticationProvider에서 처리하고, 인증 성공 시 인증된 사용자 정보가 반환됩니다.
-    */
     try {
       Authentication authenticate = authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(loginRequestDTO.getId(),
@@ -86,12 +70,6 @@ public class AuthController {
           .map(GrantedAuthority::getAuthority)
           .collect(Collectors.joining(","));
 
-//      LoginResponseDTO resp = authService.login(loginRequestDTO);
-//      if (!resp.isOk()) {
-//        return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST, resp.getMessage()));
-//      }
-//      resp.setBody(token);
-//      resp.setAuthCode(roles);
       return ResponseEntity.ok(
           ApiResponse.success(new LoginResponseDTO(true, token, roles, "login success")));
     } catch (AuthenticationException e) {
@@ -102,15 +80,10 @@ public class AuthController {
 
   @PostMapping(value = "/auth/signup", produces = "application/json")
   public ResponseEntity<ApiResponse<SignUpResponseDTO>> signup(
-      @RequestBody SignUpRequestDTO signUpRequestDTO,
-      @RequestHeader(value = "Authorization") String token
+      @RequestBody SignUpRequestDTO signUpRequestDTO
   ) {
-    // 클라이언트에서 넘어오는 데이터 확인 완료
-    System.out.println(signUpRequestDTO.toString());
-    System.out.println(token);
 
-    String accessToken = token.replace("Bearer ", "");
-    SignUpResponseDTO signUpResponseDTO = authService.staffSignUp(signUpRequestDTO, accessToken);
+    SignUpResponseDTO signUpResponseDTO = authService.staffSignUp(signUpRequestDTO);
 
     if (!signUpResponseDTO.isOk()) {
       return ResponseEntity.ok(
