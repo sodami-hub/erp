@@ -69,14 +69,13 @@ public class AuthService {
     // 1. 토큰 검증 로직 -> 유효한지(유효하지 않으면 다시 로그인) // 직원등록 권한이 있는지
     if (jwtTokenProvider.validateToken(accessToken)) {
       userContext = jwtTokenProvider.getUserContext(accessToken);
-      if (userContext.getAuthorities().contains("102")) {
+      if (userContext.getAuthorities().contains("102")) {   // 반환값 확인 필요
         return new SignUpResponseDTO(false, null, "직원등록 권한이 없습니다.");
       }
-    } else {
-      return new SignUpResponseDTO(false, -1L, "토큰의 유효성 에러");
     }
 
     // 직원등록에 추가로 필요한 정보
+    assert userContext != null;
     signUpRequestDTO.setInstitutionId(userContext.getInstitutionId());
     if (signUpRequestDTO.getWorkType().contains("센터장")) {
       signUpRequestDTO.setAuthId("101");  // 직종에 '센터장'이 있으면 권한코드 '101'
