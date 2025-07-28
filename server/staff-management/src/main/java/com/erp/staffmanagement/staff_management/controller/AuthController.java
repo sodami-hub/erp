@@ -20,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,24 +38,6 @@ public class AuthController {
     this.authService = authService;
     this.authenticationManager = authenticationManager;
     this.jwtTokenProvider = jwtTokenProvider;
-  }
-
-  @PostMapping(value = "/auth/newToken/{userId}")
-  public ResponseEntity<ApiResponse<JwtToken>> newToken(@PathVariable Long userId) {
-
-    // 서버에 저장된 사용자의 refresh token 가져오기.
-    String refreshToken = "userId 로 서버에 저장된 refreshToken 가져오기";
-
-    if (!jwtTokenProvider.validateToken(refreshToken) || jwtTokenProvider.isExpired(refreshToken)) {
-      return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST, "다시 로그인 해주세요."));
-    }
-
-    String newAccessToken = jwtTokenProvider.reissueAccessToken(refreshToken);
-
-    // 새로운 리플레시 토큰 생성해서 서버에 저장??
-
-    JwtToken newToken = new JwtToken("", newAccessToken, "");
-    return ResponseEntity.ok(ApiResponse.success(newToken));
   }
 
 

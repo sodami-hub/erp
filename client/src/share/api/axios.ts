@@ -1,16 +1,6 @@
 import axios from 'axios';
 import * as U from '../utils';
-import {readStringP, writeObject} from '../utils';
-import * as T from '../auth/type';
-
-// 새로운 토큰을 요청하는 API
-const requestNewToken = async (userId: string) => {
-  const res = await axios.post<T.JwtToken>(
-    `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/auth/newToken/${userId}`,
-    {}
-  );
-  return res.data;
-};
+import {readStringP} from '../utils';
 
 export const axiosClient = axios.create({
   headers: {
@@ -39,75 +29,15 @@ axiosClient.interceptors.request.use(
 
 // 서버의 모든 응답을 가로채서 엑세스 토큰이 만료되어 response 로 새롭게 받아온 토큰으로 교체
 axiosClient.interceptors.response.use(
-  response => response,
+  response => {
+    const newAccessToken = response.headers['Authorization'];
+    if (newAccessToken && newAccessToken.startsWith('Bearer ')) {
+      const newToken = newAccessToken.replace('Bearer ', '');
+      U.writeStringP('accessToken', newToken);
+    }
+    return response;
+  },
   async err => {
-    const currentPath = window.location.pathname; // 현재 경로를 가져옴
-    const originalConfig = err.config; // 에러난 api 요청 정보
-
-    // TODO : 로그인 페이지일 경우 토큰 갱신 시도하지 않음
-    if (currentPath === '/') {
-      return Promise.reject(err);
-    }
-
-    // 네트워크 오류
-    if (err.code === 'ERR_NETWORK') {
-      // 에러 페이지가 아닐 때만 리다이렉트
-      if (!currentPath.startsWith('/error')) {
-        // window.location.href = appRoutes.error + `?error=ERR_NETWORK&from=` + currentPath
-      }
-      return Promise.reject(err);
-    }
-
-    // 토큰 만료 에러 처리
-    if (err.response?.status === 401) {
-      // 이미 재시도한 경우는 다시 시도하지 않음
-      if (originalConfig._retry) {
-        // clearLocalStorage() jwt 초기화
-        U.writeStringP('accessToken', '');
-        /*
-          로그아웃 -> 로그인 페이지로 이동 // 다시 로그인해서 새로운 토큰을 받아야 됨.
-           */
-
-        return Promise.reject(err);
-      }
-
-      originalConfig._retry = true;
-
-      try {
-        const refreshToken = readStringP('refreshToken');
-        if (!refreshToken) {
-          throw new Error('No refresh token');
-        }
-        const userInfo: T.LoggedUserInfo = U.readObject('user');
-        // refresh token으로 새로운 token 요청
-        const newToken = await requestNewToken(userInfo.id);
-
-        // 새로운 토큰 저장
-        const result: T.JwtToken = newToken;
-        const newAccessToken = newToken.accessToken;
-
-        if (newAccessToken) {
-          U.writeStringP('AccessToken', newAccessToken);
-          writeObject('jwt', result);
-
-          // 실패했던 원래 요청 다시 시도
-          originalConfig.headers.Authorization = `Bearer ${newAccessToken}`;
-          return axiosClient(originalConfig);
-        } else {
-          throw new Error('failed to get new access token');
-        }
-      } catch (refreshError) {
-        // refresh token도 만료되었거나 갱신 실패한 경우 로그아웃
-        // 로그인 페이지로 이동
-
-        // 로그아웃 로직~ 컴포넌트에서...
-
-        return Promise.reject(refreshError);
-      }
-    } else if (err.response.status === 404 || err.response.status === 500) {
-      return Promise.reject(err);
-    }
-
     return Promise.reject(err);
   }
 );
