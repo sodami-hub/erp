@@ -1,7 +1,6 @@
 package com.erp.staffmanagement.staff_management.service;
 
-import com.erp.commonutil.jwt.JwtTokenProvider;
-import com.erp.commonutil.jwt.dto.JwtToken;
+import com.erp.commonutil.config.security.UserContext;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificateReqDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificationResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
@@ -13,6 +12,7 @@ import com.erp.staffmanagement.staff_management.repository.StaffRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,14 +20,11 @@ public class ManageStaffsService {
 
   private final StaffRepository staffRepository;
   private final CertificateRepository certificateRepository;
-  private final JwtTokenProvider jwtTokenProvider;
 
   public ManageStaffsService(StaffRepository staffRepository,
-      CertificateRepository certificateRepository, JwtTokenProvider jwtTokenProvider) {
+      CertificateRepository certificateRepository) {
     this.staffRepository = staffRepository;
-
     this.certificateRepository = certificateRepository;
-    this.jwtTokenProvider = jwtTokenProvider;
   }
 
   public List<StaffInfoDTO> getAllStaffs() {
@@ -71,15 +68,18 @@ public class ManageStaffsService {
   }
 
 
-  public SaveCertificationResponseDTO saveCertService(SaveCertificateReqDTO saveCertificateReqDTO,
-      JwtToken jwtToken) {
+  public SaveCertificationResponseDTO saveCertService(SaveCertificateReqDTO saveCertificateReqDTO) {
+    try {
+      UserContext userContext = (UserContext) SecurityContextHolder.getContext().getAuthentication()
+          .getPrincipal();
 
-    //Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
-    String username = jwtTokenProvider.getUserContext(jwtToken.getAccessToken()).getUsername();
+      Long managerId = userContext.getStaffId();
 
-
-    Certificates cert = certificateRepository.save(
-        new Certificates(saveCertificateReqDTO, username));
-    return new SaveCertificationResponseDTO(true, cert.getCertificatesId(), null);
+      Certificates cert = certificateRepository.save(
+          new Certificates(saveCertificateReqDTO, managerId));
+      return new SaveCertificationResponseDTO(true, cert.getCertificatesId(), null);
+    } catch (Exception e) {
+      return new SaveCertificationResponseDTO(false, null, e.getMessage());
+    }
   }
 }

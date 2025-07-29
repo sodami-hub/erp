@@ -1,6 +1,6 @@
 package com.erp.staffmanagement.staff_management.controller;
 
-import com.erp.commonutil.jwt.dto.JwtToken;
+import com.erp.commonutil.response.ApiResponse;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificateReqDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificationResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -73,13 +72,16 @@ public class ManageStaffsController {
   }
 
   @PostMapping("/staff/saveCertificate")
-  public ResponseEntity<SaveCertificationResponseDTO> saveCertificateInfo(
-      @RequestBody SaveCertificateReqDTO saveCertificateReqDTO,
-      @RequestHeader(value = "Authorization") JwtToken jwtToken
+  public ResponseEntity<ApiResponse<SaveCertificationResponseDTO>> saveCertificateInfo(
+      @RequestBody SaveCertificateReqDTO saveCertificateReqDTO
   ) {
-    SaveCertificationResponseDTO requestDTO = manageStaffsService.saveCertService(
-        saveCertificateReqDTO, jwtToken);
-    return new ResponseEntity<>(requestDTO, HttpStatus.OK);
-  }
+    SaveCertificationResponseDTO saveCertificationResponseDTO = manageStaffsService.saveCertService(
+        saveCertificateReqDTO);
 
+    if (!saveCertificationResponseDTO.isOk()) {
+      return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST,
+          "자격증 정보 저장 실패 // " + saveCertificationResponseDTO.getErrorMessage()));
+    }
+    return ResponseEntity.ok(ApiResponse.success(saveCertificationResponseDTO));
+  }
 }

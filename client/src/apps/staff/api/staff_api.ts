@@ -10,7 +10,7 @@ export const loadCommonCode = async (groupName: string) => {
 };
 
 export const saveCertInfo = async (certInfo: T.saveCertInfoRequest) => {
-  const res = await axiosClient.post<T.saveCertInfoResponse>(
+  const res = await axiosClient.post<ST.ResponseType<T.saveCertInfoResponse>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/saveCertificate`,
     certInfo
   );
@@ -18,7 +18,7 @@ export const saveCertInfo = async (certInfo: T.saveCertInfoRequest) => {
 };
 
 export const saveCertFile = async (file: FormData, certificateId: string) => {
-  const res = await axiosClient.post<T.saveCertFileResponse>(
+  const res = await axiosClient.post<ST.ResponseType<any>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/saveCertFile/${certificateId}`,
     file
   );

@@ -108,22 +108,23 @@ public class AttachedFileService {
     return new FileUploadResponseDTO(true, "첨부문서 저장 성공");
   }
 
-  public FileUploadResponseDTO certFileService(MultipartFile file, Long certificateId)
-      throws FileUploadException {
+  public FileUploadResponseDTO certFileService(MultipartFile file, Long certificateId) {
+    try {
+      SaveFileDTO saveFileDTO = saveFileStorage(file, "certificate");
 
-    SaveFileDTO saveFileDTO = saveFileStorage(file, "certificate");
+      Certificates cert = certificateRepository.findById(certificateId).orElse(null);
+      if (cert == null) {
+        return new FileUploadResponseDTO(false, "파일의 정보를 저장할 자격증 정보가 없습니다.(certificateId error)");
+      }
+      cert.setOriginalName(saveFileDTO.getOriginalName());
+      cert.setSaveName(saveFileDTO.getSaveName());
+      cert.setUpdaterId(getManagerId());
 
-    Certificates cert = certificateRepository.findById(certificateId).orElse(null);
-    if (cert == null) {
-      return new FileUploadResponseDTO(false, "파일의 정보를 저장할 자격증 정보가 없습니다.");
+      certificateRepository.save(cert);
+
+      return new FileUploadResponseDTO(true, null);
+    } catch (Exception e) {
+      return new FileUploadResponseDTO(false, e.getMessage());
     }
-    cert.setOriginalName(saveFileDTO.getOriginalName());
-    cert.setSaveName(saveFileDTO.getSaveName());
-    cert.setUpdaterId(getManagerId());
-
-    certificateRepository.save(cert);
-
-    return new FileUploadResponseDTO(true, null);
-
   }
 }

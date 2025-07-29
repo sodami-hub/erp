@@ -31,12 +31,10 @@ const initialFormState: SignupFormType = {
 // =========================================================================
 
 // ================= 공통코드 리스트 초깃값 정의 =============================
-const initialCommonCodeList: T.CommonCode = {
-  ok: false,
-  authList: [],
-  workTypeList: [],
-  workList: [],
-  workStatusList: []
+const initialCommonCodeList = {
+  work_type: [],
+  work_list: [],
+  work_status: []
 };
 // ====================================================================
 
@@ -60,14 +58,12 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   /*
   어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
    */
-  const [commonCodeList, setCommonCodeList] =
-    useState<T.CommonCode>(initialCommonCodeList);
+  const [commonCodeList, setCommonCodeList] = useState(initialCommonCodeList);
 
   useEffect(() => {
     (async () => {
-      const res = await API.loadCommonCode();
+      const res = await API.loadCommonCode('');
       if (res.ok) {
-        setCommonCodeList(res);
       } else {
         console.log('CommonCode(Staff) Load Failure');
       }
@@ -197,14 +193,14 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
         <C.WorkType
           reset={reset}
           value={signupForm.workType}
-          workTypeList={memoizedCommonCodeList.workTypeList}
+          workTypeList={memoizedCommonCodeList.work_type}
           changed={changed}
         />
 
         <C.PossibleWork
           reset={reset}
           value={signupForm.possibleWork}
-          workList={memoizedCommonCodeList.workList}
+          workList={memoizedCommonCodeList.work_list}
           changed={changed}
         />
 
@@ -216,7 +212,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
 
         <C.WorkStatus
           value={signupForm.workStatus}
-          workStatusList={memoizedCommonCodeList.workStatusList}
+          workStatusList={memoizedCommonCodeList.work_status}
           changed={changed}
           reset={reset}
         />

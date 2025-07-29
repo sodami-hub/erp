@@ -51,12 +51,18 @@ public class AttachedFileController {
   // 자격증 첨부 서류 처리
   @Transactional
   @PostMapping("/staff/saveCertFile/{certificateId}")
-  public ResponseEntity<FileUploadResponseDTO> saveCertFile(
+  public ResponseEntity<ApiResponse<FileUploadResponseDTO>> saveCertFile(
       @PathVariable Long certificateId,
-      @RequestParam(value = "file") MultipartFile file) throws FileUploadException {
+      @RequestParam(value = "file") MultipartFile file) {
+
     FileUploadResponseDTO fileUploadResponseDTO = attachedFileService.certFileService(file,
         certificateId);
-    return ResponseEntity.ok(fileUploadResponseDTO);
+    if (!fileUploadResponseDTO.isOk()) {
+      return ResponseEntity.ok(
+          ApiResponse.error(HttpStatus.BAD_REQUEST,
+              "자격증 첨부 파일 업로드 에러 //" + fileUploadResponseDTO.getMessage()));
+    }
+    return ResponseEntity.ok(ApiResponse.success(fileUploadResponseDTO));
   }
 
 }

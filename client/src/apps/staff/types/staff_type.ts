@@ -47,11 +47,6 @@ export type saveCertInfoResponse = {
   errorMessage?: string;
 };
 
-export type saveCertFileResponse = {
-  ok: boolean;
-  errorMessage?: string;
-};
-
 export type CommonCode = {
   ok: boolean;
   groupName: string;
