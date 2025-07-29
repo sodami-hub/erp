@@ -63,12 +63,17 @@ public class ManageStaffsController {
 
 
   @GetMapping("/staff/certificates/{staffId}")
-  public ResponseEntity<List<certificateRequestDTO>> getCertificateByStaffId(
+  public ResponseEntity<ApiResponse<List<certificateRequestDTO>>> getCertificateByStaffId(
       @PathVariable Long staffId) {
+    try {
+      List<certificateRequestDTO> myCertificates = manageStaffsService.getCertificates(staffId);
 
-    List<certificateRequestDTO> myCertificates = manageStaffsService.getCertificates(staffId);
+      return ResponseEntity.ok(ApiResponse.success(myCertificates));
+    } catch (Exception e) {
+      return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST,
+          "해당 직원의 자격증 정보 불러오기 에러 // " + e.getMessage()));
+    }
 
-    return new ResponseEntity<>(myCertificates, HttpStatus.OK);
   }
 
   @PostMapping("/staff/saveCertificate")

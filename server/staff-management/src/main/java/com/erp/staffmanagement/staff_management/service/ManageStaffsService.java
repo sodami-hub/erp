@@ -61,10 +61,14 @@ public class ManageStaffsService {
   }
 
 
-  public List<certificateRequestDTO> getCertificates(Long staffId) {
-    List<Certificates> certificatesList = Optional.ofNullable(
-        certificateRepository.findCertificatesByStaffId(staffId)).orElse(List.of());
-    return certificatesList.stream().map(certificateRequestDTO::new).toList();
+  public List<certificateRequestDTO> getCertificates(Long staffId) throws Exception {
+    try {
+      List<Certificates> certificatesList = Optional.ofNullable(
+          certificateRepository.findCertificatesByStaffId(staffId)).orElse(List.of());
+      return certificatesList.stream().map(certificateRequestDTO::new).toList();
+    } catch (Exception e) {
+      throw new Exception(e.getMessage());
+    }
   }
 
 
