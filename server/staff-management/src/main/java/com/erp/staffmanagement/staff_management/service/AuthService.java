@@ -31,7 +31,7 @@ public class AuthService {
     signUpRequestDTO.setRetireDate(null);
 
     // 2. 직원 등록 로직
-    Staff newStaff = new Staff(signUpRequestDTO, userContext.getUsername());
+    Staff newStaff = new Staff(signUpRequestDTO, userContext.getStaffId());
     Staff staff = staffRepository.save(newStaff);
     return new SignUpResponseDTO(true, staff.getStaffId(), null);
   }

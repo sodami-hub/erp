@@ -75,7 +75,7 @@ public class Staff extends BaseEntity {
   @Column(name = "work_status")
   private String workStatus;
 
-  public Staff(SignUpRequestDTO signUpRequestDTO, String managerId) {
+  public Staff(SignUpRequestDTO signUpRequestDTO, Long managerId) {
     this.institutionId = signUpRequestDTO.getInstitutionId();
     this.name = signUpRequestDTO.getName();
     this.gender = signUpRequestDTO.getGender();

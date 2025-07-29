@@ -31,9 +31,9 @@ public class StaffInfoDTO {
   private String workType;
   private String workStatus;
   private LocalDateTime createdAt;
-  private String creatorId;
+  private Long creatorId;
   private LocalDateTime updatedAt;
-  private String updaterId;
+  private Long updaterId;
 
   public StaffInfoDTO(Staff staff) {
     this.staffId = staff.getStaffId();
