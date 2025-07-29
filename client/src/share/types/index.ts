@@ -1,1 +1,1 @@
-export * from './ModalProps';
+export * from './modal_props';

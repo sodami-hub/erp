@@ -10,6 +10,7 @@ import {
 import * as U from '../../utils';
 import {useNavigate} from 'react-router-dom';
 import * as T from '../type';
+import * as ST from '../../types';
 import * as API from '../api';
 
 export const AuthContext = createContext<T.ContextType>({
@@ -35,7 +36,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const signup = useCallback(
     async (newStaff: T.SignupStaffRequest, document?: FormData) => {
       // 직원 정보 등록
-      const response: T.ResponseType<any> = await API.staffSignup(newStaff);
+      const response: ST.ResponseType<any> = await API.staffSignup(newStaff);
       if (!response.ok) {
         if (response.message) {
           setErrorMessage('Message ' + response.message);
@@ -77,7 +78,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       callback?: T.Callback
     ) => {
       const info: T.LoginInfo = {institutionId, id, password};
-      const response: T.ResponseType<any> = await API.staffLogin(info);
+      const response: ST.ResponseType<any> = await API.staffLogin(info);
       if (!response.ok) {
         if (response.message) {
           setErrorMessage('Message : ' + response.message);
