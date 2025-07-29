@@ -6,7 +6,6 @@ import com.erp.staffmanagement.staff_management.dto.SaveCertificationResponseDTO
 import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
 import com.erp.staffmanagement.staff_management.dto.certificateRequestDTO;
 import com.erp.staffmanagement.staff_management.entity.Certificates;
-import com.erp.staffmanagement.staff_management.entity.Staff;
 import com.erp.staffmanagement.staff_management.repository.CertificateRepository;
 import com.erp.staffmanagement.staff_management.repository.StaffRepository;
 import java.util.List;
@@ -27,39 +26,24 @@ public class ManageStaffsService {
     this.certificateRepository = certificateRepository;
   }
 
-  public List<StaffInfoDTO> getAllStaffs() {
-    List<Staff> staffs = staffRepository.findAll();
-    return staffs.stream().map(StaffInfoDTO::new).toList();
+  public List<StaffInfoDTO> getStaffsForStatus(String status) throws Exception {
+    List<StaffInfoDTO> staffs = staffRepository.findAll().stream().map(StaffInfoDTO::new).toList();
+    return switch (status) {
+      case "all" -> staffs;
+      case "onDuty" ->
+          staffs.stream().filter(object -> "근무".equals(object.getWorkStatus())).collect(
+              Collectors.toList());
+      case "offDuty" ->
+          staffs.stream().filter(object -> "퇴사".equals(object.getWorkStatus())).collect(
+              Collectors.toList());
+      case "break" -> staffs.stream().filter(object -> "휴직".equals(object.getWorkStatus())).collect(
+          Collectors.toList());
+      case "waiting" ->
+          staffs.stream().filter(object -> "대기".equals(object.getWorkStatus())).collect(
+              Collectors.toList());
+      default -> throw new Exception("잘못된 요청입니다.");
+    };
   }
-
-  public List<StaffInfoDTO> getOnDutyStaffs() {
-    List<Staff> staffs = staffRepository.findAll();
-    List<StaffInfoDTO> result = staffs.stream().map(StaffInfoDTO::new).toList();
-    return result.stream().filter(object -> "근무".equals(object.getWorkStatus())).collect(
-        Collectors.toList());
-  }
-
-  public List<StaffInfoDTO> getOffDutyStaffs() {
-    List<Staff> staffs = staffRepository.findAll();
-    List<StaffInfoDTO> result = staffs.stream().map(StaffInfoDTO::new).toList();
-    return result.stream().filter(object -> "퇴사".equals(object.getWorkStatus())).collect(
-        Collectors.toList());
-  }
-
-  public List<StaffInfoDTO> getBreakStaffs() {
-    List<Staff> staffs = staffRepository.findAll();
-    List<StaffInfoDTO> result = staffs.stream().map(StaffInfoDTO::new).toList();
-    return result.stream().filter(object -> "휴직".equals(object.getWorkStatus())).collect(
-        Collectors.toList());
-  }
-
-  public List<StaffInfoDTO> getWaitingStaffs() {
-    List<Staff> staffs = staffRepository.findAll();
-    List<StaffInfoDTO> result = staffs.stream().map(StaffInfoDTO::new).toList();
-    return result.stream().filter(object -> "대기".equals(object.getWorkStatus())).collect(
-        Collectors.toList());
-  }
-
 
   public List<certificateRequestDTO> getCertificates(Long staffId) throws Exception {
     try {
@@ -70,7 +54,6 @@ public class ManageStaffsService {
       throw new Exception(e.getMessage());
     }
   }
-
 
   public SaveCertificationResponseDTO saveCertService(SaveCertificateReqDTO saveCertificateReqDTO) {
     try {

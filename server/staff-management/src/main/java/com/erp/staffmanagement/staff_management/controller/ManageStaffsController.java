@@ -26,41 +26,16 @@ public class ManageStaffsController {
     this.manageStaffsService = manageStaffsService;
   }
 
-  @GetMapping(value = "/staffs/all", produces = "application/json")
-  public ResponseEntity<List<StaffInfoDTO>> getAllStaffs() {
-    List<StaffInfoDTO> allStaffs = manageStaffsService.getAllStaffs();
+  @GetMapping(value = "/staffs/{status}", produces = "application/json")
+  public ResponseEntity<ApiResponse<List<StaffInfoDTO>>> getAllStaffs(@PathVariable String status) {
+    try {
+      List<StaffInfoDTO> allStaffs = manageStaffsService.getStaffsForStatus(status);
 
-    return new ResponseEntity<>(allStaffs, HttpStatus.OK);
+      return ResponseEntity.ok(ApiResponse.success(allStaffs));
+    } catch (Exception e) {
+      return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
   }
-
-  @GetMapping(value = "/staffs/onDuty", produces = "application/json")
-  public ResponseEntity<List<StaffInfoDTO>> getOnDutyStaffs() {
-    List<StaffInfoDTO> allStaffs = manageStaffsService.getOnDutyStaffs();
-
-    return new ResponseEntity<>(allStaffs, HttpStatus.OK);
-  }
-
-  @GetMapping(value = "/staffs/offDuty", produces = "application/json")
-  public ResponseEntity<List<StaffInfoDTO>> getOffDutyStaffs() {
-    List<StaffInfoDTO> allStaffs = manageStaffsService.getOffDutyStaffs();
-
-    return new ResponseEntity<>(allStaffs, HttpStatus.OK);
-  }
-
-  @GetMapping(value = "/staffs/break", produces = "application/json")
-  public ResponseEntity<List<StaffInfoDTO>> getBreakStaffs() {
-    List<StaffInfoDTO> allStaffs = manageStaffsService.getBreakStaffs();
-
-    return new ResponseEntity<>(allStaffs, HttpStatus.OK);
-  }
-
-  @GetMapping(value = "/staffs/waiting", produces = "application/json")
-  public ResponseEntity<List<StaffInfoDTO>> getWaitingStaffs() {
-    List<StaffInfoDTO> allStaffs = manageStaffsService.getWaitingStaffs();
-
-    return new ResponseEntity<>(allStaffs, HttpStatus.OK);
-  }
-
 
   @GetMapping("/staff/certificates/{staffId}")
   public ResponseEntity<ApiResponse<List<certificateRequestDTO>>> getCertificateByStaffId(
