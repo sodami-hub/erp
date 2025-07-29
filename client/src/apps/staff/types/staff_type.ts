@@ -54,8 +54,6 @@ export type saveCertFileResponse = {
 
 export type CommonCode = {
   ok: boolean;
-  authList: string[];
-  workTypeList: string[];
-  workList: string[];
-  workStatusList: string[];
+  groupName: string;
+  codeNames: string[];
 };

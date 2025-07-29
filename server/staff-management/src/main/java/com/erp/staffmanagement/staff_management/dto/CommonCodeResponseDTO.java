@@ -13,5 +13,6 @@ import lombok.Setter;
 public class CommonCodeResponseDTO {
 
   private boolean ok;
+  private String groupName;
   private List<String> codeNames;
 }
