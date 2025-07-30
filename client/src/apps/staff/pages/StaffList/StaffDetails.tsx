@@ -15,7 +15,7 @@ export const StaffDetails = ({staffDetail}: {staffDetail: T.GetStaffInfo}) => {
   useEffect(() => {
     (async (staffId: string) => {
       const certInfo = await API.loadStaffCertInfo(staffId);
-      setReceiveCertificates(certInfo);
+      setReceiveCertificates(certInfo.data);
     })(staffDetail.staffId);
   }, [staffDetail]);
 

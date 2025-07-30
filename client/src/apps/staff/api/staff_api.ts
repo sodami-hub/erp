@@ -33,14 +33,14 @@ export const saveCertFile = async (file: FormData, certificateId: string) => {
 };
 
 export const loadStaffInfoList = async (status: string) => {
-  const res = await axiosClient.get<T.GetStaffInfo[]>(
+  const res = await axiosClient.get<ST.ResponseType<any>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staffs/${status}`
   );
   return res.data;
 };
 
 export const loadStaffCertInfo = async (staffId: string) => {
-  const res = await axiosClient.get<T.saveCertInfoRequest[]>(
+  const res = await axiosClient.get<ST.ResponseType<any>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/certificates/${staffId}`
   );
   return res.data;

@@ -1,1 +1,1 @@
-export * from './modal_props';
+export * from './share_types';

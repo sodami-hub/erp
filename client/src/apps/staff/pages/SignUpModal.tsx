@@ -71,9 +71,9 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
         console.log('CommonCode(Staff) Load Failure // ' + res.message);
       }
       setCommonCodeList(res.data);
-      console.log('CommonCode(Staff) Load Succeed' + res.data);
+      console.log('CommonCode(Staff) Load Succeed ' + res.data);
     })();
-  });
+  }, []);
 
   const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
   //===================================================

@@ -29,9 +29,9 @@ public class ManageStaffsController {
   @GetMapping(value = "/staffs/{status}", produces = "application/json")
   public ResponseEntity<ApiResponse<List<StaffInfoDTO>>> getAllStaffs(@PathVariable String status) {
     try {
-      List<StaffInfoDTO> allStaffs = manageStaffsService.getStaffsForStatus(status);
+      List<StaffInfoDTO> staffs = manageStaffsService.getStaffsForStatus(status);
 
-      return ResponseEntity.ok(ApiResponse.success(allStaffs));
+      return ResponseEntity.ok(ApiResponse.success(staffs));
     } catch (Exception e) {
       return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST, e.getMessage()));
     }

@@ -94,7 +94,8 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
         U.writeObject('user', loggedUserInfo);
         setLoggedUser(loggedUserInfo);
         U.writeStringP('accessToken', response.data.body.accessToken);
-        U.writeObject('jwt', response.data.body);
+        U.writeStringP('refreshToken', response.data.body.refreshToken);
+        console.log('accessToken => ' + U.readStringP('accessToken'));
         callback && callback();
         console.log('login success');
       }
