@@ -18,10 +18,11 @@ public class UserContext implements UserDetails {
    */
   private Long staffId;
 
-  /**
-   * 요양기관번호
-   */
-  private String institutionId;
+    /** 이름 */
+    private String name;
+
+    /** 요양기관번호 */
+    private String institutionId;
 
   /**
    * 전화번호(ID)
@@ -86,39 +87,47 @@ public class UserContext implements UserDetails {
     return institutionId;
   }
 
-  /**
-   * UserContext 생성자
-   *
-   * @param staffId
-   * @param institutionId
-   * @param phone
-   * @param password
-   * @param authorities
-   */
-  @Builder
-  public UserContext(
-      Long staffId, String institutionId, String phone, String password,
-      Collection<? extends GrantedAuthority> authorities
-  ) {
-    this.staffId = staffId;
-    this.institutionId = institutionId;
-    this.phone = phone;
-    this.password = password;
-    this.authorities = authorities;
-  }
+    /**
+     * 사용자 이름
+     * @return 사용자이름
+     */
+    public String getName() {
+        return name;
+    }
 
-  /**
-   * toString 메소드
-   *
-   * @return UserContext 정보 문자열
-   */
-  @Override
-  public String toString() {
-    return "UserContext{" +
-        "staffId=" + staffId +
-        ", institutionId='" + institutionId + '\'' +
-        ", phone='" + phone + '\'' +
-        ", authorities=" + authorities +
-        '}';
-  }
+    /**
+     * UserContext 생성자
+     * @param staffId
+     * @param institutionId
+     * @param phone
+     * @param password
+     * @param authorities
+     */
+    @Builder
+    public UserContext(
+            Long staffId, String name, String institutionId, String phone, String password, Collection<? extends GrantedAuthority> authorities
+    ) {
+        this.staffId = staffId;
+        this.name = name;
+        this.institutionId = institutionId;
+        this.phone = phone;
+        this.password = password;
+        this.authorities = authorities;
+    }
+
+    /**
+     * toString 메소드
+     * @return UserContext 정보 문자열
+     */
+    @Override
+    public String toString() {
+        return "UserContext{" +
+                "staffId=" + staffId +
+                ", name='" + name + '\'' +
+                ", institutionId='" + institutionId + '\'' +
+                ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
+                ", authorities=" + authorities +
+                '}';
+    }
 }

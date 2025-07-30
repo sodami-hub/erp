@@ -6,12 +6,14 @@ import com.erp.commonutil.jwt.dto.JwtToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -82,6 +84,25 @@ public class JwtTokenProvider {
   }
 
   /**
+   * AccessToken 생성
+   * @param context UserContext
+   * @param issuedAt 토큰 발급 시간
+   * @param expiredAt 토큰 만료 시간
+   * @return String
+   */
+  public String generateAccessToken(UserContext context, Instant issuedAt, Instant expiredAt) {
+    return Jwts.builder()
+            .setSubject(context.getUsername())
+            .claim("staffId", context.getStaffId())
+            .claim("institutionId", context.getInstitutionId())
+            .claim("roles", getAuthorities(context))
+            .setIssuedAt(Date.from(issuedAt))
+            .setExpiration(Date.from(expiredAt))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
+  }
+
+  /**
    * RefreshToken 생성
    * @param context UserContext
    * @return String
@@ -94,6 +115,25 @@ public class JwtTokenProvider {
             .claim("roles", getAuthorities(context))
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValiditySeconds * 1000))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
+  }
+
+  /**
+   * RefreshToken 생성
+   * @param context UserContext
+   * @param issuedAt 토큰 발급 시간
+   * @param expiredAt 토큰 만료 시간
+   * @return String
+   */
+  public String generateRefreshToken(UserContext context, Instant issuedAt, Instant expiredAt) {
+    return Jwts.builder()
+            .setSubject(context.getUsername())
+            .claim("staffId", context.getStaffId())
+            .claim("institutionId", context.getInstitutionId())
+            .claim("roles", getAuthorities(context))
+            .setIssuedAt(Date.from(issuedAt))
+            .setExpiration(Date.from(expiredAt))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
   }
@@ -135,6 +175,41 @@ public class JwtTokenProvider {
   public UserContext getUserContext(String token) {
     Claims claims = parseClaims(token);
 
+    return extractUserContext(claims);
+  }
+
+  /**
+   * 만료된 토큰을 허용하고 UserContext를 생성
+   * @param token JWT 토큰
+   * @return UserContext
+   */
+  public UserContext getUserContextAllowExpired(String token) {
+    try {
+      // 일반적인 경우: 유효한 토큰
+      Claims claims = Jwts.parserBuilder()
+              .setSigningKey(key)
+              .build()
+              .parseClaimsJws(token)
+              .getBody();
+      return extractUserContext(claims);
+
+    } catch (ExpiredJwtException e) {
+      // 만료되었지만 claims는 여전히 유효하므로 사용 가능
+      log.warn("Expired token used for extracting user context. {}", e.getMessage());
+      return extractUserContext(e.getClaims());
+
+    } catch (JwtException e) {
+      log.error("Invalid token: {}", e.getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * Claims에서 UserContext 추출
+   * @param claims Claims
+   * @return UserContext
+   */
+  private UserContext extractUserContext(Claims claims) {
     String username = claims.getSubject();
     Long staffId = claims.get("staffId", Long.class);
     String institutionId = claims.get("institutionId", String.class);
@@ -163,7 +238,7 @@ public class JwtTokenProvider {
     }
 
     UserContext userContext = getUserContext(refreshToken);
-    return generateToken(userContext, accessTokenValiditySeconds);
+    return generateAccessToken(userContext);
   }
 
   /**

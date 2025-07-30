@@ -38,6 +38,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
         return UserContext.builder()
                     .staffId(staff.getStaffId())
+                    .name(staff.getName())
                     .institutionId(staff.getInstitutionId())
                     .phone(staff.getPhone())
                     .password(staff.getPassword())

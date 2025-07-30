@@ -122,6 +122,7 @@ create table certificates (
     updated_at timestamp default current_timestamp on update current_timestamp,
     updater_id varchar(20)
 );
+
 ```
 
 ### 테이블 생성 SQL
@@ -276,6 +277,56 @@ COMMENT ON COLUMN users.certificates.created_at IS '생성일';
 COMMENT ON COLUMN users.certificates.creator_id IS '생성자';
 COMMENT ON COLUMN users.certificates.updated_at IS '수정일';
 COMMENT ON COLUMN users.certificates.updater_id IS '수정자';
+
+CREATE TABLE users.refresh_token (
+    refresh_token_id SERIAL PRIMARY KEY,
+    staff_id INT NOT NULL UNIQUE,
+    refresh_token VARCHAR(512) NOT NULL,
+    user_agent VARCHAR(255),
+    ip_address VARCHAR(45),
+    issued_at TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    revoked BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    creator_id VARCHAR(20),
+    updated_at TIMESTAMP,
+    updater_id VARCHAR(20)
+);
+
+COMMENT ON COLUMN users.refresh_token.refresh_token_id IS 'Refresh Token 일련번호';
+COMMENT ON COLUMN users.refresh_token.staff_id IS '직원번호';
+COMMENT ON COLUMN users.refresh_token.refresh_token IS '발급된 Refresh Token';
+COMMENT ON COLUMN users.refresh_token.user_agent IS '요청한 클라이언트 User-Agent';
+COMMENT ON COLUMN users.refresh_token.ip_address IS '요청한 클라이언트 IP';
+COMMENT ON COLUMN users.refresh_token.issued_at IS '발급 시각';
+COMMENT ON COLUMN users.refresh_token.expires_at IS '만료 시각';
+COMMENT ON COLUMN users.refresh_token.revoked IS 'Refresh Token 무효화 여부 (true일 경우 사용 불가)';
+COMMENT ON COLUMN users.refresh_token.created_at IS '생성일시';
+COMMENT ON COLUMN users.refresh_token.creator_id IS '생성자';
+COMMENT ON COLUMN users.refresh_token.updated_at IS '수정일시';
+COMMENT ON COLUMN users.refresh_token.updater_id IS '수정자';
+
+
+CREATE TABLE users.login_history (
+    login_history_id SERIAL PRIMARY KEY,
+    staff_id INT,
+    status VARCHAR(10) NOT NULL,    -- e.g. 'SUCCESS', 'FAIL'
+    login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    creator_id VARCHAR(20),
+    updated_at TIMESTAMP,
+    updater_id VARCHAR(20)
+);
+
+COMMENT ON COLUMN users.login_history.login_history_id IS '로그인 이력 고유 ID';
+COMMENT ON COLUMN users.login_history.staff_id IS '로그인 시도한 직원 ID';
+COMMENT ON COLUMN users.login_history.status IS '로그인 결과';
+COMMENT ON COLUMN users.login_history.login_at IS '로그인 시도 시각';
+COMMENT ON COLUMN users.login_history.created_at IS '생성일시';
+COMMENT ON COLUMN users.login_history.creator_id IS '생성자';
+COMMENT ON COLUMN users.login_history.updated_at IS '수정일시';
+COMMENT ON COLUMN users.login_history.updater_id IS '수정자';
+
 ```
 
 #### 수급자 관련 테이블
@@ -314,4 +365,5 @@ create table beneficiaries (
     updated_at timestamp default current_timestamp on update current_timestamp,
     updater_id varchar(20)
 );
+
 ```
