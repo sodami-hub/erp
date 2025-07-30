@@ -14,9 +14,9 @@ export type ModalContentProps = ReactDivProps & {
   closeIconClassName?: string;
 };
 
-type CustomResponse = Record<string, unknown>;
+// type CustomResponse = Record<string, unknown>;
 
-export type ResponseType<T extends CustomResponse> = {
+export type ResponseType<T> = {
   ok: boolean;
   status: string;
   message: string;

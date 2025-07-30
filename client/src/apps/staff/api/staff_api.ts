@@ -10,14 +10,14 @@ export const loadCommonCodeByGroupName = async (groupName: string) => {
 };
 
 export const loadAllCommonCode = async () => {
-  const res = await axiosClient.get<ST.ResponseType<T.allCommonCode>>(
+  const res = await axiosClient.get<ST.ResponseType<T.AllCommonCode>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/commonCodeList/all`
   );
   return res.data;
 };
 
-export const saveCertInfo = async (certInfo: T.saveCertInfoRequest) => {
-  const res = await axiosClient.post<ST.ResponseType<T.saveCertInfoResponse>>(
+export const saveCertInfo = async (certInfo: T.SaveCertInfoRequest) => {
+  const res = await axiosClient.post<ST.ResponseType<T.SaveCertInfoResponse>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/saveCertificate`,
     certInfo
   );
@@ -33,14 +33,14 @@ export const saveCertFile = async (file: FormData, certificateId: string) => {
 };
 
 export const loadStaffInfoList = async (status: string) => {
-  const res = await axiosClient.get<ST.ResponseType<any>>(
+  const res = await axiosClient.get<ST.ResponseType<T.GetStaffInfo[]>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staffs/${status}`
   );
   return res.data;
 };
 
 export const loadStaffCertInfo = async (staffId: string) => {
-  const res = await axiosClient.get<ST.ResponseType<any>>(
+  const res = await axiosClient.get<ST.ResponseType<T.SaveCertInfoRequest[]>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/certificates/${staffId}`
   );
   return res.data;
