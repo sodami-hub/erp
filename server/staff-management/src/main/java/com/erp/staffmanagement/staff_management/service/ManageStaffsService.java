@@ -1,10 +1,10 @@
 package com.erp.staffmanagement.staff_management.service;
 
 import com.erp.commonutil.config.security.UserContext;
+import com.erp.staffmanagement.staff_management.dto.CertificateRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificateReqDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificationResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
-import com.erp.staffmanagement.staff_management.dto.certificateRequestDTO;
 import com.erp.staffmanagement.staff_management.entity.Certificates;
 import com.erp.staffmanagement.staff_management.repository.CertificateRepository;
 import com.erp.staffmanagement.staff_management.repository.StaffRepository;
@@ -45,11 +45,11 @@ public class ManageStaffsService {
     };
   }
 
-  public List<certificateRequestDTO> getCertificates(Long staffId) throws Exception {
+  public List<CertificateRequestDTO> getCertificates(Long staffId) throws Exception {
     try {
       List<Certificates> certificatesList = Optional.ofNullable(
           certificateRepository.findCertificatesByStaffId(staffId)).orElse(List.of());
-      return certificatesList.stream().map(certificateRequestDTO::new).toList();
+      return certificatesList.stream().map(CertificateRequestDTO::new).toList();
     } catch (Exception e) {
       throw new Exception(e.getMessage());
     }

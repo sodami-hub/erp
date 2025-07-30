@@ -58,16 +58,20 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   /*
   어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
    */
-  const [commonCodeList, setCommonCodeList] = useState(initialCommonCodeList);
+  const [commonCodeList, setCommonCodeList] = useState<{
+    work_status: string[];
+    work_type: string[];
+    work_list: string[];
+  }>(initialCommonCodeList);
 
   useEffect(() => {
     (async () => {
-      const res = await API.loadCommonCode('');
-      if (res.ok) {
-      } else {
-        console.log('CommonCode(Staff) Load Failure');
+      const res = await API.loadAllCommonCode();
+      if (!res.ok) {
+        console.log('CommonCode(Staff) Load Failure // ' + res.message);
       }
-      console.log('CommonCode(Staff) Load Succeed');
+      setCommonCodeList(res.data);
+      console.log('CommonCode(Staff) Load Succeed' + res.data);
     })();
   });
 

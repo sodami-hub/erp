@@ -1,10 +1,10 @@
 package com.erp.staffmanagement.staff_management.controller;
 
 import com.erp.commonutil.response.ApiResponse;
+import com.erp.staffmanagement.staff_management.dto.CertificateRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificateReqDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificationResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.StaffInfoDTO;
-import com.erp.staffmanagement.staff_management.dto.certificateRequestDTO;
 import com.erp.staffmanagement.staff_management.service.ManageStaffsService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -38,10 +38,10 @@ public class ManageStaffsController {
   }
 
   @GetMapping("/staff/certificates/{staffId}")
-  public ResponseEntity<ApiResponse<List<certificateRequestDTO>>> getCertificateByStaffId(
+  public ResponseEntity<ApiResponse<List<CertificateRequestDTO>>> getCertificateByStaffId(
       @PathVariable Long staffId) {
     try {
-      List<certificateRequestDTO> myCertificates = manageStaffsService.getCertificates(staffId);
+      List<CertificateRequestDTO> myCertificates = manageStaffsService.getCertificates(staffId);
 
       return ResponseEntity.ok(ApiResponse.success(myCertificates));
     } catch (Exception e) {

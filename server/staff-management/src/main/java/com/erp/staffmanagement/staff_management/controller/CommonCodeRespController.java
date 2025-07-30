@@ -1,6 +1,7 @@
 package com.erp.staffmanagement.staff_management.controller;
 
 import com.erp.commonutil.response.ApiResponse;
+import com.erp.staffmanagement.staff_management.dto.AllCommonCodeResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.CommonCodeResponseDTO;
 import com.erp.staffmanagement.staff_management.service.CommonCodeRespService;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,16 @@ public class CommonCodeRespController {
 
   public CommonCodeRespController(CommonCodeRespService commonCodeRespService) {
     this.commonCodeRespService = commonCodeRespService;
+  }
+
+  @GetMapping(value = "/staff/commonCodeList/all")
+  public ResponseEntity<ApiResponse<AllCommonCodeResponseDTO>> getAllCommonCodeList() {
+    AllCommonCodeResponseDTO allCommonCodeResponseDTO = commonCodeRespService.getAllCommonCodeList();
+    if (!allCommonCodeResponseDTO.isOk()) {
+      return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST,
+          "공통코드 불러오기 에러 // " + allCommonCodeResponseDTO.getErrorMessage()));
+    }
+    return ResponseEntity.ok(ApiResponse.success(allCommonCodeResponseDTO));
   }
 
   @GetMapping(value = "/staff/commonCodeList/{groupName}")

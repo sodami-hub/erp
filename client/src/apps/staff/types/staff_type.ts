@@ -52,3 +52,11 @@ export type CommonCode = {
   groupName: string;
   codeNames: string[];
 };
+
+export type allCommonCode = {
+  ok: boolean;
+  work_status: string[];
+  work_type: string[];
+  work_list: string[];
+  errorMessage: string;
+};
