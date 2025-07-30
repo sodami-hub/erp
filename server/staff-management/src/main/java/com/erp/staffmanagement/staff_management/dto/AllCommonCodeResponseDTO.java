@@ -1,18 +1,20 @@
 package com.erp.staffmanagement.staff_management.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class FileUploadResponseDTO {
+public class AllCommonCodeResponseDTO {
 
   private boolean ok;
-  private String message;
+  private List<String> work_status;
+  private List<String> work_type;
+  private List<String> work_list;
+  private String errorMessage;
 }

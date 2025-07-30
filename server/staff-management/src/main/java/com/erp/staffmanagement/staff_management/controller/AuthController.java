@@ -10,20 +10,20 @@ import com.erp.staffmanagement.staff_management.dto.LoginResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpResponseDTO;
 import com.erp.staffmanagement.staff_management.service.AuthService;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collection;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -33,51 +33,63 @@ public class AuthController {
   private final AuthenticationManager authenticationManager;
   private final JwtTokenProvider jwtTokenProvider;
 
-  public AuthController(AuthService authService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+  public AuthController(AuthService authService, AuthenticationManager authenticationManager,
+      JwtTokenProvider jwtTokenProvider) {
     this.authService = authService;
-      this.authenticationManager = authenticationManager;
-      this.jwtTokenProvider = jwtTokenProvider;
+    this.authenticationManager = authenticationManager;
+    this.jwtTokenProvider = jwtTokenProvider;
   }
 
+
   @PostMapping(value = "/auth/login")
-  public ResponseEntity<ApiResponse> login(
+  public ResponseEntity<ApiResponse<LoginResponseDTO>> login(
       @RequestBody LoginRequestDTO loginRequestDTO) {
-    Authentication authenticate = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequestDTO.getId(), loginRequestDTO.getPassword())
-    );
 
-    UserContext userContext = (UserContext) authenticate.getPrincipal();
-    String accessToken = jwtTokenProvider.generateAccessToken(userContext);
-    String refreshToken = jwtTokenProvider.generateRefreshToken(userContext);
+    try {
+      Authentication authenticate = authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(loginRequestDTO.getId(),
+              loginRequestDTO.getPassword())
+      );
 
-    JwtToken token = JwtToken.builder()
-              .grantType(Constants.BEARER_PREFIX.trim())
-              .accessToken(accessToken)
-              .refreshToken(refreshToken)
-            .build();
+      UserContext userContext = (UserContext) authenticate.getPrincipal();
 
-    Collection<? extends GrantedAuthority> authorities = userContext.getAuthorities();
+      String accessToken = jwtTokenProvider.generateAccessToken(userContext);
 
-    String roles = authorities.stream()
-            .filter(Objects::nonNull)
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(","));
+      String refreshToken = jwtTokenProvider.generateRefreshToken(userContext);  // 서버 DB에 저장 및 관리
 
-    LoginResponseDTO response = new LoginResponseDTO(true, token, roles, null);
-    return ResponseEntity.ok(ApiResponse.success(response));
+      JwtToken token = JwtToken.builder()
+          .grantType(Constants.BEARER_PREFIX.trim())
+          .accessToken(accessToken)
+          .refreshToken(refreshToken)
+          .build();
+
+      Collection<? extends GrantedAuthority> authorities = userContext.getAuthorities();
+
+      String roles = authorities.stream()
+          .filter(Objects::nonNull)
+          .map(GrantedAuthority::getAuthority)
+          .collect(Collectors.joining(","));
+
+      return ResponseEntity.ok(
+          ApiResponse.success(new LoginResponseDTO(true, token, roles, "login success")));
+    } catch (AuthenticationException e) {
+      return ResponseEntity.ok(
+          ApiResponse.error(HttpStatus.BAD_REQUEST, e.getMessage() + " // 로그인 정보를 확인해주세요."));
+    }
   }
 
   @PostMapping(value = "/auth/signup", produces = "application/json")
-  public ResponseEntity<SignUpResponseDTO> signup(
-      @RequestBody SignUpRequestDTO signUpRequestDTO,
-      @RequestHeader(value = "Authorization") JwtToken jwtToken
+  public ResponseEntity<ApiResponse<SignUpResponseDTO>> signup(
+      @RequestBody SignUpRequestDTO signUpRequestDTO
   ) {
-    // 클라이언트에서 넘어오는 데이터 확인 완료
-    System.out.println(signUpRequestDTO.toString());
-    System.out.println(jwtToken.toString());
 
-    SignUpResponseDTO signUpResponseDTO = authService.staffSignUp(signUpRequestDTO, jwtToken);
+    SignUpResponseDTO signUpResponseDTO = authService.staffSignUp(signUpRequestDTO);
 
-    return ResponseEntity.ok(signUpResponseDTO);
+    if (!signUpResponseDTO.isOk()) {
+      return ResponseEntity.ok(
+          ApiResponse.error(HttpStatus.BAD_REQUEST, signUpResponseDTO.getMessage()));
+    }
+
+    return ResponseEntity.ok(ApiResponse.success(signUpResponseDTO));
   }
 }

@@ -2,13 +2,6 @@ import {ChangeEvent, useCallback, useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../context';
 
-/*
-{
-  organizationId: string;
-  id: string;
-  password: string;
-}
- */
 type LoginFormType = Record<'organizationId' | 'id' | 'password', string>;
 const initialFormState = {organizationId: '', id: '', password: ''};
 

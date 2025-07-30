@@ -1,1 +1,1 @@
-export * from './ModalProps';
+export * from './share_types';

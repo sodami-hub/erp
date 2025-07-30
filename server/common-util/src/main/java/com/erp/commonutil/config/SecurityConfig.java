@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,20 +30,30 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-  /** Security 제외 URL 목록 */
+
+  /**
+   * Security 제외 URL 목록
+   */
   private static final String[] PERMIT_ALL_PATHS = {"/staff/commonCodeList", "/auth/login"};
 
-  /** JWT Token */
+  /**
+   * JWT Token
+   */
   private final JwtTokenProvider jwtTokenProvider;
 
-  /** 사용자 인증 */
+  /**
+   * 사용자 인증
+   */
   private final UserDetailsService userDetailsService;
 
-  /** 인증 실패 */
+  /**
+   * 인증 실패
+   */
   private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
   /**
    * SecurityFilterChain 등록
+   *
    * @param http HttpSecurity
    * @return SecurityFilterChain
    * @throws Exception
@@ -58,17 +67,20 @@ public class SecurityConfig {
           authorize.anyRequest().authenticated();
         })
         .exceptionHandling(exception ->
-                exception.authenticationEntryPoint(customAuthenticationEntryPoint)
+            exception.authenticationEntryPoint(customAuthenticationEntryPoint)
         )
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
-        .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 인증 필터 추가
+        .addFilterBefore(jwtAuthenticationFilter(),
+            UsernamePasswordAuthenticationFilter.class); // JWT 인증 필터 추가
     return http.build();
   }
 
   /**
    * JWT 인증 필터 Bean 등록
+   *
    * @return JwtAuthenticationFilter
    */
   @Bean
@@ -78,6 +90,7 @@ public class SecurityConfig {
 
   /**
    * 사용자 인증 Provider 등록
+   *
    * @return AuthenticationProvider
    */
   @Bean
@@ -87,6 +100,7 @@ public class SecurityConfig {
 
   /**
    * AuthenticationManager 설정
+   *
    * @param http
    * @return
    * @throws Exception
@@ -100,6 +114,7 @@ public class SecurityConfig {
 
   /**
    * 비밀번호 암호화 등록
+   *
    * @return PasswordEncoder
    */
   @Bean
@@ -109,6 +124,7 @@ public class SecurityConfig {
 
   /**
    * CORS 설정
+   *
    * @return CorsConfigurationSource
    */
   @Bean

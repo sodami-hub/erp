@@ -34,28 +34,29 @@ export type GetStaffInfo = {
   retireDate: string;
 };
 
-export type saveCertInfoRequest = {
+export type SaveCertInfoRequest = {
   staffId: string;
   certificateName: string;
   organization: string;
   issueDate: string;
 };
 
-export type saveCertInfoResponse = {
+export type SaveCertInfoResponse = {
   ok: boolean;
   certificateId: string;
   errorMessage?: string;
 };
 
-export type saveCertFileResponse = {
-  ok: boolean;
-  errorMessage?: string;
-};
-
 export type CommonCode = {
   ok: boolean;
-  authList: string[];
-  workTypeList: string[];
-  workList: string[];
-  workStatusList: string[];
+  groupName: string;
+  codeNames: string[];
+};
+
+export type AllCommonCode = {
+  ok: boolean;
+  work_status: string[];
+  work_type: string[];
+  work_list: string[];
+  errorMessage: string;
 };

@@ -11,13 +11,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class certificateRequestDTO {
+public class CertificateRequestDTO {
 
   private String certificateName;
   private LocalDate issueDate;
   private String organization;
 
-  public certificateRequestDTO(Certificates certificate) {
+  public CertificateRequestDTO(Certificates certificate) {
     this.certificateName = certificate.getCertificateName();
     this.issueDate = certificate.getIssueDate();
     this.organization = certificate.getOrganization();

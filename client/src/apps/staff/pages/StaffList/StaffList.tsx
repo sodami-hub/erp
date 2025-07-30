@@ -10,13 +10,13 @@ export const StaffList = ({
   status: string;
   getStaffId: (staffDetail: GetStaffInfo) => void;
 }) => {
-  const [staffList, setStaffList] = useState<GetStaffInfo[]>();
+  const [staffList, setStaffList] = useState<GetStaffInfo[]>([]);
   const [selectedStaff, setSelectedStaff] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     (async (status: string) => {
       const staffList = await API.loadStaffInfoList(status);
-      setStaffList(staffList);
+      setStaffList(staffList.data);
     })(status);
   }, [status]);
 

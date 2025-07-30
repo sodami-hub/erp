@@ -6,7 +6,7 @@ import {
   useRef,
   useState
 } from 'react';
-import {saveCertInfoRequest} from '../../types';
+import {SaveCertInfoRequest} from '../../types';
 import {useToggle} from '../../../../share/hooks';
 import {CalendarModal, CalendarSelect, Value} from '../../../../share/components';
 import * as API from '../../api';
@@ -18,7 +18,7 @@ export const AddCertModal = ({open, children}: PropsWithChildren<{open: boolean}
   return <div className={className}>{children}</div>;
 };
 
-type addCertInfo = saveCertInfoRequest & {};
+type addCertInfo = SaveCertInfoRequest & {};
 
 const initAddCertInfo: addCertInfo = {
   staffId: '',
@@ -57,17 +57,17 @@ export const AddCertModalContents = ({
       formData.append('file', file);
     }
     const saveInfo = await API.saveCertInfo(certInfo);
-    const id = saveInfo.certificateId;
+    const id = saveInfo.data.certificateId;
     if (saveInfo.ok) {
       console.log('직원 자격증 정보 저장 성공');
       if (formData) {
         const saveFile = await API.saveCertFile(formData, id);
         if (!saveFile.ok) {
-          alert(saveFile.errorMessage ?? '자격증 첨부문서 저장 에러');
+          alert(saveFile.message ?? '자격증 첨부문서 저장 에러');
         }
       }
     } else {
-      alert(saveInfo.errorMessage ?? '자격증 정보 저장 에러');
+      alert(saveInfo.message ?? '자격증 정보 저장 에러');
     }
     modalToggle();
     setCertInfo(initAddCertInfo);

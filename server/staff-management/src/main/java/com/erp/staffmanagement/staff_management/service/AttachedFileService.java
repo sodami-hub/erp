@@ -1,8 +1,6 @@
 package com.erp.staffmanagement.staff_management.service;
 
 import com.erp.commonutil.config.security.UserContext;
-import com.erp.commonutil.jwt.JwtTokenProvider;
-import com.erp.commonutil.jwt.dto.JwtToken;
 import com.erp.staffmanagement.staff_management.dto.FileUploadResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveFileDTO;
 import com.erp.staffmanagement.staff_management.entity.Certificates;
@@ -19,6 +17,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,13 +25,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class AttachedFileService {
 
   private final DocumentRepository documentRepository;
-  private final JwtTokenProvider jwtTokenProvider;
   private final CertificateRepository certificateRepository;
 
   public AttachedFileService(DocumentRepository documentRepository,
-      JwtTokenProvider jwtTokenProvider, CertificateRepository certificateRepository) {
+      CertificateRepository certificateRepository) {
     this.documentRepository = documentRepository;
-    this.jwtTokenProvider = jwtTokenProvider;
     this.certificateRepository = certificateRepository;
   }
 
@@ -45,6 +42,12 @@ public class AttachedFileService {
     // timeStamp 생성
     String timeStamp = dateFormat.format(new Date());
     return timeStamp + randomNumber + originalFileName;
+  }
+
+  private Long getManagerId() {
+    UserContext userContext = (UserContext) SecurityContextHolder.getContext().getAuthentication()
+        .getPrincipal();
+    return userContext.getStaffId();
   }
 
   // 서버 스토리지에 파일 저장
@@ -78,51 +81,50 @@ public class AttachedFileService {
   }
 
   public FileUploadResponseDTO dependentFileService(MultipartFile file01, MultipartFile file02,
-      Long userId, JwtToken jwtToken)
+      Long userId)
       throws FileUploadException {
+    Long uploaderId = getManagerId();
 
-    //Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
-    UserContext userContext = jwtTokenProvider.getUserContext(jwtToken.getAccessToken());
+    try {
+      if (!file01.isEmpty()) {
+        SaveFileDTO saveFileDTO = saveFileStorage(file01, "dependent");
+        saveFileDTO.setId(userId);
+        // 파일 정보 DB 저장 처리
+        documentRepository.save(
+            new DependencyDocuments(saveFileDTO, uploaderId));
+      }
+      if (!file02.isEmpty()) {
+        SaveFileDTO saveFileDTO = saveFileStorage(file02, "dependent");
+        saveFileDTO.setId(userId);
 
-    if (!file01.isEmpty()) {
-      SaveFileDTO saveFileDTO = saveFileStorage(file01, "dependent");
-      saveFileDTO.setId(userId);
-
-      // 파일 정보 DB 저장 처리
-      documentRepository.save(
-          new DependencyDocuments(saveFileDTO, userContext.getUsername()));
+        // 파일 정보 DB 저장 처리
+        documentRepository.save(
+            new DependencyDocuments(saveFileDTO, uploaderId));
+      }
+    } catch (RuntimeException e) {
+      return new FileUploadResponseDTO(false, e.getMessage());
     }
-    if (!file02.isEmpty()) {
-      SaveFileDTO saveFileDTO = saveFileStorage(file02, "dependent");
-      saveFileDTO.setId(userId);
 
-      // 파일 정보 DB 저장 처리
-      documentRepository.save(
-          new DependencyDocuments(saveFileDTO, userContext.getUsername()));
-    }
-
-    return new FileUploadResponseDTO(true, null);
+    return new FileUploadResponseDTO(true, "첨부문서 저장 성공");
   }
 
-  public FileUploadResponseDTO certFileService(MultipartFile file, Long certificateId,
-      JwtToken jwtToken) throws FileUploadException {
+  public FileUploadResponseDTO certFileService(MultipartFile file, Long certificateId) {
+    try {
+      SaveFileDTO saveFileDTO = saveFileStorage(file, "certificate");
 
-    //Long managerId = jwtTokenProvider.getClaims(jwtToken.getAccessToken()).getStaffId();
-    UserContext userContext = jwtTokenProvider.getUserContext(jwtToken.getAccessToken());
+      Certificates cert = certificateRepository.findById(certificateId).orElse(null);
+      if (cert == null) {
+        return new FileUploadResponseDTO(false, "파일의 정보를 저장할 자격증 정보가 없습니다.(certificateId error)");
+      }
+      cert.setOriginalName(saveFileDTO.getOriginalName());
+      cert.setSaveName(saveFileDTO.getSaveName());
+      cert.setUpdaterId(getManagerId());
 
-    SaveFileDTO saveFileDTO = saveFileStorage(file, "certificate");
+      certificateRepository.save(cert);
 
-    Certificates cert = certificateRepository.findById(certificateId).orElse(null);
-    if (cert == null) {
-      return new FileUploadResponseDTO(false, "파일의 정보를 저장할 자격증 정보가 없습니다.");
+      return new FileUploadResponseDTO(true, null);
+    } catch (Exception e) {
+      return new FileUploadResponseDTO(false, e.getMessage());
     }
-    cert.setOriginalName(saveFileDTO.getOriginalName());
-    cert.setSaveName(saveFileDTO.getSaveName());
-    cert.setUpdaterId(userContext.getUsername());
-
-    certificateRepository.save(cert);
-
-    return new FileUploadResponseDTO(true, null);
-
   }
 }

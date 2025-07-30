@@ -1,15 +1,23 @@
 import {axiosClient} from '../../../share/api/axios';
 import * as T from '../types';
+import * as ST from '../../../share/types';
 
-export const loadCommonCode = async () => {
-  const res = await axiosClient.get<T.CommonCode>(
-    `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/commonCodeList`
+export const loadCommonCodeByGroupName = async (groupName: string) => {
+  const res = await axiosClient.get<ST.ResponseType<T.CommonCode>>(
+    `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/commonCodeList/${groupName}`
   );
   return res.data;
 };
 
-export const saveCertInfo = async (certInfo: T.saveCertInfoRequest) => {
-  const res = await axiosClient.post<T.saveCertInfoResponse>(
+export const loadAllCommonCode = async () => {
+  const res = await axiosClient.get<ST.ResponseType<T.AllCommonCode>>(
+    `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/commonCodeList/all`
+  );
+  return res.data;
+};
+
+export const saveCertInfo = async (certInfo: T.SaveCertInfoRequest) => {
+  const res = await axiosClient.post<ST.ResponseType<T.SaveCertInfoResponse>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/saveCertificate`,
     certInfo
   );
@@ -17,7 +25,7 @@ export const saveCertInfo = async (certInfo: T.saveCertInfoRequest) => {
 };
 
 export const saveCertFile = async (file: FormData, certificateId: string) => {
-  const res = await axiosClient.post<T.saveCertFileResponse>(
+  const res = await axiosClient.post<ST.ResponseType<any>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/saveCertFile/${certificateId}`,
     file
   );
@@ -25,14 +33,14 @@ export const saveCertFile = async (file: FormData, certificateId: string) => {
 };
 
 export const loadStaffInfoList = async (status: string) => {
-  const res = await axiosClient.get<T.GetStaffInfo[]>(
+  const res = await axiosClient.get<ST.ResponseType<T.GetStaffInfo[]>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staffs/${status}`
   );
   return res.data;
 };
 
 export const loadStaffCertInfo = async (staffId: string) => {
-  const res = await axiosClient.get<T.saveCertInfoRequest[]>(
+  const res = await axiosClient.get<ST.ResponseType<T.SaveCertInfoRequest[]>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/certificates/${staffId}`
   );
   return res.data;

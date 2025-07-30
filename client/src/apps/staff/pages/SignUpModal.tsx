@@ -31,12 +31,10 @@ const initialFormState: SignupFormType = {
 // =========================================================================
 
 // ================= 공통코드 리스트 초깃값 정의 =============================
-const initialCommonCodeList: T.CommonCode = {
-  ok: false,
-  authList: [],
-  workTypeList: [],
-  workList: [],
-  workStatusList: []
+const initialCommonCodeList = {
+  work_type: [],
+  work_list: [],
+  work_status: []
 };
 // ====================================================================
 
@@ -51,7 +49,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   const closeIconClassName =
     _closeIconClassName ?? 'btn-primary btn-outline material-icons';
 
-  const {signup, jwt} = useAuth();
+  const {signup} = useAuth();
 
   // form 정보 리셋을 위한 값
   const [reset, setReset] = useState(false);
@@ -60,20 +58,22 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   /*
   어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
    */
-  const [commonCodeList, setCommonCodeList] =
-    useState<T.CommonCode>(initialCommonCodeList);
+  const [commonCodeList, setCommonCodeList] = useState<{
+    work_status: string[];
+    work_type: string[];
+    work_list: string[];
+  }>(initialCommonCodeList);
 
   useEffect(() => {
     (async () => {
-      const res = await API.loadCommonCode();
-      if (res.ok) {
-        setCommonCodeList(res);
-      } else {
-        console.log('CommonCode(Staff) Load Failure');
+      const res = await API.loadAllCommonCode();
+      if (!res.ok) {
+        console.log('CommonCode(Staff) Load Failure // ' + res.message);
       }
-      console.log('CommonCode(Staff) Load Succeed');
+      setCommonCodeList(res.data);
+      console.log('CommonCode(Staff) Load Succeed ' + res.data);
     })();
-  });
+  }, []);
 
   const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
   //===================================================
@@ -122,15 +122,12 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       return;
     }
 
-    if (jwt) {
-      signup(signupForm, material);
-    } else {
-      alert('인증 토큰이 유효하지 않습니다. 다시 로그인해주세요.');
-    }
+    signup(signupForm, material);
+
     setSignupForm(initialFormState);
     setReset(prev => !prev);
   }, [
-    signupForm, signup, jwt, material
+    signupForm, signup, material
   ]);
   // ==============================================================================
 
@@ -200,14 +197,14 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
         <C.WorkType
           reset={reset}
           value={signupForm.workType}
-          workTypeList={memoizedCommonCodeList.workTypeList}
+          workTypeList={memoizedCommonCodeList.work_type}
           changed={changed}
         />
 
         <C.PossibleWork
           reset={reset}
           value={signupForm.possibleWork}
-          workList={memoizedCommonCodeList.workList}
+          workList={memoizedCommonCodeList.work_list}
           changed={changed}
         />
 
@@ -219,7 +216,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
 
         <C.WorkStatus
           value={signupForm.workStatus}
-          workStatusList={memoizedCommonCodeList.workStatusList}
+          workStatusList={memoizedCommonCodeList.work_status}
           changed={changed}
           reset={reset}
         />

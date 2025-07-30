@@ -42,7 +42,7 @@ public class Certificates extends BaseEntity {
   @Column(name = "save_name")
   private String saveName;
 
-  public Certificates(SaveCertificateReqDTO dto, String managerId) {
+  public Certificates(SaveCertificateReqDTO dto, Long managerId) {
     this.staffId = dto.getStaffId();
     this.certificateName = dto.getCertificateName();
     this.organization = dto.getOrganization();

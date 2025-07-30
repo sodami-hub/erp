@@ -1,30 +1,10 @@
-import * as T from './index';
-
 export type LoginInfo = {
   institutionId: string;
   id: string;
   password: string;
 };
 
-export type signupStaffResponse = {
-  ok: boolean;
-  staffId?: string; // 직원 등록후 등록한 직원의 id 가져오기. -> 파일등록에 사용.
-  token?: T.JwtToken;
-  authCode?: string;
-  errorMessage?: string;
-};
-
-export type LoggedUserInfo = {institutionId: string; id: string; authCode: string};
-
-export type JwtToken = {
-  grantType: string;
-  accessToken: string;
-  refreshToken: string;
-};
-
-export type Callback = () => void;
-
-export type SignupStaffInfo = {
+export type SignupStaffRequest = {
   name: string;
   gender: string;
   birth: string;
@@ -41,9 +21,11 @@ export type SignupStaffInfo = {
   workStatus: string;
 };
 
+export type LoggedUserInfo = {institutionId: string; id: string; authCode: string};
+
+export type Callback = () => void;
+
 export type ContextType = {
-  jwt?: JwtToken;
-  authCode?: string;
   errorMessage?: string;
   loggedUser?: LoggedUserInfo;
   login: (
@@ -52,8 +34,44 @@ export type ContextType = {
     password: string,
     callback?: Callback
   ) => void;
-  signup: (newStaff: SignupStaffInfo, document?: FormData) => void;
+  signup: (newStaff: SignupStaffRequest, document?: FormData) => void;
   logout: () => void;
   clearJwt: () => void;
-  newJwt: (jwt: JwtToken) => void;
 };
+
+/*
+// 실제로는 accessToken 필드만 사용됨
+export type JwtToken = {
+  grantType: string;
+  accessToken: string;
+  refreshToken: string;
+};
+*/
+
+/* ResponseType<T> 를 사용하면서 사용하지 않는 타입들
+export type LoginResponse = {
+  ok: boolean;
+  status: string;
+  message: string;
+  data: {
+    ok: boolean;
+    body: {
+      grantType: string;
+      accessToken: string;
+      refreshToken: string;
+    };
+    authCode: string;
+    message: string;
+  };
+};
+export type signupStaffResponse = {
+  ok: boolean;
+  status: string;
+  message: string;
+  data: {
+    ok: boolean;
+    staffID: string;
+    message: string;
+  };
+};
+*/
