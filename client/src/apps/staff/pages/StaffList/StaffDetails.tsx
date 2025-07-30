@@ -7,7 +7,7 @@ import * as API from '../../api';
 export const StaffDetails = ({staffDetail}: {staffDetail: T.GetStaffInfo}) => {
   const [addCertModalOpen, toggleAddCertModal] = useToggle(false);
 
-  const [receiveCertificates, setReceiveCertificates] = useState<T.saveCertInfoRequest[]>(
+  const [receiveCertificates, setReceiveCertificates] = useState<T.SaveCertInfoRequest[]>(
     []
   );
   // staffDetail 이 변할 때마다 자격증 정보와 건강검진 통보서 정보 가져오기

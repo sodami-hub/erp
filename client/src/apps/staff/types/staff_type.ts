@@ -34,14 +34,14 @@ export type GetStaffInfo = {
   retireDate: string;
 };
 
-export type saveCertInfoRequest = {
+export type SaveCertInfoRequest = {
   staffId: string;
   certificateName: string;
   organization: string;
   issueDate: string;
 };
 
-export type saveCertInfoResponse = {
+export type SaveCertInfoResponse = {
   ok: boolean;
   certificateId: string;
   errorMessage?: string;
@@ -53,7 +53,7 @@ export type CommonCode = {
   codeNames: string[];
 };
 
-export type allCommonCode = {
+export type AllCommonCode = {
   ok: boolean;
   work_status: string[];
   work_type: string[];

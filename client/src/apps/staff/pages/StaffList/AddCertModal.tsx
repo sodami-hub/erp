@@ -6,7 +6,7 @@ import {
   useRef,
   useState
 } from 'react';
-import {saveCertInfoRequest} from '../../types';
+import {SaveCertInfoRequest} from '../../types';
 import {useToggle} from '../../../../share/hooks';
 import {CalendarModal, CalendarSelect, Value} from '../../../../share/components';
 import * as API from '../../api';
@@ -18,7 +18,7 @@ export const AddCertModal = ({open, children}: PropsWithChildren<{open: boolean}
   return <div className={className}>{children}</div>;
 };
 
-type addCertInfo = saveCertInfoRequest & {};
+type addCertInfo = SaveCertInfoRequest & {};
 
 const initAddCertInfo: addCertInfo = {
   staffId: '',
