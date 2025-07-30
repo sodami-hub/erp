@@ -27,66 +27,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
    */
   private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    /** RefreshTokenFinder */
-    private final RefreshTokenFinder refreshTokenFinder;
+  /**
+   * JwtTokenProvider
+   */
+  private final JwtTokenProvider tokenProvider;
+  private final RefreshTokenFinder refreshTokenFinder;
 
-    /**
-     * 요청이 들어올 때마다 호출되며, JWT 토큰을 검사하고 인증 정보를 설정
-     * @param request
-     * @param response
-     * @param filterChain
-     * @throws ServletException
-     * @throws IOException
-     */
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = resolveToken(request);
+  /**
+   * 요청이 들어올 때마다 호출되며, JWT 토큰을 검사하고 인증 정보를 설정
+   *
+   * @param request
+   * @param response
+   * @param filterChain
+   * @throws ServletException
+   * @throws IOException
+   */
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
+    String token = resolveToken(request);
 
-        if(StringUtils.hasText(token)) {
-            if(tokenProvider.validateToken(token)) {
-                // 토큰이 유효한 경우 인증 정보를 설정
-                applyTokenAuthentication(token);
-            } else if(tokenProvider.isExpired(token)) {
-                // 토큰이 만료되었을 경우에 리프레시 토큰 시도
-                logger.warn("만료된 JWT 토큰: {}", token);
-                // TODO common-utils 여러 프로젝트에서 사용하는데, refreshToken 가져오는 방식은 각각 프로젝트에서 구현을 해야하는지
-                // 기존 토큰을 이용해서 UserContext 조회
-                UserContext userContext = tokenProvider.getUserContextAllowExpired(token);
-                String refreshToken = refreshTokenFinder.findRefreshToken(userContext.getStaffId());
-
-                // 리프레시 토큰이 존재하고 유효한 경우 새로운 액세스 토큰 발급
-                if(StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken)) {
-                    String newAccessToken = tokenProvider.reissueAccessToken(refreshToken);
-                    // 새로운 액세스 토큰이 발급되면 헤더에 설정하고 인증 정보 적용
-                    if (StringUtils.hasText(newAccessToken)) {
-                        logger.info("새로운 액세스 토큰 발급: {}", newAccessToken);
-                        // 새로운 토큰 헤더 응답
-                        response.setHeader(HttpHeaders.AUTHORIZATION, Constants.BEARER_PREFIX + newAccessToken);
-
-                        // 인증 설정
-                        applyTokenAuthentication(newAccessToken);
-                    } else {
-                        // 새로운 액세스 토큰 발급 실패
-                        logger.warn("새로운 액세스 토큰 발급 실패: {}", token);
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                        return;
-                    }
-                } else {
-                    // 리프레시 토큰이 없거나 유효하지 않은 경우
-                    logger.warn("유효하지 않은 리프레시 토큰: {}", refreshToken);
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
-                }
-            } else {
-                // 유효하지 않은 JWT 토큰인 경우
-                logger.warn("유효하지 않은 JWT 토큰: {}", token);
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
-        }
-
-        // 다음 필터로 요청 전달
-        filterChain.doFilter(request, response);
+    if ("/auth/login".equals(request.getRequestURI())) {
+      filterChain.doFilter(request, response);
+      return;
     }
 
     if (StringUtils.hasText(token)) {
@@ -96,12 +59,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       } else if (tokenProvider.isExpired(token)) {
         // 토큰이 만료되었을 경우에 리프레시 토큰 시도
         logger.warn("만료된 JWT 토큰: {}", token);
-        // TODO 리프레시 토큰을 데이터베이스에 저장 할지? 일단 헤더에 리프레스 토큰을 받는다고 생각하고 코딩 진행
-        String refreshToken = request.getHeader(Constants.REFRESH_TOKEN_HEADER);
+        // TODO common-utils 여러 프로젝트에서 사용하는데, refreshToken 가져오는 방식은 각각 프로젝트에서 구현을 해야하는지
+        // 기존 토큰을 이용해서 UserContext 조회
+        UserContext userContext = tokenProvider.getUserContextAllowExpired(token);
+        String refreshToken = refreshTokenFinder.findRefreshToken(userContext.getStaffId());
 
         // 리프레시 토큰이 존재하고 유효한 경우 새로운 액세스 토큰 발급
         if (StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken)) {
-          String newAccessToken = tokenProvider.reissueAccessToken(token);
+          String newAccessToken = tokenProvider.reissueAccessToken(refreshToken);
           // 새로운 액세스 토큰이 발급되면 헤더에 설정하고 인증 정보 적용
           if (StringUtils.hasText(newAccessToken)) {
             logger.info("새로운 액세스 토큰 발급: {}", newAccessToken);

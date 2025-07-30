@@ -9,7 +9,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class LoginResponseDTO {
+
+  private boolean ok;
   private JwtToken body;
   private String authCode;
   private String message;
+
+  public LoginResponseDTO(JwtToken jwtToken, String roles) {
+    this.body = jwtToken;
+    this.authCode = roles;
+  }
 }

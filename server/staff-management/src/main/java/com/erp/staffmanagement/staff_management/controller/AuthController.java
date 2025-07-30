@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
 public class AuthController {
 
   private final AuthService authService;
@@ -41,7 +39,6 @@ public class AuthController {
     this.authenticationManager = authenticationManager;
     this.jwtTokenProvider = jwtTokenProvider;
   }
-
 
   @PostMapping(value = "/auth/login")
   public ResponseEntity<ApiResponse<LoginResponseDTO>> login(
@@ -72,8 +69,14 @@ public class AuthController {
           .map(GrantedAuthority::getAuthority)
           .collect(Collectors.joining(","));
 
-      return ResponseEntity.ok(
-          ApiResponse.success(new LoginResponseDTO(true, token, roles, "login success")));
+      LoginResponseDTO loginResponseDTO = authService.login(loginRequestDTO);
+      if (!loginResponseDTO.isOk()) {
+        return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST,
+            "로그인 실패 // " + loginResponseDTO.getMessage()));
+      }
+      return ResponseEntity.ok(ApiResponse.success(loginResponseDTO));
+
+
     } catch (AuthenticationException e) {
       return ResponseEntity.ok(
           ApiResponse.error(HttpStatus.BAD_REQUEST, e.getMessage() + " // 로그인 정보를 확인해주세요."));
