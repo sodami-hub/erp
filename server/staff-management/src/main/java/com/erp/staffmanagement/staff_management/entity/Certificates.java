@@ -43,12 +43,10 @@ public class Certificates extends BaseEntity {
   @Column(name = "save_name")
   private String saveName;
 
-  public Certificates(SaveCertificateReqDTO dto, Long managerId) {
+  public Certificates(SaveCertificateReqDTO dto) {
     this.staffId = dto.getStaffId();
     this.certificateName = dto.getCertificateName();
     this.organization = dto.getOrganization();
     this.issueDate = LocalDate.parse(dto.getIssueDate());
-    super.setCreatorId(managerId);
-    super.setUpdaterId(managerId);
   }
 }

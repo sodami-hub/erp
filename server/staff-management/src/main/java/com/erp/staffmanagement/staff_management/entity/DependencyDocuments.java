@@ -35,11 +35,9 @@ public class DependencyDocuments extends BaseEntity {
   @Column(name = "save_name", nullable = false)
   private String saveName;
 
-  public DependencyDocuments(SaveFileDTO saveFileDTO, Long managerId) {
+  public DependencyDocuments(SaveFileDTO saveFileDTO) {
     this.staffId = saveFileDTO.getId();
     this.originalName = saveFileDTO.getOriginalName();
     this.saveName = saveFileDTO.getSaveName();
-    super.setCreatorId(managerId);
-    super.setUpdaterId(managerId);
   }
 }

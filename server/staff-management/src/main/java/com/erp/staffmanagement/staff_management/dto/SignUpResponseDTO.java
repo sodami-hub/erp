@@ -12,6 +12,6 @@ import lombok.Setter;
 public class SignUpResponseDTO {
 
   private boolean ok;
-  private Long staffId;
+  private String staffId;
   private String message;
 }

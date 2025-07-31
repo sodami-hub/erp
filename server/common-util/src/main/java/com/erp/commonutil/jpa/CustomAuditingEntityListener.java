@@ -46,9 +46,9 @@ public class CustomAuditingEntityListener {
   }
 
   /**
-   * 현재 사용자의 ID를 반환
+   * 현재 사용자의 id(DB의 id(PK) 값)
    *
-   * @return 사용자 ID, 없으면 "SYSTEM"
+   * @return 사용자 ID, 없으면 0L
    */
   private Long getCurrentAuditor() {
     UserContext userContext = SecurityUtils.getUserContext();
@@ -57,6 +57,6 @@ public class CustomAuditingEntityListener {
       return userContext.getStaffId();
     }
 
-    return 1L;
+    return 0L;
   }
 }

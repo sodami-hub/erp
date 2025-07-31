@@ -4,7 +4,6 @@ import {readStringP} from '../utils';
 
 export const axiosClient = axios.create({
   headers: {
-    'Content-Type': 'application/json',
     Accept: 'application/json'
   },
   withCredentials: true // refresh token을 위해 필요

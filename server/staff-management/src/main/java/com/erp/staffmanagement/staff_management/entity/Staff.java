@@ -76,7 +76,7 @@ public class Staff extends BaseEntity {
   @Column(name = "work_status")
   private String workStatus;
 
-  public Staff(SignUpRequestDTO signUpRequestDTO, Long managerId) {
+  public Staff(SignUpRequestDTO signUpRequestDTO) {
     this.institutionId = signUpRequestDTO.getInstitutionId();
     this.name = signUpRequestDTO.getName();
     this.gender = signUpRequestDTO.getGender();
@@ -94,8 +94,6 @@ public class Staff extends BaseEntity {
     this.possibleWork = signUpRequestDTO.getPossibleWork();
     this.workType = signUpRequestDTO.getWorkType();
     this.workStatus = signUpRequestDTO.getWorkStatus();
-    super.setCreatorId(managerId);
-    super.setUpdaterId(managerId);
   }
 
 }
