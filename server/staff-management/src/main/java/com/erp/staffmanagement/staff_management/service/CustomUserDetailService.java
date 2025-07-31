@@ -37,11 +37,12 @@ public class CustomUserDetailService implements UserDetailsService {
         roles.add(new SimpleGrantedAuthority(staff.getAuthId()));
 
         return UserContext.builder()
-                    .staffId(staff.getStaffId())
-                    .institutionId(staff.getInstitutionId())
-                    .phone(staff.getPhone())
-                    .password(staff.getPassword())
-                    .authorities(roles)
+                .staffId(staff.getStaffId())
+                .name(staff.getName())
+                .institutionId(staff.getInstitutionId())
+                .phone(staff.getPhone())
+                .password(staff.getPassword())
+                .authorities(roles)
                 .build();
     }
 }

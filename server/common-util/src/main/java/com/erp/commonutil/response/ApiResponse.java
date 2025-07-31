@@ -17,7 +17,7 @@ public class ApiResponse<T> implements Serializable {
     private boolean ok;
 
     /** status code */
-    private HttpStatus status;
+    private int status;
 
     /** 메시지 */
     private String message;
@@ -33,7 +33,7 @@ public class ApiResponse<T> implements Serializable {
      */
     public ApiResponse(boolean ok, HttpStatus status, String message, T data) {
         this.ok = ok;
-        this.status = status;
+        this.status = status.value();
         this.message = message;
         this.data = data;
     }

@@ -6,12 +6,14 @@ import com.erp.commonutil.jwt.dto.JwtToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -47,11 +49,11 @@ public class JwtTokenProvider {
                           @Value("${jwt.refresh-token-validity-seconds}") long refreshTokenValiditySeconds,
                           ObjectMapper objectMapper)
   {
-      this.objectMapper = objectMapper;
-      this.accessTokenValiditySeconds = accessTokenValiditySeconds;
-      this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
+    this.objectMapper = objectMapper;
+    this.accessTokenValiditySeconds = accessTokenValiditySeconds;
+    this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
 
-      if (secretKey == null || secretKey.isEmpty()) {
+    if (secretKey == null || secretKey.isEmpty()) {
       // 키가 제공되지 않은 경우 안전한 키를 생성
       this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
       log.warn("No secret key provided. A secure random key has been generated.");
@@ -82,6 +84,25 @@ public class JwtTokenProvider {
   }
 
   /**
+   * AccessToken 생성
+   * @param context UserContext
+   * @param issuedAt 토큰 발급 시간
+   * @param expiredAt 토큰 만료 시간
+   * @return String
+   */
+  public String generateAccessToken(UserContext context, Instant issuedAt, Instant expiredAt) {
+    return Jwts.builder()
+            .setSubject(context.getUsername())
+            .claim("staffId", context.getStaffId())
+            .claim("institutionId", context.getInstitutionId())
+            .claim("roles", getAuthorities(context))
+            .setIssuedAt(Date.from(issuedAt))
+            .setExpiration(Date.from(expiredAt))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
+  }
+
+  /**
    * RefreshToken 생성
    * @param context UserContext
    * @return String
@@ -94,6 +115,25 @@ public class JwtTokenProvider {
             .claim("roles", getAuthorities(context))
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValiditySeconds * 1000))
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
+  }
+
+  /**
+   * RefreshToken 생성
+   * @param context UserContext
+   * @param issuedAt 토큰 발급 시간
+   * @param expiredAt 토큰 만료 시간
+   * @return String
+   */
+  public String generateRefreshToken(UserContext context, Instant issuedAt, Instant expiredAt) {
+    return Jwts.builder()
+            .setSubject(context.getUsername())
+            .claim("staffId", context.getStaffId())
+            .claim("institutionId", context.getInstitutionId())
+            .claim("roles", getAuthorities(context))
+            .setIssuedAt(Date.from(issuedAt))
+            .setExpiration(Date.from(expiredAt))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
   }
@@ -122,9 +162,9 @@ public class JwtTokenProvider {
    * @return String
    */
   private String getAuthorities(UserContext context) {
-      return context.getAuthorities().stream().filter(Objects::nonNull)
-              .map(GrantedAuthority::getAuthority)
-              .collect(Collectors.joining(","));
+    return context.getAuthorities().stream().filter(Objects::nonNull)
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.joining(","));
   }
 
   /**
@@ -135,21 +175,56 @@ public class JwtTokenProvider {
   public UserContext getUserContext(String token) {
     Claims claims = parseClaims(token);
 
+    return extractUserContext(claims);
+  }
+
+  /**
+   * 만료된 토큰을 허용하고 UserContext를 생성
+   * @param token JWT 토큰
+   * @return UserContext
+   */
+  public UserContext getUserContextAllowExpired(String token) {
+    try {
+      // 일반적인 경우: 유효한 토큰
+      Claims claims = Jwts.parserBuilder()
+              .setSigningKey(key)
+              .build()
+              .parseClaimsJws(token)
+              .getBody();
+      return extractUserContext(claims);
+
+    } catch (ExpiredJwtException e) {
+      // 만료되었지만 claims는 여전히 유효하므로 사용 가능
+      log.warn("Expired token used for extracting user context. {}", e.getMessage());
+      return extractUserContext(e.getClaims());
+
+    } catch (JwtException e) {
+      log.error("Invalid token: {}", e.getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * Claims에서 UserContext 추출
+   * @param claims Claims
+   * @return UserContext
+   */
+  private UserContext extractUserContext(Claims claims) {
     String username = claims.getSubject();
     Long staffId = claims.get("staffId", Long.class);
     String institutionId = claims.get("institutionId", String.class);
     String roles = claims.get("roles", String.class);
 
     List<GrantedAuthority> authorities = (roles != null) ? Arrays.stream(roles.split(","))
-                          .map(SimpleGrantedAuthority::new)
-                          .collect(Collectors.toList()) : Collections.emptyList();
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList()) : Collections.emptyList();
 
     return UserContext.builder()
-        .phone(username)
-        .staffId(staffId)
-        .institutionId(institutionId)
-        .authorities(authorities)
-        .build();
+            .phone(username)
+            .staffId(staffId)
+            .institutionId(institutionId)
+            .authorities(authorities)
+            .build();
   }
 
   /**
@@ -163,7 +238,7 @@ public class JwtTokenProvider {
     }
 
     UserContext userContext = getUserContext(refreshToken);
-    return generateToken(userContext, accessTokenValiditySeconds);
+    return generateAccessToken(userContext);
   }
 
   /**
@@ -174,10 +249,10 @@ public class JwtTokenProvider {
   private Claims parseClaims(String token) {
     try {
       return Jwts.parserBuilder()
-          .setSigningKey(key)
-          .build()
-          .parseClaimsJws(token)
-          .getBody();
+              .setSigningKey(key)
+              .build()
+              .parseClaimsJws(token)
+              .getBody();
     } catch (Exception e) {
       log.error("JWT token parsing error: {}", e.getMessage());
       throw new RuntimeException("Invalid JWT token", e);
@@ -215,15 +290,15 @@ public class JwtTokenProvider {
 
     Date accessTokenExpiresIn = new Date(now + 864000000); // 10일
     String accessToken = Jwts.builder()
-        .claim("auth", claims)
-        .setExpiration(accessTokenExpiresIn)
-        .signWith(key, SignatureAlgorithm.HS512)
-        .compact();
+            .claim("auth", claims)
+            .setExpiration(accessTokenExpiresIn)
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
 
     String refreshToken = Jwts.builder()
-        .setExpiration(new Date((now + 864000000) * 20)) // 20일
-        .signWith(key, SignatureAlgorithm.HS512)
-        .compact();
+            .setExpiration(new Date((now + 864000000) * 20)) // 20일
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact();
 
     return new JwtToken("Bearer", accessToken, refreshToken);
   }
@@ -235,14 +310,14 @@ public class JwtTokenProvider {
    */
   public JwtClaimsDTO getClaims(String token) {
     return objectMapper.convertValue(
-        Jwts.parserBuilder()
-            .deserializeJsonWith(new JacksonDeserializer<>(objectMapper))
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody()
-            .get("auth", LinkedHashMap.class),
-        JwtClaimsDTO.class
+            Jwts.parserBuilder()
+                    .deserializeJsonWith(new JacksonDeserializer<>(objectMapper))
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("auth", LinkedHashMap.class),
+            JwtClaimsDTO.class
     );
   }
 
@@ -254,9 +329,9 @@ public class JwtTokenProvider {
   public boolean validateToken(String token) {
     try {
       Jwts.parserBuilder()
-          .setSigningKey(key)
-          .build()
-          .parseClaimsJws(token);
+              .setSigningKey(key)
+              .build()
+              .parseClaimsJws(token);
       return true;
     } catch (Exception e) {
       log.error("JWT token validation error: {}", e.getMessage());

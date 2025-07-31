@@ -1,46 +1,38 @@
 package com.erp.commonutil.config.security;
 
-import java.util.Collection;
 import lombok.Builder;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+
 
 /**
- * 사용자 정보를 담는 UserContext 클래스 Spring Security에서 인증된 사용자 정보를 담기 위해 사용.
+ * 사용자 정보를 담는 UserContext 클래스
+ * Spring Security에서 인증된 사용자 정보를 담기 위해 사용.
  */
-@Getter
 public class UserContext implements UserDetails {
 
-  /**
-   * 직원번호
-   */
+  /** 직원번호 */
   private Long staffId;
 
-  /**
-   * 요양기관번호
-   */
+  /** 이름 */
+  private String name;
+
+  /** 요양기관번호 */
   private String institutionId;
 
-  /**
-   * 전화번호(ID)
-   */
+  /** 전화번호(ID) */
   private String phone;
 
-  /**
-   * 비밀번호
-   */
+  /** 비밀번호 */
   private String password;
 
-  /**
-   * 권한
-   */
+  /** 권한 */
   private Collection<? extends GrantedAuthority> authorities;
 
   /**
    * 권한을 반환하는 메소드
-   *
    * @return authorities
    */
   @Override
@@ -50,7 +42,6 @@ public class UserContext implements UserDetails {
 
   /**
    * 비밀번호 반환하는 메소드
-   *
    * @return password
    */
   @Override
@@ -60,7 +51,6 @@ public class UserContext implements UserDetails {
 
   /**
    * 사용자 이름(전화번호)을 반환하는 메소드
-   *
    * @return phone
    */
   @Override
@@ -70,7 +60,6 @@ public class UserContext implements UserDetails {
 
   /**
    * 스태프 ID 를 반환하는 메소드
-   *
    * @return staffId
    */
   public Long getStaffId() {
@@ -79,7 +68,6 @@ public class UserContext implements UserDetails {
 
   /**
    * 요양기관번호를 반환하는 메소드
-   *
    * @return institutionId
    */
   public String getInstitutionId() {
@@ -87,8 +75,15 @@ public class UserContext implements UserDetails {
   }
 
   /**
+   * 사용자 이름
+   * @return 사용자이름
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
    * UserContext 생성자
-   *
    * @param staffId
    * @param institutionId
    * @param phone
@@ -97,10 +92,10 @@ public class UserContext implements UserDetails {
    */
   @Builder
   public UserContext(
-      Long staffId, String institutionId, String phone, String password,
-      Collection<? extends GrantedAuthority> authorities
+          Long staffId, String name, String institutionId, String phone, String password, Collection<? extends GrantedAuthority> authorities
   ) {
     this.staffId = staffId;
+    this.name = name;
     this.institutionId = institutionId;
     this.phone = phone;
     this.password = password;
@@ -109,16 +104,17 @@ public class UserContext implements UserDetails {
 
   /**
    * toString 메소드
-   *
    * @return UserContext 정보 문자열
    */
   @Override
   public String toString() {
     return "UserContext{" +
-        "staffId=" + staffId +
-        ", institutionId='" + institutionId + '\'' +
-        ", phone='" + phone + '\'' +
-        ", authorities=" + authorities +
-        '}';
+            "staffId=" + staffId +
+            ", name='" + name + '\'' +
+            ", institutionId='" + institutionId + '\'' +
+            ", phone='" + phone + '\'' +
+            ", password='" + password + '\'' +
+            ", authorities=" + authorities +
+            '}';
   }
 }
