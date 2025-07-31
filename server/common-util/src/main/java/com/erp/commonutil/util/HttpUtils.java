@@ -38,30 +38,30 @@ public class HttpUtils {
    * @return 브라우저 이름
    */
   private static String parseBrowser(String agent) {
-      if (agent.contains("trident/7.0")) {
-          return "IE11";
-      }
-      if (agent.contains("msie 10")) {
-          return "IE10";
-      }
-      if (agent.contains("msie 9")) {
-          return "IE9";
-      }
-      if (agent.contains("msie 8")) {
-          return "IE8";
-      }
-      if (agent.contains("edg")) {
-          return "Edge";
-      }
-      if (agent.contains("chrome")) {
-          return "Chrome";
-      }
-      if (!agent.contains("chrome") && agent.contains("safari")) {
-          return "Safari";
-      }
-      if (agent.contains("firefox")) {
-          return "Firefox";
-      }
+    if (agent.contains("trident/7.0")) {
+      return "IE11";
+    }
+    if (agent.contains("msie 10")) {
+      return "IE10";
+    }
+    if (agent.contains("msie 9")) {
+      return "IE9";
+    }
+    if (agent.contains("msie 8")) {
+      return "IE8";
+    }
+    if (agent.contains("edg")) {
+      return "Edge";
+    }
+    if (agent.contains("chrome")) {
+      return "Chrome";
+    }
+    if (!agent.contains("chrome") && agent.contains("safari")) {
+      return "Safari";
+    }
+    if (agent.contains("firefox")) {
+      return "Firefox";
+    }
 
     return UNKNOWN_BROWSER;
   }
@@ -86,7 +86,7 @@ public class HttpUtils {
   public static HttpServletRequest getHttpServletRequest() {
     RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 
-    if (requestAttributes == null || !(requestAttributes instanceof ServletRequestAttributes)) {
+    if (!(requestAttributes instanceof ServletRequestAttributes)) {
       // TODO 에러코드 처리 필요
       throw new IllegalStateException("HTTP 없음");
     }

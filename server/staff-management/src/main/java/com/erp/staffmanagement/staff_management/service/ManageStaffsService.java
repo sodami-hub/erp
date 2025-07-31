@@ -63,7 +63,7 @@ public class ManageStaffsService {
       Long managerId = userContext.getStaffId();
 
       Certificates cert = certificateRepository.save(
-          new Certificates(saveCertificateReqDTO, managerId));
+          new Certificates(saveCertificateReqDTO));
       return new SaveCertificationResponseDTO(true, cert.getCertificatesId(), null);
     } catch (Exception e) {
       return new SaveCertificationResponseDTO(false, null, e.getMessage());

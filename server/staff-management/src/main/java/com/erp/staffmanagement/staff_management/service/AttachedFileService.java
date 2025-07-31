@@ -81,9 +81,7 @@ public class AttachedFileService {
   }
 
   public FileUploadResponseDTO dependentFileService(MultipartFile file01, MultipartFile file02,
-      Long userId)
-      throws FileUploadException {
-    Long uploaderId = getManagerId();
+      Long userId) throws FileUploadException {
 
     try {
       if (!file01.isEmpty()) {
@@ -91,7 +89,7 @@ public class AttachedFileService {
         saveFileDTO.setId(userId);
         // 파일 정보 DB 저장 처리
         documentRepository.save(
-            new DependencyDocuments(saveFileDTO, uploaderId));
+            new DependencyDocuments(saveFileDTO));
       }
       if (!file02.isEmpty()) {
         SaveFileDTO saveFileDTO = saveFileStorage(file02, "dependent");
@@ -99,7 +97,7 @@ public class AttachedFileService {
 
         // 파일 정보 DB 저장 처리
         documentRepository.save(
-            new DependencyDocuments(saveFileDTO, uploaderId));
+            new DependencyDocuments(saveFileDTO));
       }
     } catch (RuntimeException e) {
       return new FileUploadResponseDTO(false, e.getMessage());
@@ -118,7 +116,6 @@ public class AttachedFileService {
       }
       cert.setOriginalName(saveFileDTO.getOriginalName());
       cert.setSaveName(saveFileDTO.getSaveName());
-      cert.setUpdaterId(getManagerId());
 
       certificateRepository.save(cert);
 
