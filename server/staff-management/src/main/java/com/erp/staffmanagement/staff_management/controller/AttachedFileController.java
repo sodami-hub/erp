@@ -31,16 +31,16 @@ public class AttachedFileController {
   public ResponseEntity<ApiResponse<FileUploadResponseDTO>> fileUpload(
       @RequestParam(value = "file01", required = false) MultipartFile file01,
       @RequestParam(value = "file02", required = false) MultipartFile file02,
-      @RequestParam("userId") Long userId)
+      @RequestParam("staffId") String staffId)
       throws FileUploadException {
 
     // 넘어오는 데이터 확인
-    System.out.println("userId: " + userId);
+    System.out.println("userId: " + staffId);
     System.out.println("file01: " + file01.getOriginalFilename());
     System.out.println("file02: " + file02.getOriginalFilename());
 
     FileUploadResponseDTO fileUploadResponseDTO = attachedFileService.dependentFileService(file01,
-        file02, userId);
+        file02, Long.parseLong(staffId));
     if (!fileUploadResponseDTO.isOk()) {
       return ResponseEntity.ok(
           ApiResponse.error(HttpStatus.BAD_REQUEST, fileUploadResponseDTO.getMessage()));

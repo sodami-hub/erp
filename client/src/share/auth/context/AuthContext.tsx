@@ -36,7 +36,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const signup = useCallback(
     async (newStaff: T.SignupStaffRequest, document?: FormData) => {
       // 직원 정보 등록
-      const response: ST.ResponseType<any> = await API.staffSignup(newStaff);
+      const response = await API.staffSignup(newStaff);
       if (!response.ok) {
         if (response.message) {
           setErrorMessage('Message ' + response.message);
@@ -47,22 +47,21 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
         }
       } else {
         console.log('직원 정보 저장 성공');
-      }
-      // 첨부 서류 업로드
-      const staffId: string = response.data.staffID;
-      if (document) {
-        document.append('staffId', staffId);
-        const response = await API.staffFileUpload(document);
-        if (!response.ok) {
-          if (response.message) {
-            setErrorMessage('Message : ' + response.message);
-            return;
+        // 첨부 서류 업로드
+        if (document) {
+          document.append('staffId', response.data.staffId);
+          const response02 = await API.staffFileUpload(document);
+          if (!response02.ok) {
+            if (response02.message) {
+              setErrorMessage('Message : ' + response02.message);
+              return;
+            } else {
+              setErrorMessage('file upload failed');
+              return;
+            }
           } else {
-            setErrorMessage('file upload failed');
-            return;
+            console.log('첨부파일 저장 성공');
           }
-        } else {
-          console.log('file upload succeed');
         }
       }
       alert('직원 등록이 완료됐습니다.');

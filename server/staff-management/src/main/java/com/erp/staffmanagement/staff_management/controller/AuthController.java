@@ -52,7 +52,6 @@ public class AuthController {
       return ResponseEntity.ok(
           ApiResponse.error(HttpStatus.BAD_REQUEST, signUpResponseDTO.getMessage()));
     }
-
     return ResponseEntity.ok(ApiResponse.success(signUpResponseDTO));
   }
 }

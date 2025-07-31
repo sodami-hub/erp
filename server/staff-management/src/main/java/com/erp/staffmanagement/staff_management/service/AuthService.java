@@ -63,6 +63,8 @@ public class AuthService {
     // 2. 직원 등록 로직
     Staff newStaff = new Staff(signUpRequestDTO);
     Staff staff = staffRepository.save(newStaff);
-    return new SignUpResponseDTO(true, staff.getStaffId(), null);
+    Staff newStaffId = staffRepository.getStaffIdByPhone(staff.getPhone());
+    System.out.println("-=-----------------" + newStaffId.getStaffId() + "----------------------");
+    return new SignUpResponseDTO(true, String.valueOf(newStaffId.getStaffId()), null);
   }
 }

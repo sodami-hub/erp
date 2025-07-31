@@ -1,6 +1,5 @@
 package com.erp.staffmanagement.staff_management.service;
 
-import com.erp.commonutil.config.security.UserContext;
 import com.erp.staffmanagement.staff_management.dto.CertificateRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificateReqDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveCertificationResponseDTO;
@@ -11,7 +10,6 @@ import com.erp.staffmanagement.staff_management.repository.StaffRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -57,11 +55,6 @@ public class ManageStaffsService {
 
   public SaveCertificationResponseDTO saveCertService(SaveCertificateReqDTO saveCertificateReqDTO) {
     try {
-      UserContext userContext = (UserContext) SecurityContextHolder.getContext().getAuthentication()
-          .getPrincipal();
-
-      Long managerId = userContext.getStaffId();
-
       Certificates cert = certificateRepository.save(
           new Certificates(saveCertificateReqDTO));
       return new SaveCertificationResponseDTO(true, cert.getCertificatesId(), null);

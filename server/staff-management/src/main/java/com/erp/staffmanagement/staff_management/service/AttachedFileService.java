@@ -1,6 +1,5 @@
 package com.erp.staffmanagement.staff_management.service;
 
-import com.erp.commonutil.config.security.UserContext;
 import com.erp.staffmanagement.staff_management.dto.FileUploadResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SaveFileDTO;
 import com.erp.staffmanagement.staff_management.entity.Certificates;
@@ -17,7 +16,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,12 +40,6 @@ public class AttachedFileService {
     // timeStamp 생성
     String timeStamp = dateFormat.format(new Date());
     return timeStamp + randomNumber + originalFileName;
-  }
-
-  private Long getManagerId() {
-    UserContext userContext = (UserContext) SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
-    return userContext.getStaffId();
   }
 
   // 서버 스토리지에 파일 저장
