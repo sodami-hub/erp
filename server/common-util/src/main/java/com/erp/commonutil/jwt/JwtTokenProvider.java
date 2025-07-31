@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,20 +39,19 @@ public class JwtTokenProvider {
 
   private final ObjectMapper objectMapper;
   private Key key;
-  private long accessTokenValiditySeconds;
-  private long refreshTokenValiditySeconds;
+  private final long accessTokenValiditySeconds;
+  private final long refreshTokenValiditySeconds;
 
   // application.yml에 있는 jwt.secret 값을 가져와서 Base64로 디코딩 후 Key 객체를 생성
   public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
-                          @Value("${jwt.access-token-validity-seconds}") long accessTokenValiditySeconds,
-                          @Value("${jwt.refresh-token-validity-seconds}") long refreshTokenValiditySeconds,
-                          ObjectMapper objectMapper)
-  {
-      this.objectMapper = objectMapper;
-      this.accessTokenValiditySeconds = accessTokenValiditySeconds;
-      this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
+      @Value("${jwt.access-token-validity-seconds}") long accessTokenValiditySeconds,
+      @Value("${jwt.refresh-token-validity-seconds}") long refreshTokenValiditySeconds,
+      ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+    this.accessTokenValiditySeconds = accessTokenValiditySeconds;
+    this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
 
-      if (secretKey == null || secretKey.isEmpty()) {
+    if (secretKey == null || secretKey.isEmpty()) {
       // 키가 제공되지 않은 경우 안전한 키를 생성
       this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
       log.warn("No secret key provided. A secure random key has been generated.");
@@ -68,107 +66,114 @@ public class JwtTokenProvider {
 
   /**
    * AccessToken 생성
+   *
    * @param context UserContext
    * @return String
    */
   public String generateAccessToken(UserContext context) {
     return Jwts.builder()
-            .setSubject(context.getUsername())
-            .claim("staffId", context.getStaffId())
-            .claim("institutionId", context.getInstitutionId())
-            .claim("roles", getAuthorities(context))
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + accessTokenValiditySeconds * 1000))
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
+        .setSubject(context.getUsername())
+        .claim("staffId", context.getStaffId())
+        .claim("institutionId", context.getInstitutionId())
+        .claim("roles", getAuthorities(context))
+        .setIssuedAt(new Date())
+        .setExpiration(new Date(System.currentTimeMillis() + accessTokenValiditySeconds * 1000))
+        .signWith(key, SignatureAlgorithm.HS512)
+        .compact();
   }
 
   /**
    * AccessToken 생성
-   * @param context UserContext
-   * @param issuedAt 토큰 발급 시간
+   *
+   * @param context   UserContext
+   * @param issuedAt  토큰 발급 시간
    * @param expiredAt 토큰 만료 시간
    * @return String
    */
   public String generateAccessToken(UserContext context, Instant issuedAt, Instant expiredAt) {
     return Jwts.builder()
-            .setSubject(context.getUsername())
-            .claim("staffId", context.getStaffId())
-            .claim("institutionId", context.getInstitutionId())
-            .claim("roles", getAuthorities(context))
-            .setIssuedAt(Date.from(issuedAt))
-            .setExpiration(Date.from(expiredAt))
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
+        .setSubject(context.getUsername())
+        .claim("staffId", context.getStaffId())
+        .claim("institutionId", context.getInstitutionId())
+        .claim("roles", getAuthorities(context))
+        .setIssuedAt(Date.from(issuedAt))
+        .setExpiration(Date.from(expiredAt))
+        .signWith(key, SignatureAlgorithm.HS512)
+        .compact();
   }
 
   /**
    * RefreshToken 생성
+   *
    * @param context UserContext
    * @return String
    */
   public String generateRefreshToken(UserContext context) {
     return Jwts.builder()
-            .setSubject(context.getUsername())
-            .claim("staffId", context.getStaffId())
-            .claim("institutionId", context.getInstitutionId())
-            .claim("roles", getAuthorities(context))
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValiditySeconds * 1000))
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
+        .setSubject(context.getUsername())
+        .claim("staffId", context.getStaffId())
+        .claim("institutionId", context.getInstitutionId())
+        .claim("roles", getAuthorities(context))
+        .setIssuedAt(new Date())
+        .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValiditySeconds * 1000))
+        .signWith(key, SignatureAlgorithm.HS512)
+        .compact();
   }
 
   /**
    * RefreshToken 생성
-   * @param context UserContext
-   * @param issuedAt 토큰 발급 시간
+   *
+   * @param context   UserContext
+   * @param issuedAt  토큰 발급 시간
    * @param expiredAt 토큰 만료 시간
    * @return String
    */
   public String generateRefreshToken(UserContext context, Instant issuedAt, Instant expiredAt) {
     return Jwts.builder()
-            .setSubject(context.getUsername())
-            .claim("staffId", context.getStaffId())
-            .claim("institutionId", context.getInstitutionId())
-            .claim("roles", getAuthorities(context))
-            .setIssuedAt(Date.from(issuedAt))
-            .setExpiration(Date.from(expiredAt))
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
+        .setSubject(context.getUsername())
+        .claim("staffId", context.getStaffId())
+        .claim("institutionId", context.getInstitutionId())
+        .claim("roles", getAuthorities(context))
+        .setIssuedAt(Date.from(issuedAt))
+        .setExpiration(Date.from(expiredAt))
+        .signWith(key, SignatureAlgorithm.HS512)
+        .compact();
   }
 
   /**
    * 토큰 생성
-   * @param context UserContext
+   *
+   * @param context              UserContext
    * @param tokenValiditySeconds 토큰 유효 시간 (초 단위)
    * @return 토큰
    */
   public String generateToken(UserContext context, long tokenValiditySeconds) {
     return Jwts.builder()
-            .setSubject(context.getUsername())
-            .claim("staffId", context.getStaffId())
-            .claim("institutionId", context.getInstitutionId())
-            .claim("roles", getAuthorities(context))
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + tokenValiditySeconds * 1000))
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
+        .setSubject(context.getUsername())
+        .claim("staffId", context.getStaffId())
+        .claim("institutionId", context.getInstitutionId())
+        .claim("roles", getAuthorities(context))
+        .setIssuedAt(new Date())
+        .setExpiration(new Date(System.currentTimeMillis() + tokenValiditySeconds * 1000))
+        .signWith(key, SignatureAlgorithm.HS512)
+        .compact();
   }
 
   /**
    * UserContext 권한 조회
+   *
    * @param context UserContext
    * @return String
    */
   private String getAuthorities(UserContext context) {
-      return context.getAuthorities().stream().filter(Objects::nonNull)
-              .map(GrantedAuthority::getAuthority)
-              .collect(Collectors.joining(","));
+    return context.getAuthorities().stream().filter(Objects::nonNull)
+        .map(GrantedAuthority::getAuthority)
+        .collect(Collectors.joining(","));
   }
 
   /**
    * 토큰에서 UserContext 생성
+   *
    * @param token
    * @return UserContext
    */
@@ -180,6 +185,7 @@ public class JwtTokenProvider {
 
   /**
    * 만료된 토큰을 허용하고 UserContext를 생성
+   *
    * @param token JWT 토큰
    * @return UserContext
    */
@@ -187,10 +193,10 @@ public class JwtTokenProvider {
     try {
       // 일반적인 경우: 유효한 토큰
       Claims claims = Jwts.parserBuilder()
-              .setSigningKey(key)
-              .build()
-              .parseClaimsJws(token)
-              .getBody();
+          .setSigningKey(key)
+          .build()
+          .parseClaimsJws(token)
+          .getBody();
       return extractUserContext(claims);
 
     } catch (ExpiredJwtException e) {
@@ -206,6 +212,7 @@ public class JwtTokenProvider {
 
   /**
    * Claims에서 UserContext 추출
+   *
    * @param claims Claims
    * @return UserContext
    */
@@ -216,8 +223,8 @@ public class JwtTokenProvider {
     String roles = claims.get("roles", String.class);
 
     List<GrantedAuthority> authorities = (roles != null) ? Arrays.stream(roles.split(","))
-                          .map(SimpleGrantedAuthority::new)
-                          .collect(Collectors.toList()) : Collections.emptyList();
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList()) : Collections.emptyList();
 
     return UserContext.builder()
         .phone(username)
@@ -229,11 +236,12 @@ public class JwtTokenProvider {
 
   /**
    * AccessToken 재발급 (RefreshToken 사용)
+   *
    * @param refreshToken Refresh Token
    * @return Token
    */
   public String reissueAccessToken(String refreshToken) {
-    if(!validateToken(refreshToken) || isExpired(refreshToken)) {
+    if (!validateToken(refreshToken) || isExpired(refreshToken)) {
       return null;
     }
 
@@ -243,6 +251,7 @@ public class JwtTokenProvider {
 
   /**
    * 토큰에서 Claims 파싱
+   *
    * @param token
    * @return Claims
    */
@@ -261,14 +270,15 @@ public class JwtTokenProvider {
 
   /**
    * 토큰이 만료되었는지 확인
+   *
    * @param token 토큰
    * @return 만료여부
    */
   public boolean isExpired(String token) {
     try {
       Claims body = Jwts.parserBuilder().setSigningKey(key).build()
-              .parseClaimsJws(token)
-              .getBody();
+          .parseClaimsJws(token)
+          .getBody();
 
       return body.getExpiration().before(new Date());
     } catch (ExpiredJwtException e) {
@@ -282,6 +292,7 @@ public class JwtTokenProvider {
 
   /**
    * JWT 토큰을 생성하는 메서드
+   *
    * @param claims JwtClaimsDTO
    * @return JwtToken
    */
@@ -305,6 +316,7 @@ public class JwtTokenProvider {
 
   /**
    * jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+   *
    * @param token 토큰
    * @return JwtClaimsDTO
    */
@@ -323,6 +335,7 @@ public class JwtTokenProvider {
 
   /**
    * 토큰 검증
+   *
    * @param token
    * @return
    */

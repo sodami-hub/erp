@@ -30,11 +30,9 @@ public class BaseEntity {
 
   @CreatedBy
   @Column(name = "creator_id")
-  // @CreatedBy  User ID 를 인식하려면, AuditorAware 를 구현한 클래스를 만들어야 된다. 실패!! 나중에 구현해보도록
   private Long creatorId;
 
   @LastModifiedBy
   @Column(name = "updater_id")
-  // @LastModifiedBy
   private Long updaterId;
 }
