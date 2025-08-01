@@ -142,7 +142,7 @@ export default function StaffInfo() {
           </button>
         </div>
         <div className={'mt-3.5 w-full'}>
-          <h2 className={'text text-black'}>Staff List</h2>
+          <h2 className={'text text-black text-center'}>Staff List</h2>
           <StaffList status={staffListStatus} getStaffId={getStaffInfo} />
         </div>
       </div>

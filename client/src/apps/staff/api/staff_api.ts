@@ -3,14 +3,14 @@ import * as T from '../types';
 import * as ST from '../../../share/types';
 
 export const loadCommonCodeByGroupName = async (groupName: string) => {
-  const res = await axiosClient.get<ST.ResponseType<T.CommonCode>>(
+  const res = await axiosClient.get<ST.ResponseType<ST.CommonCode>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/commonCodeList/${groupName}`
   );
   return res.data;
 };
 
 export const loadAllCommonCode = async () => {
-  const res = await axiosClient.get<ST.ResponseType<T.AllCommonCode>>(
+  const res = await axiosClient.get<ST.ResponseType<ST.AllCommonCode>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/commonCodeList/all`
   );
   return res.data;

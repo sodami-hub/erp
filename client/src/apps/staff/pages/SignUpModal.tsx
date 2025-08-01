@@ -4,6 +4,7 @@ import * as C from '../../../share/components/SignupModalComponents';
 import * as T from '../types';
 import * as ST from '../../../share/types';
 import * as API from '../api';
+import * as SU from '../../../share/utils';
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<ST.ModalProps> = ({
@@ -70,8 +71,8 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       if (!res.ok) {
         console.log('CommonCode(Staff) Load Failure // ' + res.message);
       }
-      setCommonCodeList(res.data);
-      console.log('CommonCode(Staff) Load Succeed ' + res.data);
+      setCommonCodeList(SU.changeAllSubCodeToCodeName(res.data));
+      console.log('CommonCode(Staff) Load Succeed');
     })();
   }, []);
 
@@ -99,7 +100,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   // ==================================================
 
   // ============= 부양가족 첨부서류 업로드 ================
-  const [material, setMaterial] = useState<FormData>();
+  const [material, setMaterial] = useState<FormData | undefined>(undefined);
 
   const submitMaterial = useCallback((data: FormData) => {
     setMaterial(data);
@@ -121,6 +122,10 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       document.getElementById('joinDate')?.focus();
       return;
     }
+
+    signupForm.possibleWork = SU.changeCodeNameToSubCode(signupForm.possibleWork.split(',')).join(',');
+    signupForm.workStatus = SU.changeCodeNameToSubCode(signupForm.workStatus.split(',')).join(',');
+    signupForm.workType = SU.changeCodeNameToSubCode(signupForm.workType.split(',')).join(',');
 
     signup(signupForm, material);
 

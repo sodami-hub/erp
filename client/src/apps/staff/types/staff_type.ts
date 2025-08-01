@@ -46,17 +46,3 @@ export type SaveCertInfoResponse = {
   certificateId: string;
   errorMessage?: string;
 };
-
-export type CommonCode = {
-  ok: boolean;
-  groupName: string;
-  codeNames: string[];
-};
-
-export type AllCommonCode = {
-  ok: boolean;
-  work_status: string[];
-  work_type: string[];
-  work_list: string[];
-  errorMessage: string;
-};
