@@ -4,6 +4,7 @@ import * as C from '../../../share/components/SignupModalComponents';
 import * as T from '../types';
 import * as ST from '../../../share/types';
 import * as API from '../api';
+import * as U from '../utils';
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<ST.ModalProps> = ({
@@ -70,8 +71,8 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       if (!res.ok) {
         console.log('CommonCode(Staff) Load Failure // ' + res.message);
       }
-      setCommonCodeList(res.data);
-      console.log('CommonCode(Staff) Load Succeed ' + res.data);
+      setCommonCodeList(U.changeAllSubCodeToCodeName(res.data));
+      console.log('CommonCode(Staff) Load Succeed');
     })();
   }, []);
 
