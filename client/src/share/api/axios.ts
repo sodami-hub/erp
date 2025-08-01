@@ -34,7 +34,8 @@ axiosClient.interceptors.response.use(
       const newToken = newAccessToken.replace('Bearer ', '');
       U.writeStringP('accessToken', newToken);
     }
-    console.log(response);
+
+    // 서버의 응답에서 공통코드의 subCode를 codeName으로 변환
     for (let i = 0; i < response.data.data.length; i++) {
       response.data.data[i].possibleWork = changeSubCodeToCodeName(
         response.data.data[i].possibleWork
