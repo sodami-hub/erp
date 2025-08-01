@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as U from '../utils';
-import {readStringP} from '../utils';
+import {changeSubCodeToCodeName, readStringP} from '../utils';
 
 export const axiosClient = axios.create({
   headers: {
@@ -34,6 +34,19 @@ axiosClient.interceptors.response.use(
       const newToken = newAccessToken.replace('Bearer ', '');
       U.writeStringP('accessToken', newToken);
     }
+    console.log(response);
+    for (let i = 0; i < response.data.data.length; i++) {
+      response.data.data[i].possibleWork = changeSubCodeToCodeName(
+        response.data.data[i].possibleWork
+      );
+      response.data.data[i].workType = changeSubCodeToCodeName(
+        response.data.data[i].workType
+      );
+      response.data.data[i].workStatus = changeSubCodeToCodeName(
+        response.data.data[i].workStatus
+      );
+    }
+
     return response;
   },
   async err => {

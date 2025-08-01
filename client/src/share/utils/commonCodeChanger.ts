@@ -21,3 +21,11 @@ export const changeCodeNameToSubCode = (codeNames: string[]): string[] => {
       ) ?? ''
   );
 };
+
+export const changeSubCodeToCodeName = (subCode: string | undefined): string => {
+  if (!subCode) return '';
+  return subCode
+    .split(',')
+    .map(value => T.CommonCodeToCodeName[parseInt(value)])
+    .join(',');
+};
