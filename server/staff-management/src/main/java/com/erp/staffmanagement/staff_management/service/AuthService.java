@@ -45,7 +45,8 @@ public class AuthService {
   public SignUpResponseDTO staffSignUp(SignUpRequestDTO signUpRequestDTO) {
     UserContext userContext = (UserContext) SecurityContextHolder.getContext().getAuthentication()
         .getPrincipal();
-    if (userContext.getAuthorities().contains("102")) {
+    
+    if (userContext.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("102"))) {
       return new SignUpResponseDTO(false, null, "직원등록 권한이 없습니다.");
     }
 
@@ -53,7 +54,7 @@ public class AuthService {
 
     // 직원등록에 추가로 필요한 정보
     signUpRequestDTO.setInstitutionId(userContext.getInstitutionId());
-    if (signUpRequestDTO.getWorkType().contains("센터장")) {
+    if (signUpRequestDTO.getWorkType().contains("201")) {
       signUpRequestDTO.setAuthId("101");  // 직종에 '센터장'이 있으면 권한코드 '101'
     } else {
       signUpRequestDTO.setAuthId("102"); // 기관관리자가 등록하는 직원의 권한코드 '102'

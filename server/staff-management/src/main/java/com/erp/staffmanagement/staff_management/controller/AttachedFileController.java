@@ -33,12 +33,9 @@ public class AttachedFileController {
       @RequestParam(value = "file02", required = false) MultipartFile file02,
       @RequestParam("staffId") String staffId)
       throws FileUploadException {
-
-    // 넘어오는 데이터 확인
-    System.out.println("userId: " + staffId);
-    System.out.println("file01: " + file01.getOriginalFilename());
-    System.out.println("file02: " + file02.getOriginalFilename());
-
+    if (file01.isEmpty()) {
+      return ResponseEntity.ok(ApiResponse.error("첨부할 문서가 없습니다."));
+    }
     FileUploadResponseDTO fileUploadResponseDTO = attachedFileService.dependentFileService(file01,
         file02, Long.parseLong(staffId));
     if (!fileUploadResponseDTO.isOk()) {

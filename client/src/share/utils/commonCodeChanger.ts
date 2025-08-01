@@ -1,15 +1,5 @@
 import * as T from '../types';
 
-/*
-export type AllCommonCode = {
-  ok: boolean;
-  work_status: string[];
-  work_type: string[];
-  work_list: string[];
-  errorMessage: string;
-};
- */
-
 export const changeAllSubCodeToCodeName = (commonCode: T.AllCommonCode) => {
   let codeNameCommonCode: T.AllCommonCode = {
     ok: true,
@@ -21,4 +11,13 @@ export const changeAllSubCodeToCodeName = (commonCode: T.AllCommonCode) => {
     errorMessage: ''
   };
   return codeNameCommonCode;
+};
+
+export const changeCodeNameToSubCode = (codeNames: string[]): string[] => {
+  return codeNames.map(
+    value =>
+      Object.keys(T.CommonCodeToCodeName).find(
+        key => T.CommonCodeToCodeName[parseInt(key)] === value
+      ) ?? ''
+  );
 };

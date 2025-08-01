@@ -46,34 +46,3 @@ export type SaveCertInfoResponse = {
   certificateId: string;
   errorMessage?: string;
 };
-
-export type CommonCode = {
-  ok: boolean;
-  groupName: string;
-  codeNames: string[];
-};
-
-export type AllCommonCode = {
-  ok: boolean;
-  work_status: string[];
-  work_type: string[];
-  work_list: string[];
-  errorMessage: string;
-};
-
-export enum CommonCodeToCodeName {
-  센터장 = 201,
-  사회복지사,
-  요양보호사,
-  목욕관리자,
-  간호사,
-  요양 = 301,
-  목욕,
-  간호,
-  치매관리,
-  상담서비스,
-  대기 = 401,
-  근무,
-  휴직,
-  퇴사 = 405
-}

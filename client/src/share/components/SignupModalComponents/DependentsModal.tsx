@@ -29,8 +29,8 @@ export const DependentsModalContents: FC<DependentsContentsProps> = ({
   reset
 }) => {
   const [dependent, setDependent] = useState<string>('');
-  const [file01, setFile01] = useState<File>();
-  const [file02, setFile02] = useState<File>();
+  const [file01, setFile01] = useState<File | undefined>(undefined);
+  const [file02, setFile02] = useState<File | undefined>(undefined);
 
   /*
   <input type="file" />의 값은 React 상태를 통해 초기화할 수 없습니다.

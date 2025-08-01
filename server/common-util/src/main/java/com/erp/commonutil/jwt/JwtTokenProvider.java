@@ -1,8 +1,6 @@
 package com.erp.commonutil.jwt;
 
 import com.erp.commonutil.config.security.UserContext;
-import com.erp.commonutil.jwt.dto.JwtClaimsDTO;
-import com.erp.commonutil.jwt.dto.JwtToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -10,14 +8,12 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -288,49 +284,6 @@ public class JwtTokenProvider {
       log.error("token validation error: {}", e.getMessage());
       return false;
     }
-  }
-
-  /**
-   * JWT 토큰을 생성하는 메서드
-   *
-   * @param claims JwtClaimsDTO
-   * @return JwtToken
-   */
-  public JwtToken generateAccessToken(JwtClaimsDTO claims) {
-    long now = System.currentTimeMillis();
-
-    Date accessTokenExpiresIn = new Date(now + 864000000); // 10일
-    String accessToken = Jwts.builder()
-        .claim("auth", claims)
-        .setExpiration(accessTokenExpiresIn)
-        .signWith(key, SignatureAlgorithm.HS512)
-        .compact();
-
-    String refreshToken = Jwts.builder()
-        .setExpiration(new Date((now + 864000000) * 20)) // 20일
-        .signWith(key, SignatureAlgorithm.HS512)
-        .compact();
-
-    return new JwtToken("Bearer", accessToken, refreshToken);
-  }
-
-  /**
-   * jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
-   *
-   * @param token 토큰
-   * @return JwtClaimsDTO
-   */
-  public JwtClaimsDTO getClaims(String token) {
-    return objectMapper.convertValue(
-        Jwts.parserBuilder()
-            .deserializeJsonWith(new JacksonDeserializer<>(objectMapper))
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody()
-            .get("auth", LinkedHashMap.class),
-        JwtClaimsDTO.class
-    );
   }
 
   /**
