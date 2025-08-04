@@ -1,7 +1,8 @@
 package com.erp.staffmanagement.staff_management.service;
 
 import com.erp.staffmanagement.staff_management.dto.AllCommonCodeResponseDTO;
-import com.erp.staffmanagement.staff_management.dto.CommonCodeResponseDTO;
+import com.erp.staffmanagement.staff_management.dto.CommonCodeByGroup;
+import com.erp.staffmanagement.staff_management.dto.CommonCodeByGroupResponseDTO;
 import com.erp.staffmanagement.staff_management.entity.CommonCode;
 import com.erp.staffmanagement.staff_management.repository.CommonCodeRepository;
 import java.util.ArrayList;
@@ -19,21 +20,21 @@ public class CommonCodeRespService {
 
   public AllCommonCodeResponseDTO getAllCommonCodeList() {
     try {
-      List<String> work_status = new ArrayList<>();
-      List<String> work_type = new ArrayList<>();
-      List<String> work_list = new ArrayList<>();
+      List<CommonCodeByGroup> work_status = new ArrayList<>();
+      List<CommonCodeByGroup> work_type = new ArrayList<>();
+      List<CommonCodeByGroup> work_list = new ArrayList<>();
       List<CommonCode> allCommonCodeList = commonCodeRepository.findAll();
       for (CommonCode commonCode : allCommonCodeList) {
         String groupName = commonCode.getGroupName();
         switch (groupName) {
           case "work_status":
-            work_status.add(commonCode.getSubCode());
+            work_status.add(new CommonCodeByGroup(commonCode));
             break;
           case "work_type":
-            work_type.add(commonCode.getSubCode());
+            work_type.add(new CommonCodeByGroup(commonCode));
             break;
           case "work_list":
-            work_list.add(commonCode.getSubCode());
+            work_list.add(new CommonCodeByGroup(commonCode));
             break;
           default:
             break;
@@ -45,18 +46,15 @@ public class CommonCodeRespService {
     }
   }
 
-  public CommonCodeResponseDTO getCommonCodeList(String groupName) {
+  public CommonCodeByGroupResponseDTO getCommonCodeListByGroupName(String groupName) {
 
     try {
       List<CommonCode> commonCodeList = commonCodeRepository.findCodeNameByGroupName(
           groupName);
-      return new CommonCodeResponseDTO(
-          true,
-          groupName,
-          commonCodeList.stream().map(CommonCode::getCodeName).toList()
-      );
+
+      return new CommonCodeByGroupResponseDTO(true, commonCodeList);
     } catch (Exception e) {
-      return new CommonCodeResponseDTO(false, groupName, null);
+      return new CommonCodeByGroupResponseDTO(false, e.getMessage());
     }
   }
 }
