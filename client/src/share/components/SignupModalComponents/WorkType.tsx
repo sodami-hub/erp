@@ -1,6 +1,7 @@
 import {CheckBoxComponent, CheckBoxModal} from '../index';
 import React, {ChangeEvent, useCallback} from 'react';
 import {useToggle} from '../../hooks';
+import * as ST from '../../../share/types';
 
 export const WorkType = ({
   value,
@@ -9,7 +10,7 @@ export const WorkType = ({
   reset
 }: {
   value: string;
-  workTypeList: string[];
+  workTypeList: ST.commonCodeResp[];
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
   reset: boolean;
 }) => {
@@ -32,7 +33,10 @@ export const WorkType = ({
         className={
           'border-2 border-black w-[35%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
         }>
-        {value}
+        {workTypeList
+          .filter(item => value.includes(item.subCode))
+          .map(item => item.codeName)
+          .join(',')}
       </span>
       <div>
         <CheckBoxModal open={workTypeModalOpen}>

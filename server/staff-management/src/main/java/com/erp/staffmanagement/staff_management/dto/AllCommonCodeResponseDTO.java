@@ -13,8 +13,8 @@ import lombok.Setter;
 public class AllCommonCodeResponseDTO {
 
   private boolean ok;
-  private List<String> work_status;
-  private List<String> work_type;
-  private List<String> work_list;
+  private List<CommonCodeByGroup> work_status;
+  private List<CommonCodeByGroup> work_type;
+  private List<CommonCodeByGroup> work_list;
   private String errorMessage;
 }

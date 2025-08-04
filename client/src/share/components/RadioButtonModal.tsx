@@ -1,5 +1,6 @@
 import {FC, useEffect, useState} from 'react';
 import {ReactDivProps} from '../types';
+import * as ST from '../../share/types';
 
 export type RadioButtonModalProps = ReactDivProps & {
   open?: boolean;
@@ -17,7 +18,7 @@ export const RadioButtonModal: FC<RadioButtonModalProps> = ({
 export type RadioButtonProps = ReactDivProps & {
   name: string;
   toggle: () => void;
-  buttonList: string[];
+  buttonList: ST.commonCodeResp[] | string[];
   sendValue: (value: string) => void;
   reset: boolean;
 };
@@ -48,13 +49,13 @@ export const RadioButtonComponent: FC<RadioButtonProps> = ({
       <input
         name={name}
         type={'radio'}
-        value={value}
+        value={typeof value === 'string' ? value : value.subCode}
         onClick={() => {
-          onSubmit(value);
+          onSubmit(typeof value === 'string' ? value : value.subCode);
         }}
         className={'radio radio-neutral my-1'}
       />
-      <span>{value}</span>
+      <span>{typeof value === 'string' ? value : value.codeName}</span>
     </label>
   ));
   return (

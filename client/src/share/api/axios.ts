@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as U from '../utils';
-import {changeSubCodeToCodeName, readStringP} from '../utils';
+import {readStringP} from '../utils';
 
 export const axiosClient = axios.create({
   headers: {
@@ -33,19 +33,6 @@ axiosClient.interceptors.response.use(
     if (newAccessToken && newAccessToken.startsWith('Bearer ')) {
       const newToken = newAccessToken.replace('Bearer ', '');
       U.writeStringP('accessToken', newToken);
-    }
-
-    // 서버의 응답에서 공통코드의 subCode를 codeName으로 변환
-    for (let i = 0; i < response.data.data.length; i++) {
-      response.data.data[i].possibleWork = changeSubCodeToCodeName(
-        response.data.data[i].possibleWork
-      );
-      response.data.data[i].workType = changeSubCodeToCodeName(
-        response.data.data[i].workType
-      );
-      response.data.data[i].workStatus = changeSubCodeToCodeName(
-        response.data.data[i].workStatus
-      );
     }
 
     return response;

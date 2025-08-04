@@ -2,7 +2,7 @@ package com.erp.staffmanagement.staff_management.controller;
 
 import com.erp.commonutil.response.ApiResponse;
 import com.erp.staffmanagement.staff_management.dto.AllCommonCodeResponseDTO;
-import com.erp.staffmanagement.staff_management.dto.CommonCodeResponseDTO;
+import com.erp.staffmanagement.staff_management.dto.CommonCodeByGroupResponseDTO;
 import com.erp.staffmanagement.staff_management.service.CommonCodeRespService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +32,14 @@ public class CommonCodeRespController {
   }
 
   @GetMapping(value = "/staff/commonCodeList/{groupName}")
-  public ResponseEntity<ApiResponse<CommonCodeResponseDTO>> getCommonCodeList(
+  public ResponseEntity<ApiResponse<CommonCodeByGroupResponseDTO>> getCommonCodeList(
       @PathVariable String groupName
   ) {
-    CommonCodeResponseDTO commonCodeResp = commonCodeRespService.getCommonCodeList(groupName);
+    CommonCodeByGroupResponseDTO commonCodeResp = commonCodeRespService.getCommonCodeListByGroupName(
+        groupName);
     if (!commonCodeResp.isOk()) {
-      return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST, "공통코드 로드 에러"));
+      return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST,
+          "공통코드 로드 에러  // " + commonCodeResp.getMessage()));
     }
     return ResponseEntity.ok(ApiResponse.success(commonCodeResp));
   }

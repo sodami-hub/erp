@@ -4,7 +4,6 @@ import * as C from '../../../share/components/SignupModalComponents';
 import * as T from '../types';
 import * as ST from '../../../share/types';
 import * as API from '../api';
-import * as SU from '../../../share/utils';
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<ST.ModalProps> = ({
@@ -59,10 +58,15 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   /*
   어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
    */
+  type CommonCodeType = {
+    subCode: string;
+    codeName: string;
+  };
+
   const [commonCodeList, setCommonCodeList] = useState<{
-    work_status: string[];
-    work_type: string[];
-    work_list: string[];
+    work_status: CommonCodeType[];
+    work_type: CommonCodeType[];
+    work_list: CommonCodeType[];
   }>(initialCommonCodeList);
 
   useEffect(() => {
@@ -71,7 +75,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       if (!res.ok) {
         console.log('CommonCode(Staff) Load Failure // ' + res.message);
       }
-      setCommonCodeList(SU.changeAllSubCodeToCodeName(res.data));
+      setCommonCodeList(res.data);
       console.log('CommonCode(Staff) Load Succeed');
     })();
   }, []);
@@ -122,10 +126,6 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       document.getElementById('joinDate')?.focus();
       return;
     }
-
-    signupForm.possibleWork = SU.changeCodeNameToSubCode(signupForm.possibleWork.split(',')).join(',');
-    signupForm.workStatus = SU.changeCodeNameToSubCode(signupForm.workStatus.split(',')).join(',');
-    signupForm.workType = SU.changeCodeNameToSubCode(signupForm.workType.split(',')).join(',');
 
     signup(signupForm, material);
 
