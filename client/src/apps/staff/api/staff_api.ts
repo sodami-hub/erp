@@ -2,8 +2,8 @@ import {axiosClient} from '../../../share/api/axios';
 import * as T from '../types';
 import * as ST from '../../../share/types';
 
-export const loadCommonCodeByGroupName = async (groupName: string) => {
-  const res = await axiosClient.get<ST.ResponseType<ST.CommonCode>>(
+export const loadCommonCodeByGroupName = async (groupName: ST.GroupName) => {
+  const res = await axiosClient.get<ST.ResponseType<ST.CommonCodeByGroup>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/commonCodeList/${groupName}`
   );
   return res.data;

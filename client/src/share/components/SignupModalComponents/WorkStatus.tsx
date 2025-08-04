@@ -1,6 +1,7 @@
 import * as C from '../index';
 import React, {ChangeEvent, useCallback} from 'react';
 import {useToggle} from '../../hooks';
+import * as ST from '../../../share/types';
 
 export const WorkStatus = ({
   value,
@@ -9,7 +10,7 @@ export const WorkStatus = ({
   reset
 }: {
   value: string;
-  workStatusList: string[];
+  workStatusList: ST.commonCodeResp[];
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
   reset: boolean;
 }) => {
@@ -30,7 +31,10 @@ export const WorkStatus = ({
         className={
           'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
         }>
-        {value}
+        {workStatusList
+          .filter(item => value.includes(item.subCode))
+          .map(item => item.codeName)
+          .join(',')}
       </span>
       <div>
         <C.RadioButtonModal open={workStatusModalOpen}>

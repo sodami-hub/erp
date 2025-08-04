@@ -14,8 +14,6 @@ export type ModalContentProps = ReactDivProps & {
   closeIconClassName?: string;
 };
 
-// type CustomResponse = Record<string, unknown>;
-
 export type ResponseType<T> = {
   ok: boolean;
   status: string;
@@ -23,33 +21,22 @@ export type ResponseType<T> = {
   data: T;
 };
 
-export type CommonCode = {
+export type GroupName = 'work_status' | 'work_type' | 'work_list';
+
+export type commonCodeResp = {
+  subCode: string;
+  codeName: string;
+};
+export type CommonCodeByGroup = {
   ok: boolean;
-  groupName: string;
-  codeNames: string[];
+  listByGroup: commonCodeResp[];
+  message: string;
 };
 
 export type AllCommonCode = {
   ok: boolean;
-  work_status: string[];
-  work_type: string[];
-  work_list: string[];
+  work_status: commonCodeResp[];
+  work_type: commonCodeResp[];
+  work_list: commonCodeResp[];
   errorMessage: string;
 };
-
-export enum CommonCodeToCodeName {
-  센터장 = 201,
-  사회복지사,
-  요양보호사,
-  목욕관리자,
-  간호사,
-  요양 = 301,
-  목욕,
-  간호,
-  치매관리,
-  상담서비스,
-  대기 = 401,
-  근무,
-  휴직,
-  퇴사 = 405
-}

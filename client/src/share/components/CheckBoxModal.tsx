@@ -1,5 +1,6 @@
 import {FC, useEffect, useState} from 'react';
 import {ReactDivProps} from '../types';
+import * as ST from '../../share/types';
 
 export type CheckBoxModalProps = ReactDivProps & {
   open?: boolean;
@@ -18,7 +19,7 @@ export const CheckBoxModal: FC<CheckBoxModalProps> = ({
 export type CheckBoxProps = ReactDivProps & {
   name: string;
   toggle: () => void;
-  checkList: string[];
+  checkList: ST.commonCodeResp[];
   sendValue: (value: string[]) => void;
   reset: boolean;
 };
@@ -60,14 +61,14 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({
       <input
         name={name}
         type="checkbox"
-        value={value}
+        value={value.subCode}
         onChange={e => {
           console.log(e.target.value, e.target.checked);
           onSubmit(e.target.value, e.target.checked);
         }}
         className="checkbox-neutral my-2"
       />
-      <span>{value}</span>
+      <span>{value.codeName}</span>
     </label>
   ));
   return (
