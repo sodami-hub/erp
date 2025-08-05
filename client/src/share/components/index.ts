@@ -3,3 +3,4 @@ export * from './SecondaryMenu';
 export * from './CalendarModal';
 export * from './CheckBoxModal';
 export * from './RadioButtonModal';
+export * from './RangedCalendarModal';

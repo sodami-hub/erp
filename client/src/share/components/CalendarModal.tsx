@@ -3,7 +3,7 @@ import {useCallback, useState} from 'react';
 import Calendar from 'react-calendar';
 import {ReactDivProps} from '../types';
 
-export type CalendarModalProps = ReactDivProps & {
+type CalendarModalProps = ReactDivProps & {
   open?: boolean;
 };
 
