@@ -30,14 +30,6 @@ const initialFormState: SignupFormType = {
 };
 // =========================================================================
 
-// ================= 공통코드 리스트 초깃값 정의 =============================
-const initialCommonCodeList = {
-  work_type: [],
-  work_list: [],
-  work_status: []
-};
-// ====================================================================
-
 export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   onCloseIconClicked,
   closeIconClassName: _closeIconClassName,
@@ -62,6 +54,14 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
     subCode: string;
     codeName: string;
   };
+
+  // ================= 공통코드 리스트 초깃값 정의 =============================
+  const initialCommonCodeList = {
+    work_type: [],
+    work_list: [],
+    work_status: []
+  };
+  // ====================================================================
 
   const [commonCodeList, setCommonCodeList] = useState<{
     work_status: CommonCodeType[];

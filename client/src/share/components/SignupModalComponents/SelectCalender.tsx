@@ -16,15 +16,15 @@ export const SelectCalender = ({
   valuePrefix: string;
   className: string;
 }) => {
-  const [birthCalOpen, toggleBirthCalOpen] = useToggle(false);
+  const [calOpen, toggleCalOpen] = useToggle(false);
 
-  const selectedBirthDate = useCallback((date: Value) => {
+  const selectedDate = useCallback((date: Value) => {
     if (date && date instanceof Date) {
       const formattedDate = moment(date).format('YYYY-MM-DD');
       changed(name)({
         target: {value: formattedDate}
       } as ChangeEvent<HTMLInputElement>);
-      toggleBirthCalOpen();
+      toggleCalOpen();
     }
   }, []);
 
@@ -36,11 +36,11 @@ export const SelectCalender = ({
         className={_className}
         name={name}
         value={valuePrefix + ' : ' + value}
-        onClick={toggleBirthCalOpen}
+        onClick={toggleCalOpen}
       />
       <div>
-        <CalendarModal open={birthCalOpen}>
-          <CalendarSelect toggle={toggleBirthCalOpen} onDateChange={selectedBirthDate} />
+        <CalendarModal open={calOpen}>
+          <CalendarSelect toggle={toggleCalOpen} onDateChange={selectedDate} />
         </CalendarModal>
       </div>
     </>
