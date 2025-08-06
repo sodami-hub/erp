@@ -2,6 +2,7 @@ package com.erp.staffmanagement.staff_management.redis.service;
 
 import com.erp.staffmanagement.staff_management.redis.RedisHandler;
 import com.erp.staffmanagement.staff_management.redis.config.RedisConfigure;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,19 @@ public class RedisDataServiceImpl implements RedisDataService {
 
 
   @Override
-  public Object getSingleData(String key) {
+  public Object getSingleObjectData(String key) {
     if (redisHandler.getValueOperations().get(key) == null) {
       return "";
     }
     return redisHandler.executeOperation(() -> redisHandler.getValueOperations().get(key));
+  }
+
+  @Override
+  public String getSingleStringData(String key) {
+    if (redisHandler.getValueOperations().get(key) == null) {
+      return "";
+    }
+    return Objects.requireNonNull(redisHandler.getValueOperations().get(key)).toString();
   }
 
   @Override

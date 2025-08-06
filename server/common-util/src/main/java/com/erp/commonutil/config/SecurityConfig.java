@@ -35,7 +35,8 @@ public class SecurityConfig {
   /**
    * Security 제외 URL 목록
    */
-  private static final String[] PERMIT_ALL_PATHS = {"/staff/commonCodeList", "/auth/login"};
+  private static final String[] PERMIT_ALL_PATHS = {"/staff/commonCodeList", "/auth/login",
+      "/redis/**"};
 
   /**
    * JWT Token
@@ -52,7 +53,9 @@ public class SecurityConfig {
    */
   private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-  /** 리프레시 토큰 finder */
+  /**
+   * 리프레시 토큰 finder
+   */
   private final RefreshTokenFinder refreshTokenFinder;
 
   /**
