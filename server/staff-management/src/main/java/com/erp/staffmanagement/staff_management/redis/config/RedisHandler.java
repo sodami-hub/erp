@@ -1,6 +1,5 @@
-package com.erp.staffmanagement.staff_management.redis;
+package com.erp.staffmanagement.staff_management.redis.config;
 
-import com.erp.staffmanagement.staff_management.redis.config.RedisConfigure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.ValueOperations;

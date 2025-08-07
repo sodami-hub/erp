@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 @Service
 public interface RedisDataService {
 
-  int setSingleData(String key, Object value);  // 레디스에 단일 데이타 저장
+  int setData(String key, Object value);  // 레디스에 단일 데이타 저장
 
-  Object getSingleObjectData(String key);   // 레디스에 단일 오브젝트 가져오기
+  int setDataWithExpire(String key, Object value, long expireTime);
 
-  String getSingleStringData(String key);
+  Object getObjectData(String key);   // 레디스에 단일 오브젝트 가져오기
 
-  int deleteSingleData(String key);   // 레디스에 단일 데이터 삭제
+  String getStringData(String key);
+
+  int deleteData(String key);   // 레디스에 단일 데이터 삭제
 }
