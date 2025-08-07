@@ -6,6 +6,8 @@ import com.erp.staffmanagement.staff_management.dto.LoginResponseDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpResponseDTO;
 import com.erp.staffmanagement.staff_management.entity.Staff;
+import com.erp.staffmanagement.staff_management.redis.controller.RedisController;
+import com.erp.staffmanagement.staff_management.redis.entity.RStaff;
 import com.erp.staffmanagement.staff_management.repository.StaffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,7 @@ public class AuthService {
   private final LoginAuditService loginAuditService;
   private final AuthenticationManager authenticationManager;
   private final PasswordEncoder passwordEncoder;
+  private final RedisController redisController;
 
   @Transactional
   public LoginResponseDTO login(LoginRequestDTO loginRequest) {
@@ -45,7 +48,7 @@ public class AuthService {
   public SignUpResponseDTO staffSignUp(SignUpRequestDTO signUpRequestDTO) {
     UserContext userContext = (UserContext) SecurityContextHolder.getContext().getAuthentication()
         .getPrincipal();
-    
+
     if (userContext.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("102"))) {
       return new SignUpResponseDTO(false, null, "직원등록 권한이 없습니다.");
     }
@@ -64,8 +67,9 @@ public class AuthService {
     // 2. 직원 등록 로직
     Staff newStaff = new Staff(signUpRequestDTO);
     Staff staff = staffRepository.save(newStaff);
-    Staff newStaffId = staffRepository.getStaffIdByPhone(staff.getPhone());
-    System.out.println("-=-----------------" + newStaffId.getStaffId() + "----------------------");
-    return new SignUpResponseDTO(true, String.valueOf(newStaffId.getStaffId()), null);
+
+    redisController.setStaffDataToRedis(new RStaff(staff));
+
+    return new SignUpResponseDTO(true, String.valueOf(staff.getStaffId()), null);
   }
 }

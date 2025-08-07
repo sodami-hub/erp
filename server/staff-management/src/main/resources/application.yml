@@ -10,7 +10,9 @@ spring:
     driver-class-name: org.postgresql.Driver
   data:
     redis:
-      url: redis://1.234.4.11:6379/0
+      host: 1.234.4.11
+      port: 6379
+      database: 0
   jpa:
     properties:
       hibernate:
