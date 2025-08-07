@@ -23,20 +23,26 @@ export type ResponseType<T> = {
 
 export type GroupName = 'work_status' | 'work_type' | 'work_list';
 
-export type commonCodeResp = {
+export type CommonCodeType = {
   subCode: string;
   codeName: string;
 };
 export type CommonCodeByGroup = {
   ok: boolean;
-  listByGroup: commonCodeResp[];
+  listByGroup: CommonCodeType[];
   message: string;
 };
 
-export type AllCommonCode = {
+export type AllCommonCodeResp = {
   ok: boolean;
-  work_status: commonCodeResp[];
-  work_type: commonCodeResp[];
-  work_list: commonCodeResp[];
+  work_status: CommonCodeType[];
+  work_type: CommonCodeType[];
+  work_list: CommonCodeType[];
   errorMessage: string;
+};
+
+export type CommonCodeListType = {
+  work_status: CommonCodeType[];
+  work_type: CommonCodeType[];
+  work_list: CommonCodeType[];
 };

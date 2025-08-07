@@ -18,7 +18,7 @@ export const RadioButtonModal: FC<RadioButtonModalProps> = ({
 export type RadioButtonProps = ReactDivProps & {
   name: string;
   toggle: () => void;
-  buttonList: ST.commonCodeResp[] | string[];
+  buttonList: ST.CommonCodeType[] | string[];
   sendValue: (value: string) => void;
   reset: boolean;
 };
