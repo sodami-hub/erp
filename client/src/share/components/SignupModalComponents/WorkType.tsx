@@ -10,7 +10,7 @@ export const WorkType = ({
   reset
 }: {
   value: string;
-  workTypeList: ST.commonCodeResp[];
+  workTypeList: ST.CommonCodeType[];
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
   reset: boolean;
 }) => {

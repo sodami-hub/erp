@@ -50,10 +50,6 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   /*
   어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
    */
-  type CommonCodeType = {
-    subCode: string;
-    codeName: string;
-  };
 
   // ================= 공통코드 리스트 초깃값 정의 =============================
   const initialCommonCodeList = {
@@ -64,9 +60,9 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   // ====================================================================
 
   const [commonCodeList, setCommonCodeList] = useState<{
-    work_status: CommonCodeType[];
-    work_type: CommonCodeType[];
-    work_list: CommonCodeType[];
+    work_status: ST.CommonCodeType[];
+    work_type: ST.CommonCodeType[];
+    work_list: ST.CommonCodeType[];
   }>(initialCommonCodeList);
 
   useEffect(() => {

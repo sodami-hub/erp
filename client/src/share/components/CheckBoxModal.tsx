@@ -19,7 +19,7 @@ export const CheckBoxModal: FC<CheckBoxModalProps> = ({
 export type CheckBoxProps = ReactDivProps & {
   name: string;
   toggle: () => void;
-  checkList: ST.commonCodeResp[];
+  checkList: ST.CommonCodeType[];
   sendValue: (value: string[]) => void;
   reset: boolean;
 };
