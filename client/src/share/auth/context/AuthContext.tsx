@@ -48,7 +48,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       } else {
         console.log('직원 정보 저장 성공');
         // 첨부 서류 업로드
-        if (document) {
+        if (document && document.entries().next().done === false) {
           document.append('staffId', response.data.staffId);
           const response02 = await API.staffFileUpload(document);
           if (!response02.ok) {

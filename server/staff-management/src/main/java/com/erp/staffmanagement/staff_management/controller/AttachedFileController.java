@@ -33,7 +33,7 @@ public class AttachedFileController {
       @RequestParam(value = "file02", required = false) MultipartFile file02,
       @RequestParam("staffId") String staffId)
       throws FileUploadException {
-    if (file01.isEmpty()) {
+    if (file01 == null || file01.isEmpty()) {
       return ResponseEntity.ok(ApiResponse.error("첨부할 문서가 없습니다."));
     }
     FileUploadResponseDTO fileUploadResponseDTO = attachedFileService.dependentFileService(file01,
