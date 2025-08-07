@@ -45,7 +45,7 @@ export const StaffList = ({
           .join(',');
       }
     })(status);
-  }, [status]);
+  }, [status, commonCode]);
 
   useEffect(() => {
     const findStr = selectedStaff + 'staff';

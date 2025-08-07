@@ -54,7 +54,7 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({
         input.checked = false;
       }
     });
-  }, [reset]);
+  }, [reset, name]);
 
   const checkBoxes = checkList?.map((value, index) => (
     <label key={index} className="flex items-center space-x-2">

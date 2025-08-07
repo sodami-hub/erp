@@ -42,7 +42,7 @@ export const RadioButtonComponent: FC<RadioButtonProps> = ({
     const radios = document.getElementsByName(name) as NodeListOf<HTMLInputElement>;
     radios.forEach(radio => (radio.checked = false));
     setCheckedValue('');
-  }, [reset]);
+  }, [reset, name]);
 
   const radioButton = buttonList?.map((value, index) => (
     <label key={index} className={'flex items-center space-x-2'}>

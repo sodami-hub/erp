@@ -16,11 +16,14 @@ export const WorkType = ({
 }) => {
   const [workTypeModalOpen, toggleWorkTypeModal] = useToggle(false);
 
-  const selectWorkType = useCallback((value: string[]) => {
-    const val = value.join(',');
-    const changeFunc = changed('workType');
-    changeFunc({target: {value: val}} as ChangeEvent<HTMLInputElement>);
-  }, []);
+  const selectWorkType = useCallback(
+    (value: string[]) => {
+      const val = value.join(',');
+      const changeFunc = changed('workType');
+      changeFunc({target: {value: val}} as ChangeEvent<HTMLInputElement>);
+    },
+    [changed]
+  );
 
   return (
     <>

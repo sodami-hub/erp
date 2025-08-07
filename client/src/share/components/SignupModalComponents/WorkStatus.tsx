@@ -16,9 +16,12 @@ export const WorkStatus = ({
 }) => {
   const [workStatusModalOpen, toggleWorkStatusModal] = useToggle(false);
 
-  const selectWorkStatus = useCallback((value: string) => {
-    changed('workStatus')({target: {value: value}} as ChangeEvent<HTMLInputElement>);
-  }, []);
+  const selectWorkStatus = useCallback(
+    (value: string) => {
+      changed('workStatus')({target: {value: value}} as ChangeEvent<HTMLInputElement>);
+    },
+    [changed]
+  );
 
   return (
     <>

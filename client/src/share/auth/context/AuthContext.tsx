@@ -117,7 +117,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
     setLoggedUser(undefined);
     console.log('logout');
     navigate('/');
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     // localStorage 의 값을 초기화할 때 사용 logout?
@@ -132,7 +132,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       const user: T.LoggedUserInfo = U.readObject('user');
       setLoggedUser(user);
     }
-  }, []);
+  }, [deleteStorage, navigate]);
 
   useEffect(() => {
     if (errorMessage) {

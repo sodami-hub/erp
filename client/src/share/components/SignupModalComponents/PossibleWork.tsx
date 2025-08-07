@@ -16,11 +16,14 @@ export const PossibleWork = ({
 }) => {
   const [workListModalOpen, toggleWorkListModal] = useToggle(false);
 
-  const selectPossibleWork = useCallback((value: string[]) => {
-    const val = value.join(',');
-    const changeFunc = changed('possibleWork');
-    changeFunc({target: {value: val}} as ChangeEvent<HTMLInputElement>);
-  }, []);
+  const selectPossibleWork = useCallback(
+    (value: string[]) => {
+      const val = value.join(',');
+      const changeFunc = changed('possibleWork');
+      changeFunc({target: {value: val}} as ChangeEvent<HTMLInputElement>);
+    },
+    [changed]
+  );
 
   return (
     <>
