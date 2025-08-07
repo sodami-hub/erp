@@ -1,4 +1,4 @@
-import * as T from '../type';
+import * as T from '../types';
 import * as ST from '../../types';
 import {axiosClient} from '../../api/axios';
 
@@ -23,6 +23,13 @@ export const staffFileUpload = async (file: FormData) => {
   const res = await axiosClient.post<ST.ResponseType<any>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/saveDependentDocument`,
     file
+  );
+  return res.data;
+};
+
+export const loadCommonCode = async () => {
+  const res = await axiosClient.get<ST.ResponseType<ST.AllCommonCodeResp>>(
+    `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/commonCodeList/all`
   );
   return res.data;
 };

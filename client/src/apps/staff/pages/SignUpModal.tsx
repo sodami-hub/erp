@@ -1,9 +1,9 @@
-import React, {ChangeEvent, FC, useCallback, useEffect, useMemo, useState} from 'react';
+import React, {ChangeEvent, FC, useCallback, useState} from 'react';
 import {useAuth} from '../../../share/auth/context';
 import * as C from '../../../share/components/SignupModalComponents';
 import * as T from '../types';
 import * as ST from '../../../share/types';
-import * as API from '../api';
+import * as U from '../../../share/utils';
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<ST.ModalProps> = ({
@@ -46,38 +46,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   // form 정보 리셋을 위한 값
   const [reset, setReset] = useState(false);
 
-  // ==================== 공통코드 불러오기 =============================
-  /*
-  어떤 방식으로 불러 올 것인지에 대한 고민이 필요한 내용이다.
-   */
-
-  // ================= 공통코드 리스트 초깃값 정의 =============================
-  const initialCommonCodeList = {
-    work_type: [],
-    work_list: [],
-    work_status: []
-  };
-  // ====================================================================
-
-  const [commonCodeList, setCommonCodeList] = useState<{
-    work_status: ST.CommonCodeType[];
-    work_type: ST.CommonCodeType[];
-    work_list: ST.CommonCodeType[];
-  }>(initialCommonCodeList);
-
-  useEffect(() => {
-    (async () => {
-      const res = await API.loadAllCommonCode();
-      if (!res.ok) {
-        console.log('CommonCode(Staff) Load Failure // ' + res.message);
-      }
-      setCommonCodeList(res.data);
-      console.log('CommonCode(Staff) Load Succeed');
-    })();
-  }, []);
-
-  const memoizedCommonCodeList = useMemo(() => commonCodeList, [commonCodeList]);
-  //===================================================
+  const CommonCode: ST.CommonCodeListType = U.readObject('commonCode');
 
   //============= 직원등록 폼 정보 초깃값 설정 및 변경사항 저장 ==================
   //prettier-ignore
@@ -198,14 +167,14 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
         <C.WorkType
           reset={reset}
           value={signupForm.workType}
-          workTypeList={memoizedCommonCodeList.work_type}
+          workTypeList={CommonCode.work_type}
           changed={changed}
         />
 
         <C.PossibleWork
           reset={reset}
           value={signupForm.possibleWork}
-          workList={memoizedCommonCodeList.work_list}
+          workList={CommonCode.work_list}
           changed={changed}
         />
 
@@ -217,7 +186,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
 
         <C.WorkStatus
           value={signupForm.workStatus}
-          workStatusList={memoizedCommonCodeList.work_status}
+          workStatusList={CommonCode.work_status}
           changed={changed}
           reset={reset}
         />

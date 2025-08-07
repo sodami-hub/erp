@@ -9,7 +9,7 @@ import {
 } from 'react';
 import * as U from '../../utils';
 import {useNavigate} from 'react-router-dom';
-import * as T from '../type';
+import * as T from '../types';
 import * as ST from '../../types';
 import * as API from '../api';
 
@@ -27,6 +27,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
   const [errorMessage, setErrorMessage] = useState<string>('');
   // 로컬 스토리지 정보(jwtToken,user)를 초기화(logout)할 때 사용
   const [deleteStorage, setDeleteStorage] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
   const clearJwt = useCallback(() => {
@@ -97,6 +98,14 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
         console.log('accessToken => ' + U.readStringP('accessToken'));
         callback && callback();
         console.log('login success');
+
+        const commonCode = await API.loadCommonCode();
+        if (!commonCode.ok) {
+          console.log('CommonCode(Staff) Load Failure // ' + commonCode.message);
+          return;
+        }
+        U.writeObject('commonCode', commonCode.data);
+        console.log('직원 공통코드 불러오기 성공');
       }
     },
     []

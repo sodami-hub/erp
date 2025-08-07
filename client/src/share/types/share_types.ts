@@ -33,10 +33,16 @@ export type CommonCodeByGroup = {
   message: string;
 };
 
-export type AllCommonCode = {
+export type AllCommonCodeResp = {
   ok: boolean;
   work_status: CommonCodeType[];
   work_type: CommonCodeType[];
   work_list: CommonCodeType[];
   errorMessage: string;
+};
+
+export type CommonCodeListType = {
+  work_status: CommonCodeType[];
+  work_type: CommonCodeType[];
+  work_list: CommonCodeType[];
 };

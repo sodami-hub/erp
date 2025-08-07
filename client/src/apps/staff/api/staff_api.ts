@@ -10,7 +10,7 @@ export const loadCommonCodeByGroupName = async (groupName: ST.GroupName) => {
 };
 
 export const loadAllCommonCode = async () => {
-  const res = await axiosClient.get<ST.ResponseType<ST.AllCommonCode>>(
+  const res = await axiosClient.get<ST.ResponseType<ST.AllCommonCodeResp>>(
     `${process.env.REACT_APP_AUTH_AND_STAFF_SERVER}/staff/commonCodeList/all`
   );
   return res.data;
