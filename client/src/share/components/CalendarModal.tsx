@@ -1,9 +1,9 @@
 import type {FC} from 'react';
 import {useCallback, useState} from 'react';
 import Calendar from 'react-calendar';
-import {ReactDivProps} from '../types';
+import * as ST from '../types';
 
-type CalendarModalProps = ReactDivProps & {
+type CalendarModalProps = ST.ReactDivProps & {
   open?: boolean;
 };
 
