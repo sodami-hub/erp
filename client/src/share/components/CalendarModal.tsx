@@ -1,9 +1,9 @@
 import type {FC} from 'react';
 import {useCallback, useState} from 'react';
 import Calendar from 'react-calendar';
-import {ReactDivProps} from '../types';
+import * as ST from '../types';
 
-type CalendarModalProps = ReactDivProps & {
+type CalendarModalProps = ST.ReactDivProps & {
   open?: boolean;
 };
 
@@ -43,7 +43,7 @@ export const CalendarSelect = ({
         locale={'ko'}
         value={calendarValue} // 현재 선택된 값
         onChange={onChangeCalendar} // 날짜 변경 시 호출
-        formatDay={(locale, date) => date.toLocaleString('en', {day: 'numeric'})}
+        formatDay={(_locale, date) => date.toLocaleString('en', {day: 'numeric'})}
       />
       <button className={'btn btn-primary my-1'} onClick={toggle}>
         취소

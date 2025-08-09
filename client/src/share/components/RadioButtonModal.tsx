@@ -1,8 +1,7 @@
 import {FC, useEffect, useState} from 'react';
-import {ReactDivProps} from '../types';
-import * as ST from '../../share/types';
+import * as ST from '../types';
 
-export type RadioButtonModalProps = ReactDivProps & {
+export type RadioButtonModalProps = ST.ReactDivProps & {
   open?: boolean;
 };
 
@@ -15,7 +14,7 @@ export const RadioButtonModal: FC<RadioButtonModalProps> = ({
   return <div {...props} className={className} />;
 };
 
-export type RadioButtonProps = ReactDivProps & {
+export type RadioButtonProps = ST.ReactDivProps & {
   name: string;
   toggle: () => void;
   buttonList: ST.CommonCodeType[] | string[];

@@ -1,11 +1,12 @@
-import {FC, useState} from 'react';
-import {ReactDivProps} from '../types';
+import type {FC} from 'react';
+import {useState} from 'react';
+import * as ST from '../types';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {ko} from 'date-fns/locale';
 import {changeDateType} from '../utils';
 
-type RangedCalendarModalProps = ReactDivProps & {
+type RangedCalendarModalProps = ST.ReactDivProps & {
   open?: boolean;
 };
 
