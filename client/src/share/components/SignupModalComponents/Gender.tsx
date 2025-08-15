@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect} from 'react';
+import {ChangeEvent, useEffect} from 'react';
 
 export const Gender = ({
   value01,

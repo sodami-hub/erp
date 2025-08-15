@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useCallback, useState} from 'react';
+import {ChangeEvent, FC, useCallback, useState} from 'react';
 import {useAuth} from '../../../share/auth/context';
 import * as C from '../../../share/components/SignupModalComponents';
 import * as T from '../types';

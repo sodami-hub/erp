@@ -1,14 +1,14 @@
 import {MainMenu, SecondaryMenu} from '../components';
 import {useNavigate} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
-import {AppState} from '../../store';
+import {useDispatch} from 'react-redux';
+//import {AppState} from '../../store';
 import * as SM from '../../store/selectedMenu';
 import {useCallback} from 'react';
 
 export default function SideMenuBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const selectedMenu = useSelector<AppState, SM.State>(state => state.selectedMenu);
+  //const selectedMenu = useSelector<AppState, SM.State>(state => state.selectedMenu);
 
   const saveMenuName = useCallback(
     (name: string) => {

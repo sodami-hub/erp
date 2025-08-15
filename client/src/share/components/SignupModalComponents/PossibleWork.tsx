@@ -1,5 +1,5 @@
 import {CheckBoxComponent, CheckBoxModal} from '../index';
-import React, {ChangeEvent, useCallback} from 'react';
+import {ChangeEvent, useCallback} from 'react';
 import {useToggle} from '../../hooks';
 import * as ST from '../../../share/types';
 
