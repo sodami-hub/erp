@@ -1,8 +1,8 @@
-import {FC, useEffect, useState} from 'react';
+import {ChangeEvent, FC, useCallback, useEffect, useState} from 'react';
 import * as ST from '../types';
 
 export type CheckBoxModalProps = ST.ReactDivProps & {
-  open?: boolean;
+  open: boolean;
 };
 
 export const CheckBoxModal: FC<CheckBoxModalProps> = ({
@@ -19,7 +19,7 @@ export type CheckBoxProps = ST.ReactDivProps & {
   name: string;
   toggle: () => void;
   checkList: ST.CommonCodeType[];
-  sendValue: (value: string[]) => void;
+  changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
   reset: boolean;
 };
 
@@ -29,8 +29,8 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({
   name,
   toggle,
   checkList,
-  sendValue,
-  reset
+  changed,
+  reset,
 }) => {
   const [checkedValue, setCheckedValue] = useState<string[]>(initialValue);
 
@@ -55,8 +55,17 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({
     });
   }, [reset, name]);
 
+  const selectWorkType = useCallback(
+      (value: string[]) => {
+        const val = value.join(',');
+        const changeFunc = changed(name);
+        changeFunc({target: {value: val}} as ChangeEvent<HTMLInputElement>);
+      },
+      [changed]
+  );
+
   const checkBoxes = checkList?.map((value, index) => (
-    <label key={index} className="flex items-center space-x-2">
+      <label key={index} className="flex items-center space-x-2">
       <input
         name={name}
         type="checkbox"
@@ -81,7 +90,7 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({
           className={'btn btn-primary'}
           onClick={() => {
             console.log(checkedValue);
-            sendValue(checkedValue);
+            selectWorkType(checkedValue);
             toggle();
           }}>
           확 인

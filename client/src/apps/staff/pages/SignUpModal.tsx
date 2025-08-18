@@ -5,6 +5,7 @@ import * as C from '../../../share/components';
 import * as T from '../types';
 import * as ST from '../../../share/types';
 import * as U from '../../../share/utils';
+import {useToggle} from "../../../share/hooks";
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<ST.ModalProps> = ({
@@ -102,6 +103,11 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   ]);
   // ==============================================================================
 
+  // ============ 모달 토글 ====
+  const [workTypeModalOpen, toggleWorkTypeModal] = useToggle(false);
+  const [workListModalOpen, toggleWorkListModal] = useToggle(false);
+
+  // ================
   return (
     <div {...props} className={className}>
       <div className={'absolute text-2xl text-black cursor-pointer'}>
@@ -155,19 +161,44 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
         <C.InputComponent name={'email'} type={'email'} value={signupForm.email} onChange={changed('email')}
         className={'w-[20%] p-2 m-2 input input-primary'} placeholder={'Email'}/>
 
-        <SC.WorkType
-          reset={reset}
-          value={signupForm.workType}
-          workTypeList={CommonCode.work_type}
-          changed={changed}
-        />
 
-        <SC.PossibleWork
-          reset={reset}
-          value={signupForm.possibleWork}
-          workList={CommonCode.work_list}
-          changed={changed}
-        />
+        <button
+            className={'btn btn-primary m-2 p-2 w-[6%] text-md'}
+            onClick={toggleWorkTypeModal}>
+          직 종
+        </button>
+        <span
+            className={
+              'border-2 border-black w-[35%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+            }>
+        {CommonCode.work_type
+        .filter(item => signupForm.workType.split(',').includes(item.subCode))
+        .map(item => item.codeName)
+        .join(',')}
+        </span>
+        <C.CheckBoxModal open={workTypeModalOpen}>
+          <C.CheckBoxComponent name={'workType'} toggle={toggleWorkTypeModal} checkList={CommonCode.work_type} changed={changed} reset={reset}/>
+        </C.CheckBoxModal>
+
+
+        <button
+            className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+            onClick={toggleWorkListModal}>
+          가능 업무
+        </button>
+        <span
+            className={
+              'border-2 border-black w-[18%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+            }>
+        {CommonCode.work_list
+        .filter(item => signupForm.possibleWork.split(',').includes(item.subCode))
+        .map(item => item.codeName)
+        .join(',')}
+        </span>
+        <C.CheckBoxModal open={workListModalOpen}>
+          <C.CheckBoxComponent name={'possibleWork'} toggle={toggleWorkListModal} checkList={CommonCode.work_list} changed={changed} reset={reset}/>
+        </C.CheckBoxModal>
+
 
         <SC.ContractStatus
           value={signupForm.contractStatus}
