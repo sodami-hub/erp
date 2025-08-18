@@ -1,4 +1,4 @@
-package com.erp.staffmanagement.staff_management.redis.config;
+package com.erp.commonutil.redis.config;
 
 
 import org.springframework.beans.factory.annotation.Value;
