@@ -158,23 +158,20 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
           initialize={reset}
         />
 
-        <C.InputComponent name={'email'} type={'email'} value={signupForm.email} onChange={changed('email')}
-        className={'w-[20%] p-2 m-2 input input-primary'} placeholder={'Email'}/>
-
 
         <button
-            className={'btn btn-primary m-2 p-2 w-[6%] text-md'}
+            className={'btn btn-primary m-2 p-2 w-[8%] text-md'}
             onClick={toggleWorkTypeModal}>
           직 종
         </button>
         <span
             className={
-              'border-2 border-black w-[35%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+              'border-2 border-black w-[42%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
             }>
         {CommonCode.work_type
         .filter(item => signupForm.workType.split(',').includes(item.subCode))
         .map(item => item.codeName)
-        .join(',')}
+        .join(', ')}
         </span>
         <C.CheckBoxModal open={workTypeModalOpen}>
           <C.CheckBoxComponent name={'workType'} toggle={toggleWorkTypeModal} checkList={CommonCode.work_type} changed={changed} reset={reset}/>
@@ -188,12 +185,12 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
         </button>
         <span
             className={
-              'border-2 border-black w-[18%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+              'border-2 border-black w-[31%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
             }>
         {CommonCode.work_list
         .filter(item => signupForm.possibleWork.split(',').includes(item.subCode))
         .map(item => item.codeName)
-        .join(',')}
+        .join(', ')}
         </span>
         <C.CheckBoxModal open={workListModalOpen}>
           <C.CheckBoxComponent name={'possibleWork'} toggle={toggleWorkListModal} checkList={CommonCode.work_list} changed={changed} reset={reset}/>
@@ -222,6 +219,9 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
 
         <C.InputComponent name={'w4c'} type={'text'} value={signupForm.w4c} onChange={changed('w4c')}
         className={'w-[24%] p-2 m-2 input input-primary'} placeholder={'w4c'}/>
+
+        <C.InputComponent name={'email'} type={'email'} value={signupForm.email} onChange={changed('email')}
+                          className={'w-[20%] p-2 m-2 input input-primary'} placeholder={'Email'}/>
 
         <SC.SelectCalender
           value={signupForm.joinDate}
