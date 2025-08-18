@@ -1,4 +1,4 @@
-package com.erp.staffmanagement.staff_management.redis.service;
+package com.erp.commonutil.redis.service;
 
 import org.springframework.stereotype.Service;
 

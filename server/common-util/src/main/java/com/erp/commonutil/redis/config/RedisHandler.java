@@ -1,4 +1,4 @@
-package com.erp.staffmanagement.staff_management.redis.config;
+package com.erp.commonutil.redis.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;

@@ -1,7 +1,7 @@
-package com.erp.staffmanagement.staff_management.redis.service;
+package com.erp.commonutil.redis.service;
 
-import com.erp.staffmanagement.staff_management.redis.config.RedisConfigure;
-import com.erp.staffmanagement.staff_management.redis.config.RedisHandler;
+import com.erp.commonutil.redis.config.RedisConfigure;
+import com.erp.commonutil.redis.config.RedisHandler;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;

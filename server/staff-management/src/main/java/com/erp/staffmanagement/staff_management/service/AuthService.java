@@ -7,7 +7,7 @@ import com.erp.staffmanagement.staff_management.dto.SignUpRequestDTO;
 import com.erp.staffmanagement.staff_management.dto.SignUpResponseDTO;
 import com.erp.staffmanagement.staff_management.entity.Staff;
 import com.erp.staffmanagement.staff_management.redis.entity.RStaff;
-import com.erp.staffmanagement.staff_management.redis.service.RedisCrudService;
+import com.erp.staffmanagement.staff_management.redis.service.RStaffCrudService;
 import com.erp.staffmanagement.staff_management.repository.StaffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,7 +26,7 @@ public class AuthService {
   private final LoginAuditService loginAuditService;
   private final AuthenticationManager authenticationManager;
   private final PasswordEncoder passwordEncoder;
-  private final RedisCrudService redisCrudService;
+  private final RStaffCrudService RStaffCrudService;
 
   @Transactional
   public LoginResponseDTO login(LoginRequestDTO loginRequest) {
@@ -68,7 +68,7 @@ public class AuthService {
     Staff newStaff = new Staff(signUpRequestDTO);
     Staff staff = staffRepository.save(newStaff);
 
-    redisCrudService.setStaffData(new RStaff(staff));
+    RStaffCrudService.setStaffData(new RStaff(staff));
 
     return new SignUpResponseDTO(true, String.valueOf(staff.getStaffId()), null);
   }
