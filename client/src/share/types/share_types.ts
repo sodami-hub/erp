@@ -1,4 +1,4 @@
-import {DetailedHTMLProps, HTMLAttributes} from 'react';
+import {ChangeEvent, DetailedHTMLProps, HTMLAttributes} from 'react';
 
 export type ReactDivProps = DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -46,3 +46,15 @@ export type CommonCodeListType = {
   work_type: CommonCodeType[];
   work_list: CommonCodeType[];
 };
+
+export type InputComponentType = {
+  name:string,
+  type:string,
+  value:string,
+  onChange:(key: string) => (e:ChangeEvent<HTMLInputElement>) => void,
+  className?:string,
+  placeholder?:string,
+  label?:string,
+  required?:boolean,
+  readOnly?:boolean,
+}

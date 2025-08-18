@@ -1,6 +1,7 @@
 import {ChangeEvent, FC, useCallback, useState} from 'react';
 import {useAuth} from '../../../share/auth/context';
-import * as C from '../../../share/components/SignupModalComponents';
+import * as SC from '../../../share/components/SignupModalComponents';
+import * as C from '../../../share/components';
 import * as T from '../types';
 import * as ST from '../../../share/types';
 import * as U from '../../../share/utils';
@@ -116,13 +117,11 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       </div>
       <div className={'text-center text-black text-xl font-bold mb-2'}>직원 등록</div>
       <div className={'flex flex-row flex-wrap justify-center w-full'}>
-        <C.Name
-          changed={changed}
-          value={signupForm.name}
-          className={'w-[15%] p-2 m-2 input input-primary'}
-        />
 
-        <C.Gender
+        <C.InputComponent name={'name'} type={'text'} value={signupForm.name} onChange={changed('name')}
+        className={'w-[15%] p-2 m-2 input input-primary'} required={true} placeholder={'이름'}/>
+
+        <SC.Gender
           value01={'남'}
           value02={'여'}
           changed={changed}
@@ -132,75 +131,67 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
           }
         />
 
-        <C.SelectCalender
+        <SC.SelectCalender
           value={signupForm.birth}
           changed={changed}
           name={'birth'}
           valuePrefix={'생년월일'}
-          className={'w-[18%] p-2 m-2 btn text-xs'}
+          className={'w-[20%] p-2 m-2 btn text-xs'}
         />
 
-        <C.Phone
-          changed={changed}
-          value={signupForm.phone}
-          className={'w-1/6 p-2 m-2 input input-primary'}
-        />
+        <C.InputComponent name={'phone'} type={'text'} value={signupForm.phone} onChange={changed('phone')}
+        className={'w-[19%] p-2 m-2 input input-primary'} placeholder={'전화번호(ID)'} required={true}/>
 
-        <C.Password
-          changed={changed}
-          value={signupForm.password}
-          className={'w-[20%] p-2 m-2 input input-primary'}
-        />
+        <C.InputComponent name={'password'} type={'password'} value={signupForm.password} onChange={changed('password')}
+        className={'w-[19%] p-2 m-2 input input-primary'} placeholder={'비밀번호(ID 뒤 4자리)'} required={true}/>
 
-        <C.Address
+        <SC.Address
           addr02={signupForm.addr02 ?? ''}
           changed={changed}
           initialize={reset}
         />
 
-        <C.Email
-          value={signupForm.email}
-          changed={changed}
-          className={'w-[20%] p-2 m-2 input input-primary'}
-        />
+        <C.InputComponent name={'email'} type={'email'} value={signupForm.email} onChange={changed('email')}
+        className={'w-[20%] p-2 m-2 input input-primary'} placeholder={'Email'}/>
 
-        <C.WorkType
+        <SC.WorkType
           reset={reset}
           value={signupForm.workType}
           workTypeList={CommonCode.work_type}
           changed={changed}
         />
 
-        <C.PossibleWork
+        <SC.PossibleWork
           reset={reset}
           value={signupForm.possibleWork}
           workList={CommonCode.work_list}
           changed={changed}
         />
 
-        <C.ContractStatus
+        <SC.ContractStatus
           value={signupForm.contractStatus}
           changed={changed}
           reset={reset}
         />
 
-        <C.WorkStatus
+        <SC.WorkStatus
           value={signupForm.workStatus}
           workStatusList={CommonCode.work_status}
           changed={changed}
           reset={reset}
         />
 
-        <C.Dependents
+        <SC.Dependents
           value={signupForm.dependents}
           reset={reset}
           changed={changed}
           saveFile={submitMaterial}
         />
 
-        <C.W4C value={signupForm.w4c} changed={changed} />
+        <C.InputComponent name={'w4c'} type={'text'} value={signupForm.w4c} onChange={changed('w4c')}
+        className={'w-[24%] p-2 m-2 input input-primary'} placeholder={'w4c'}/>
 
-        <C.SelectCalender
+        <SC.SelectCalender
           value={signupForm.joinDate}
           changed={changed}
           name={'joinDate'}
