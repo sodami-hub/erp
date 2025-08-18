@@ -51,7 +51,7 @@ export type InputComponentType = {
   name:string,
   type:string,
   value:string,
-  onChange:(key: string) => (e:ChangeEvent<HTMLInputElement>) => void,
+  onChange:(e:ChangeEvent<HTMLInputElement>) => void,
   className?:string,
   placeholder?:string,
   label?:string,

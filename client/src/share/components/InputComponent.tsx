@@ -1,7 +1,10 @@
 import * as T from '../types'
+import {InputHTMLAttributes} from "react";
 
-export const InputComponent = (props: T.InputComponentType) => {
+type InputProps = T.InputComponentType & InputHTMLAttributes<HTMLInputElement>
+
+export const InputComponent = (props: InputProps) => {
   return (
-      <input {...props}/>
-  )
-}
+      <input {...props} />
+  );
+};

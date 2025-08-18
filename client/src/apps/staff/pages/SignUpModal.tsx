@@ -118,7 +118,8 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       <div className={'text-center text-black text-xl font-bold mb-2'}>직원 등록</div>
       <div className={'flex flex-row flex-wrap justify-center w-full'}>
 
-        <C.InputComponent name={'name'} type={'text'} value={signupForm.name} onChange={changed('name')}
+
+        <C.InputComponent onChange={changed('name')} name={'name'} type={'text'} value={signupForm.name}
         className={'w-[15%] p-2 m-2 input input-primary'} required={true} placeholder={'이름'}/>
 
         <SC.Gender
