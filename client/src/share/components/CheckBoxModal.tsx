@@ -18,7 +18,7 @@ export const CheckBoxModal: FC<CheckBoxModalProps> = ({
 type CheckBoxProps = ST.ReactDivProps & {
   name: string;
   toggle: () => void;
-  checkList: ST.CommonCodeType[];
+  checkList: ST.CommonCodeType[] | string[];
   changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
   reset: boolean;
 };
@@ -69,14 +69,14 @@ export const CheckBoxComponent: FC<CheckBoxProps> = ({
       <input
         name={name}
         type="checkbox"
-        value={value.subCode}
+        value={typeof value === 'string' ? value : value.subCode}
         onChange={e => {
           console.log(e.target.value, e.target.checked);
           onSubmit(e.target.value, e.target.checked);
         }}
         className="checkbox-neutral my-2"
       />
-      <span>{value.codeName}</span>
+      <span>{typeof value === 'string' ? value : value.codeName}</span>
     </label>
   ));
   return (
