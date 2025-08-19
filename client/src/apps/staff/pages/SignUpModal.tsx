@@ -1,6 +1,6 @@
 import {ChangeEvent, FC, useCallback, useState} from 'react';
 import {useAuth} from '../../../share/auth/context';
-import * as SC from '../../../share/components/SignupModalComponents';
+import * as SC from '../../../share/components/EtcComponents';
 import * as C from '../../../share/components';
 import * as T from '../types';
 import * as ST from '../../../share/types';
@@ -26,7 +26,7 @@ type SignupFormType = T.SignupStaffInfo & {
 
 // prettier-ignore
 const initialFormState: SignupFormType = {
-  name: '', gender: '', birth: '', phone: '', password: '', email: '', address: '',
+  name: '', staffGender: '', birth: '', phone: '', password: '', email: '', address: '',
   joinDate: '', contractStatus: '', dependents: '', w4c: '',
   possibleWork: '', workType: '', workStatus: '', addr01: '', addr02: ''
 };
@@ -151,8 +151,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
         className={'w-[15%] p-2 m-2 input input-primary'} required={true} placeholder={'이름'}/>
 
         <SC.Gender
-          value01={'남'}
-          value02={'여'}
+          name={'staffGender'}
           changed={changed}
           reset={reset}
           className={

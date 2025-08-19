@@ -6,7 +6,7 @@ export type LoginInfo = {
 
 export type SignupStaffRequest = {
   name: string;
-  gender: string;
+  staffGender: string;
   birth: string;
   phone: string;
   password: string;

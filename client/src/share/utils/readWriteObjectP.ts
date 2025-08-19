@@ -5,7 +5,7 @@
 
 import * as L from './localStorageP';
 
-export const readObject = <T extends object>(key: string) => {
+export const readObject = (key: string) => {
   const readData = L.readStringP(key);
   if (!readData) {
     return null;

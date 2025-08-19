@@ -1,7 +1,7 @@
 import * as ST from '../../../share/types';
 import * as T from '../types';
 import {ChangeEvent, FC, useCallback, useState} from 'react';
-import * as C from '../../../share/components/SignupModalComponents';
+import * as C from '../../../share/components/EtcComponents';
 
 export const RegisterModal: FC<ST.ModalProps> = ({
   open,

@@ -4,15 +4,15 @@ class ErrorBoundary extends React.Component<
   {children: React.ReactNode},
   {hasError: boolean}
 > {
-  constructor(props) {
+  constructor(props:{children:React.ReactNode}) {
     super(props);
     this.state = {hasError: false};
   }
-  static getDerivedStateFromError() {
+  static getDerivedStateFromError(_:Error) {
     return {hasError: true};
   }
-  componentDidCatch(error, info) {
-    // 에러 로깅 등 추가 작업 가능
+  componentDidCatch(error:Error, info:React.ErrorInfo) {
+    console.error('ErrorBoundary 에러 발생', error, info)
   }
   render() {
     if (this.state.hasError) {
