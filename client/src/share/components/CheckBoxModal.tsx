@@ -1,7 +1,7 @@
 import {ChangeEvent, FC, useCallback, useEffect, useState} from 'react';
 import * as ST from '../types';
 
-export type CheckBoxModalProps = ST.ReactDivProps & {
+type CheckBoxModalProps = ST.ReactDivProps & {
   open: boolean;
 };
 
@@ -15,7 +15,7 @@ export const CheckBoxModal: FC<CheckBoxModalProps> = ({
   return <div {...props} className={className} />;
 };
 
-export type CheckBoxProps = ST.ReactDivProps & {
+type CheckBoxProps = ST.ReactDivProps & {
   name: string;
   toggle: () => void;
   checkList: ST.CommonCodeType[];

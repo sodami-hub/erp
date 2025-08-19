@@ -1,8 +1,8 @@
-import {FC, useEffect, useState} from 'react';
+import {ChangeEvent, FC, useCallback, useEffect, useState} from 'react';
 import * as ST from '../types';
 
 export type RadioButtonModalProps = ST.ReactDivProps & {
-  open?: boolean;
+  open: boolean;
 };
 
 export const RadioButtonModal: FC<RadioButtonModalProps> = ({
@@ -18,7 +18,7 @@ export type RadioButtonProps = ST.ReactDivProps & {
   name: string;
   toggle: () => void;
   buttonList: ST.CommonCodeType[] | string[];
-  sendValue: (value: string) => void;
+  changed: (key: string) => (e: ChangeEvent<HTMLInputElement>) => void;
   reset: boolean;
 };
 
@@ -28,7 +28,7 @@ export const RadioButtonComponent: FC<RadioButtonProps> = ({
   name,
   toggle,
   buttonList,
-  sendValue,
+  changed,
   reset
 }) => {
   const [checkedValue, setCheckedValue] = useState<string>(initialValue);
@@ -36,6 +36,11 @@ export const RadioButtonComponent: FC<RadioButtonProps> = ({
   const onSubmit = (value: string) => {
     setCheckedValue(value);
   };
+
+  const selectContractStatus = useCallback((value: string) => {
+    const changeFunc = changed(name);
+    changeFunc({target: {value: value}} as ChangeEvent<HTMLInputElement>);
+  }, []);
 
   useEffect(() => {
     const radios = document.getElementsByName(name) as NodeListOf<HTMLInputElement>;
@@ -68,7 +73,7 @@ export const RadioButtonComponent: FC<RadioButtonProps> = ({
           className={'btn btn-primary'}
           onClick={() => {
             console.log(checkedValue);
-            sendValue(checkedValue);
+            selectContractStatus(checkedValue);
             toggle();
           }}>
           확 인

@@ -103,9 +103,31 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   ]);
   // ==============================================================================
 
+  const commonCodeView = (codeName:'workType' | 'workList' | 'workStatus') => {
+    switch(codeName) {
+      case 'workType' :
+        return CommonCode.work_type
+        .filter(item => signupForm.workType.split(',').includes(item.subCode))
+        .map(item => item.codeName)
+        .join(', ');
+      case 'workList':
+        return CommonCode.work_list
+        .filter(item => signupForm.possibleWork.split(',').includes(item.subCode))
+        .map(item => item.codeName)
+        .join(', ');
+      case 'workStatus':
+        return CommonCode.work_status
+        .filter(item => signupForm.workStatus.split(',').includes(item.subCode))
+        .map(item => item.codeName)
+        .join('');
+    }
+  }
+
   // ============ 모달 토글 ====
   const [workTypeModalOpen, toggleWorkTypeModal] = useToggle(false);
   const [workListModalOpen, toggleWorkListModal] = useToggle(false);
+  const [contractStatusModalOpen, toggleContractStatusModal] = useToggle(false);
+  const [workStatusModalOpen, toggleWorkStatusModal] = useToggle(false);
 
   // ================
   return (
@@ -158,7 +180,6 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
           initialize={reset}
         />
 
-
         <button
             className={'btn btn-primary m-2 p-2 w-[8%] text-md'}
             onClick={toggleWorkTypeModal}>
@@ -168,10 +189,7 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
             className={
               'border-2 border-black w-[42%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
             }>
-        {CommonCode.work_type
-        .filter(item => signupForm.workType.split(',').includes(item.subCode))
-        .map(item => item.codeName)
-        .join(', ')}
+        {commonCodeView("workType")}
         </span>
         <C.CheckBoxModal open={workTypeModalOpen}>
           <C.CheckBoxComponent name={'workType'} toggle={toggleWorkTypeModal} checkList={CommonCode.work_type} changed={changed} reset={reset}/>
@@ -187,28 +205,41 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
             className={
               'border-2 border-black w-[31%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
             }>
-        {CommonCode.work_list
-        .filter(item => signupForm.possibleWork.split(',').includes(item.subCode))
-        .map(item => item.codeName)
-        .join(', ')}
+        {commonCodeView("workList")}
         </span>
         <C.CheckBoxModal open={workListModalOpen}>
           <C.CheckBoxComponent name={'possibleWork'} toggle={toggleWorkListModal} checkList={CommonCode.work_list} changed={changed} reset={reset}/>
         </C.CheckBoxModal>
 
+        <button
+            className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+            onClick={toggleContractStatusModal}>
+          근무 구분
+        </button>
+        <span
+            className={
+              'border-2 border-black w-[11%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
+            }>
+          {signupForm.contractStatus}
+        </span>
+        <C.RadioButtonModal open={contractStatusModalOpen}>
+          <C.RadioButtonComponent changed={changed} name={'contractStatus'} toggle={toggleContractStatusModal} buttonList={['계약직', '정규직']} reset={reset}/>
+        </C.RadioButtonModal>
 
-        <SC.ContractStatus
-          value={signupForm.contractStatus}
-          changed={changed}
-          reset={reset}
-        />
-
-        <SC.WorkStatus
-          value={signupForm.workStatus}
-          workStatusList={CommonCode.work_status}
-          changed={changed}
-          reset={reset}
-        />
+        <button
+            className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+            onClick={toggleWorkStatusModal}>
+          근무 상태
+        </button>
+        <span
+            className={
+              'border-2 border-black w-[11%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
+            }>
+          {commonCodeView('workStatus')}
+        </span>
+        <C.RadioButtonModal open={workStatusModalOpen}>
+          <C.RadioButtonComponent name={'workStatus'} toggle={toggleWorkStatusModal} buttonList={CommonCode.work_status} changed={changed} reset={reset}/>
+        </C.RadioButtonModal>
 
         <SC.Dependents
           value={signupForm.dependents}
