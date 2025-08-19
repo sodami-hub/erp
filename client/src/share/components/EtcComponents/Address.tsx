@@ -54,7 +54,7 @@ export const Address = ({
     <>
       <input
         type={'text'}
-        className={'w-[41%] p-2 m-2 input input-primary'}
+        className={'w-[40%] p-2 m-2 input input-primary'}
         id={'addr01'}
         name={'addr01'}
         placeholder={'주소'}
@@ -64,7 +64,7 @@ export const Address = ({
       />
       <input
         type={'text'}
-        className={'w-[38%] p-2 m-2 input input-primary'}
+        className={'w-[40%] p-2 m-2 input input-primary'}
         id={'addr02'}
         name={'addr02'}
         placeholder={'상세주소'}

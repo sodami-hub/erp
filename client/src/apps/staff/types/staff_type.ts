@@ -1,6 +1,6 @@
 export type SignupStaffInfo = {
   name: string;
-  gender: string;
+  staffGender: string;
   birth: string;
   phone: string;
   password: string;

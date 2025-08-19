@@ -1,9 +1,11 @@
 import {ChangeEvent, FC, useCallback, useState} from 'react';
 import {useAuth} from '../../../share/auth/context';
-import * as C from '../../../share/components/SignupModalComponents';
+import * as SC from '../../../share/components/EtcComponents';
+import * as C from '../../../share/components';
 import * as T from '../types';
 import * as ST from '../../../share/types';
 import * as U from '../../../share/utils';
+import {useToggle} from "../../../share/hooks";
 
 // ============ 신규 직원 등록 모달 =====================
 export const SignUpModal: FC<ST.ModalProps> = ({
@@ -24,7 +26,7 @@ type SignupFormType = T.SignupStaffInfo & {
 
 // prettier-ignore
 const initialFormState: SignupFormType = {
-  name: '', gender: '', birth: '', phone: '', password: '', email: '', address: '',
+  name: '', staffGender: '', birth: '', phone: '', password: '', email: '', address: '',
   joinDate: '', contractStatus: '', dependents: '', w4c: '',
   possibleWork: '', workType: '', workStatus: '', addr01: '', addr02: ''
 };
@@ -101,6 +103,33 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
   ]);
   // ==============================================================================
 
+  const commonCodeView = (codeName:'workType' | 'workList' | 'workStatus') => {
+    switch(codeName) {
+      case 'workType' :
+        return CommonCode.work_type
+        .filter(item => signupForm.workType.split(',').includes(item.subCode))
+        .map(item => item.codeName)
+        .join(', ');
+      case 'workList':
+        return CommonCode.work_list
+        .filter(item => signupForm.possibleWork.split(',').includes(item.subCode))
+        .map(item => item.codeName)
+        .join(', ');
+      case 'workStatus':
+        return CommonCode.work_status
+        .filter(item => signupForm.workStatus.split(',').includes(item.subCode))
+        .map(item => item.codeName)
+        .join('');
+    }
+  }
+
+  // ============ 모달 토글 ====
+  const [workTypeModalOpen, toggleWorkTypeModal] = useToggle(false);
+  const [workListModalOpen, toggleWorkListModal] = useToggle(false);
+  const [contractStatusModalOpen, toggleContractStatusModal] = useToggle(false);
+  const [workStatusModalOpen, toggleWorkStatusModal] = useToggle(false);
+
+  // ================
   return (
     <div {...props} className={className}>
       <div className={'absolute text-2xl text-black cursor-pointer'}>
@@ -116,15 +145,13 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
       </div>
       <div className={'text-center text-black text-xl font-bold mb-2'}>직원 등록</div>
       <div className={'flex flex-row flex-wrap justify-center w-full'}>
-        <C.Name
-          changed={changed}
-          value={signupForm.name}
-          className={'w-[15%] p-2 m-2 input input-primary'}
-        />
 
-        <C.Gender
-          value01={'남'}
-          value02={'여'}
+
+        <C.InputComponent onChange={changed('name')} name={'name'} type={'text'} value={signupForm.name}
+        className={'w-[15%] p-2 m-2 input input-primary'} required={true} placeholder={'이름'}/>
+
+        <SC.Gender
+          name={'staffGender'}
           changed={changed}
           reset={reset}
           className={
@@ -132,75 +159,101 @@ export const SignUpModalContent: FC<ST.ModalContentProps> = ({
           }
         />
 
-        <C.SelectCalender
+        <SC.SelectCalender
           value={signupForm.birth}
           changed={changed}
           name={'birth'}
           valuePrefix={'생년월일'}
-          className={'w-[18%] p-2 m-2 btn text-xs'}
+          className={'w-[20%] p-2 m-2 btn text-xs'}
         />
 
-        <C.Phone
-          changed={changed}
-          value={signupForm.phone}
-          className={'w-1/6 p-2 m-2 input input-primary'}
-        />
+        <C.InputComponent name={'phone'} type={'text'} value={signupForm.phone} onChange={changed('phone')}
+        className={'w-[19%] p-2 m-2 input input-primary'} placeholder={'전화번호(ID)'} required={true}/>
 
-        <C.Password
-          changed={changed}
-          value={signupForm.password}
-          className={'w-[20%] p-2 m-2 input input-primary'}
-        />
+        <C.InputComponent name={'password'} type={'password'} value={signupForm.password} onChange={changed('password')}
+        className={'w-[19%] p-2 m-2 input input-primary'} placeholder={'비밀번호(ID 뒤 4자리)'} required={true}/>
 
-        <C.Address
+        <SC.Address
           addr02={signupForm.addr02 ?? ''}
           changed={changed}
           initialize={reset}
         />
 
-        <C.Email
-          value={signupForm.email}
-          changed={changed}
-          className={'w-[20%] p-2 m-2 input input-primary'}
-        />
+        <button
+            className={'btn btn-primary m-2 p-2 w-[8%] text-md'}
+            onClick={toggleWorkTypeModal}>
+          직 종
+        </button>
+        <span
+            className={
+              'border-2 border-black w-[42%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+            }>
+        {commonCodeView("workType")}
+        </span>
+        <C.CheckBoxModal open={workTypeModalOpen}>
+          <C.CheckBoxComponent name={'workType'} toggle={toggleWorkTypeModal} checkList={CommonCode.work_type} changed={changed} reset={reset}/>
+        </C.CheckBoxModal>
 
-        <C.WorkType
-          reset={reset}
-          value={signupForm.workType}
-          workTypeList={CommonCode.work_type}
-          changed={changed}
-        />
 
-        <C.PossibleWork
-          reset={reset}
-          value={signupForm.possibleWork}
-          workList={CommonCode.work_list}
-          changed={changed}
-        />
+        <button
+            className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+            onClick={toggleWorkListModal}>
+          가능 업무
+        </button>
+        <span
+            className={
+              'border-2 border-black w-[31%] p-2 my-2 mr-2 -ml-1 text-black text-sm'
+            }>
+        {commonCodeView("workList")}
+        </span>
+        <C.CheckBoxModal open={workListModalOpen}>
+          <C.CheckBoxComponent name={'possibleWork'} toggle={toggleWorkListModal} checkList={CommonCode.work_list} changed={changed} reset={reset}/>
+        </C.CheckBoxModal>
 
-        <C.ContractStatus
-          value={signupForm.contractStatus}
-          changed={changed}
-          reset={reset}
-        />
+        <button
+            className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+            onClick={toggleContractStatusModal}>
+          근무 구분
+        </button>
+        <span
+            className={
+              'border-2 border-black w-[11%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
+            }>
+          {signupForm.contractStatus}
+        </span>
+        <C.RadioButtonModal open={contractStatusModalOpen}>
+          <C.RadioButtonComponent changed={changed} name={'contractStatus'} toggle={toggleContractStatusModal} buttonList={['계약직', '정규직']} reset={reset}/>
+        </C.RadioButtonModal>
 
-        <C.WorkStatus
-          value={signupForm.workStatus}
-          workStatusList={CommonCode.work_status}
-          changed={changed}
-          reset={reset}
-        />
+        <button
+            className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
+            onClick={toggleWorkStatusModal}>
+          근무 상태
+        </button>
+        <span
+            className={
+              'border-2 border-black w-[11%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
+            }>
+          {commonCodeView('workStatus')}
+        </span>
+        <C.RadioButtonModal open={workStatusModalOpen}>
+          <C.RadioButtonComponent name={'workStatus'} toggle={toggleWorkStatusModal} buttonList={CommonCode.work_status} changed={changed} reset={reset}/>
+        </C.RadioButtonModal>
 
-        <C.Dependents
+        <SC.Dependents
           value={signupForm.dependents}
           reset={reset}
           changed={changed}
           saveFile={submitMaterial}
         />
 
-        <C.W4C value={signupForm.w4c} changed={changed} />
+        <C.InputComponent name={'w4c'} type={'text'} value={signupForm.w4c} onChange={changed('w4c')}
+        className={'w-[24%] p-2 m-2 input input-primary'} placeholder={'w4c'}/>
 
-        <C.SelectCalender
+        <C.InputComponent name={'email'} type={'email'} value={signupForm.email} onChange={changed('email')}
+                          className={'w-[20%] p-2 m-2 input input-primary'} placeholder={'Email'}/>
+
+        <SC.SelectCalender
           value={signupForm.joinDate}
           changed={changed}
           name={'joinDate'}

@@ -28,7 +28,7 @@ export const Dependents = ({
       </button>
       <span
         className={
-          'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
+          'border-2 border-black w-[11%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
         }>
         {value}명
       </span>
