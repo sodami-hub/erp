@@ -1,6 +1,6 @@
 import * as ST from '../../../share/types';
 import * as T from '../types';
-import {ChangeEvent, FC, useCallback, useState} from 'react';
+import {ChangeEvent, FC, useCallback, useEffect, useState} from 'react';
 import * as EC from '../../../share/components/EtcComponents';
 import * as SC from '../../../share/components';
 import * as C from '../../../share/components';
@@ -75,26 +75,31 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
 
   const [reset, formReset] = useState<boolean>(false);
   const [attachment,setAttachment] = useState<FormData | undefined>(undefined)
+  const [attachmentInfo, setAttachmentInfo] = useState<string>('서류없음')
 
-  const attachmentInfo = () => {
-    if (attachment) {
-      const count = Array.from(attachment.keys()).length;
-      let name = '서류없음'
-      for (const [_, value] of attachment.entries()) {
-        if( value instanceof File) {
-          name= value.name ?? '서류 없음';
-          break;
+  useEffect(() => {
+    const info = () => {
+      if (attachment) {
+        const count = Array.from(attachment.keys()).length;
+        let name = '서류없음'
+        for (const [_, value] of attachment.entries()) {
+          if( value instanceof File) {
+            name= value.name ?? '서류 없음';
+            break;
+          }
         }
-      }
-      if(count >1) {
-        return name+' 외 '+(count-1).toString()+'건';
+        if(count >1) {
+          return name+' 외 '+(count-1).toString()+'건';
+        } else {
+          return name;
+        }
       } else {
-        return name;
+        return '서류 없음'
       }
-    } else {
-      return '서류 없음'
     }
-  }
+    setAttachmentInfo(info);
+  }, [attachment,reset]);
+
 
   // ================= 모달 토글
   const [serviceTypeModalOpen, toggleServiceTypeModal] = useToggle(false)
@@ -259,15 +264,15 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
 
 
         <button
-            className={'btn btn-primary m-2 p-2 w-[12%] text-md'}
+            className={'btn btn-primary m-2 p-2 w-[10%] text-md'}
             onClick={toggleFileAttachmentModal}>
-          인정 서류 추가
+          서류 추가
         </button>
         <span
             className={
-              'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
+              'border-2 border-black w-[12%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
             }>
-          {attachmentInfo()}
+          {attachmentInfo}
         </span>
         <C.FileAttachmentModal open={fileAttachmentModalOpen}>
           <C.FileAttachmentContents componentName={'인정서류추가'} toggle={toggleFileAttachmentModal} setMaterials={setAttachment} reset={reset}/>

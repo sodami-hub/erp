@@ -19,7 +19,7 @@ export const FileAttachmentModal: FC<FileAttachmentModalProps>= ({
 type FileAttachmentContentsProps = ReactDivProps & {
   componentName:string;
   toggle: ()=> void;
-  setMaterials:(data:FormData)=>void;
+  setMaterials:(data:FormData|undefined)=>void;
   reset:boolean;
 }
 
@@ -36,14 +36,7 @@ export const FileAttachmentContents: FC<FileAttachmentContentsProps> = ({
   const ref01 = useRef<HTMLInputElement>(null);
   const ref02=useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    setDocument([{
-      documentName:'',
-      document:undefined,
-    }])
-    if (ref01.current) ref01.current.value='';
-    if (ref02.current) ref02.current.value='';
-  }, [reset]);
+
 
   const addInput = () => {
     setInputs(prev => [...prev, prev.length]);
@@ -117,16 +110,39 @@ export const FileAttachmentContents: FC<FileAttachmentContentsProps> = ({
     toggle();
   }
 
-  const closeModal = () => {
+  const cancel = () => {
     setInputs(initialInputs)
-    if (ref01.current) ref01.current.value='';
+    setDocument([])
+    if (ref01.current) {
+      const inputs = ref01.current.parentElement?.parentElement?.querySelectorAll('input[type="file"]');
+      if (inputs) {
+        inputs.forEach(input => {
+          (input as HTMLInputElement).value = '';
+        });
+      }
+    }
     if (ref02.current) ref02.current.value='';
+    setMaterials(undefined)
     toggle()
   }
 
+  useEffect(() => {
+    setDocument([])
+    if (ref01.current) {
+      const inputs = ref01.current.parentElement?.parentElement?.querySelectorAll('input[type="file"]');
+      if (inputs) {
+        inputs.forEach(input => {
+          (input as HTMLInputElement).value = '';
+        });
+      }
+    }
+    if (ref02.current) ref02.current.value='';
+    setMaterials(undefined)
+  }, [reset]);
+
   return (
       <div className={'relative w-[40%] min-w-[500px]'}>
-        <button className={"btn btn-sm btn-circle border-white bg-white text-black absolute right-6 top-1 cursor-pointer"} onClick={()=>closeModal()}>✕</button>
+        <button className={"btn btn-sm btn-circle border-white bg-white text-black absolute right-6 top-1 cursor-pointer"} onClick={toggle}>✕</button>
         <div className={'flex flex-col justify-center items-center bg-white text-black rounded-box'}>
           <span className={'mt-2 ml-2 mr-2 mb-1 text-lg'}>{componentName}</span>
           {inputs.map((idx)=>inputComponent(idx))}
@@ -134,7 +150,10 @@ export const FileAttachmentContents: FC<FileAttachmentContentsProps> = ({
             onClick={addInput}>
             add
           </button>
-          <button type={'submit'} className={'btn btn-secondary m-2'} onClick={submit}>확인</button>
+          <div className={'flex flex-row justify-center items-center'}>
+            <button type={'submit'} className={'btn btn-secondary m-2'} onClick={submit}>확인</button>
+            <button type={'reset'} className={'btn btn-secondary m-2'} onClick={cancel}>취소</button>
+          </div>
         </div>
       </div>
   )
