@@ -5,6 +5,7 @@ import * as EC from '../../../share/components/EtcComponents';
 import * as SC from '../../../share/components';
 import * as C from '../../../share/components';
 import {useToggle} from "../../../share/hooks";
+import * as API from '../api'
 
 export const RegisterModal: FC<ST.ModalProps> = ({
   open,
@@ -73,6 +74,27 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
   );
 
   const [reset, formReset] = useState<boolean>(false);
+  const [attachment,setAttachment] = useState<FormData | undefined>(undefined)
+
+  const attachmentInfo = () => {
+    if (attachment) {
+      const count = Array.from(attachment.keys()).length;
+      let name = '서류없음'
+      for (const [_, value] of attachment.entries()) {
+        if( value instanceof File) {
+          name= value.name ?? '서류 없음';
+          break;
+        }
+      }
+      if(count >1) {
+        return name+' 외 '+(count-1).toString()+'건';
+      } else {
+        return name;
+      }
+    } else {
+      return '서류 없음'
+    }
+  }
 
   // ================= 모달 토글
   const [serviceTypeModalOpen, toggleServiceTypeModal] = useToggle(false)
@@ -81,6 +103,23 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
   const [fileAttachmentModalOpen,toggleFileAttachmentModal]=useToggle(false)
 
   // ================================
+
+  const registerBeneficiary= async () => {
+    const res01 = await API.registerBeneficiary(registerForm)
+    if(!res01.ok) {
+      alert('신규 수급자 등록 에러' + res01.message)
+      return;
+    } else {
+      if(attachment) {
+        const res02 = await API.saveBeneficiaryAttachment(attachment);
+        if(!res02.ok) {
+          alert('신규 수급자 첨부 서류 저장 실패' + res02.message);
+          return
+        }
+      }
+    }
+    alert('신규 수급자 저장 성공')
+  }
 
   return (
     <div {...props} className={className}>
@@ -228,10 +267,10 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
             className={
               'border-2 border-black w-[10%] p-2 my-2 mr-2 -ml-1 text-black text-sm text-center'
             }>
-          {'인정서류'}
+          {attachmentInfo()}
         </span>
         <C.FileAttachmentModal open={fileAttachmentModalOpen}>
-          <C.FileAttachmentContents componentName={'인정서류추가'} toggle={toggleFileAttachmentModal} setMaterials={()=>{}} reset={reset}/>
+          <C.FileAttachmentContents componentName={'인정서류추가'} toggle={toggleFileAttachmentModal} setMaterials={setAttachment} reset={reset}/>
         </C.FileAttachmentModal>
 
 
@@ -242,7 +281,7 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
         <button
             type={'submit'}
             className={'btn btn-secondary m-4'}
-            onClick={()=>{}}>
+            onClick={registerBeneficiary}>
           신규 수급자 등록
         </button>
       </div>

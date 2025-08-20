@@ -58,3 +58,8 @@ export type InputComponentType = {
   required?:boolean,
   readOnly?:boolean,
 }
+
+export type FileAttachmentDataType = {
+  documentName:string;
+  document:File|undefined;
+}

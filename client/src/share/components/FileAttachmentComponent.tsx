@@ -1,5 +1,6 @@
+import * as T from "../types";
 import {ReactDivProps} from "../types";
-import {FC, useState} from "react";
+import {FC, useEffect, useRef, useState} from "react";
 
 type FileAttachmentModalProps = ReactDivProps & {
   open:boolean
@@ -15,45 +16,116 @@ export const FileAttachmentModal: FC<FileAttachmentModalProps>= ({
   return <div {...props} className={className}></div>
 }
 
-type FileAttachmentDataType = {
-  documentName:string;
-  document:File
-}
-
 type FileAttachmentContentsProps = ReactDivProps & {
   componentName:string;
   toggle: ()=> void;
-  setMaterials:(data:FileAttachmentDataType[])=>void;
+  setMaterials:(data:FormData)=>void;
   reset:boolean;
 }
 
 export const FileAttachmentContents: FC<FileAttachmentContentsProps> = ({
   componentName,
-  toggle
-
+  toggle,
+  setMaterials,
+  reset
 })=> {
-  //const [document, setDocument] = useState<FileAttachmentDataType[] | undefined>(undefined)
+  const [document, setDocument] = useState<T.FileAttachmentDataType[] | undefined>([])
   const initialInputs = [0];
   const [inputs, setInputs] = useState<number[]>(initialInputs)
 
+  const ref01 = useRef<HTMLInputElement>(null);
+  const ref02=useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setDocument([{
+      documentName:'',
+      document:undefined,
+    }])
+    if (ref01.current) ref01.current.value='';
+    if (ref02.current) ref02.current.value='';
+  }, [reset]);
+
   const addInput = () => {
     setInputs(prev => [...prev, prev.length]);
+    setDocument(prev=>[...(prev ?? []),{
+      documentName:'',
+      document:undefined,
+    }])
   }
 
   const inputComponent =(index:number)=> (
     <div key={index} className={'flex flex-row justify-center items-center'}>
-      <input name={'file'+index} type={'file'} className={'file-input bg-white border-black m-2'} accept={'image/*'}/>
-      <input name={'name'+index} type={'text'} className={'input input-accent bg-white'} placeholder={'첨부파일의 이름을 적어주세요'}/>
+      <input onChange={e=>{
+                changed(e.target.name, e.target.files && e.target.files[0] ? e.target.files[0] : undefined)
+              }}
+              name={'file-'+index}
+              type={'file'}
+              className={'file-input bg-white border-black m-2'}
+              accept={'image/*'}
+              ref={ref01}
+      />
+      <input onChange={e=>changed(e.target.name, e.target.value)}
+              name={'name-'+index}
+              type={'text'}
+              className={'input input-accent bg-white'}
+              ref={ref02}
+              placeholder={'서류의 이름[(예시)성명_서류명)]'}
+      />
     </div>
   )
 
+  const changed = (name:string, value:File | string | undefined) => {
+    const [prefix,index] = name.split('-');
+    switch (prefix) {
+      case 'file':
+        setDocument(prev=>{
+          if (!prev) return prev;
+          const newDocs = [...prev];
+          newDocs[Number(index)] = {
+            ...newDocs[Number(index)],
+            document: value as File
+          };
+          return newDocs;
+        })
+        break;
+      case 'name':
+        setDocument(prev=>{
+          if(!prev) return prev;
+          const newDocs = [...prev];
+          newDocs[Number(index)] = {
+            ...newDocs[Number(index)], documentName:value as string  // index 위치의 객체를 복사해서 documentName 필드의 값을 덮어씌움
+          };
+          return newDocs;
+        })
+        break;
+    }
+  }
+
+  const submit = ()=> {
+    const formData = new FormData();
+    if(document) {
+      document.forEach((doc,idx)=>{
+        if(doc.document) {
+          formData.append(`document${idx}`,doc.document, doc.documentName || doc.document.name)
+        }
+      })
+    }
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+    setMaterials(formData)
+    toggle();
+  }
+
   const closeModal = () => {
     setInputs(initialInputs)
+    if (ref01.current) ref01.current.value='';
+    if (ref02.current) ref02.current.value='';
     toggle()
   }
 
   return (
-      <div className={'relative w-[40%]'}>
+      <div className={'relative w-[40%] min-w-[500px]'}>
         <button className={"btn btn-sm btn-circle border-white bg-white text-black absolute right-6 top-1 cursor-pointer"} onClick={()=>closeModal()}>✕</button>
         <div className={'flex flex-col justify-center items-center bg-white text-black rounded-box'}>
           <span className={'mt-2 ml-2 mr-2 mb-1 text-lg'}>{componentName}</span>
@@ -62,7 +134,7 @@ export const FileAttachmentContents: FC<FileAttachmentContentsProps> = ({
             onClick={addInput}>
             add
           </button>
-          <button type={'submit'} className={'btn btn-secondary m-2'} onClick={()=>{}}>확인</button>
+          <button type={'submit'} className={'btn btn-secondary m-2'} onClick={submit}>확인</button>
         </div>
       </div>
   )

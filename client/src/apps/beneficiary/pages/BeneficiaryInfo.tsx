@@ -56,7 +56,7 @@ export default function BeneficiaryInfo() {
               신규 수급자 등록
             </button>
             <RegisterModal open={RegisterModalOpen}>
-              <div className={'bg-gray-200 w-[65%] rounded-lg relative min-w-[830px]'}>
+              <div className={'bg-gray-200 w-[65%] rounded-lg relative min-w-[875px]'}>
                 <RegisterModalContents onCloseIconClicked={RegisterModalToggle} />
               </div>
             </RegisterModal>
