@@ -1,7 +1,7 @@
 import {FC, useEffect, useRef, useState} from 'react';
 import {ReactDivProps} from '../../types';
 
-export type DependentsModalProps = ReactDivProps & {
+type DependentsModalProps = ReactDivProps & {
   open?: boolean;
 };
 
@@ -15,7 +15,7 @@ export const DependentsModal: FC<DependentsModalProps> = ({
   return <div {...props} className={className} />;
 };
 
-export type DependentsContentsProps = ReactDivProps & {
+type DependentsContentsProps = ReactDivProps & {
   toggle: () => void;
   setNumbers: (value: string) => void;
   setMaterials: (data: FormData) => void;
