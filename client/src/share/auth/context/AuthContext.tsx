@@ -23,7 +23,7 @@ export const AuthContext = createContext<T.ContextType>({
 type AuthProviderProps = {};
 
 export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children}) => {
-  const [loggedUser, setLoggedUser] = useState<T.LoggedUserInfo | undefined>(undefined);
+  const [loggedUser, setLoggedUser] = useState<ST.LoggedUserInfo | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState<string>('');
   // 로컬 스토리지 정보(jwtToken,user)를 초기화(logout)할 때 사용
   const [deleteStorage, setDeleteStorage] = useState<boolean>(false);
@@ -86,7 +86,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
           setErrorMessage('login failed');
         }
       } else {
-        const loggedUserInfo: T.LoggedUserInfo = {
+        const loggedUserInfo: ST.LoggedUserInfo = {
           institutionId: info.institutionId,
           id: info.id,
           authCode: response.data.authCode
@@ -129,7 +129,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({children
       setDeleteStorage(!deleteStorage);
     } else {
       // 새로고침해도 로그인 상태유지
-      const user: T.LoggedUserInfo = U.readObject('user');
+      const user: ST.LoggedUserInfo = U.readObject('user');
       setLoggedUser(user);
     }
   }, [deleteStorage, navigate]);

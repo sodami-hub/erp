@@ -1,3 +1,5 @@
+import {LoggedUserInfo} from "../../types";
+
 export type LoginInfo = {
   institutionId: string;
   id: string;
@@ -20,8 +22,6 @@ export type SignupStaffRequest = {
   workType: string;
   workStatus: string;
 };
-
-export type LoggedUserInfo = {institutionId: string; id: string; authCode: string};
 
 export type Callback = () => void;
 

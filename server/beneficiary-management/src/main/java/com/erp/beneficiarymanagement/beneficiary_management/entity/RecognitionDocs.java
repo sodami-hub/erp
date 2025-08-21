@@ -1,5 +1,6 @@
 package com.erp.beneficiarymanagement.beneficiary_management.entity;
 
+import com.erp.commonutil.jpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

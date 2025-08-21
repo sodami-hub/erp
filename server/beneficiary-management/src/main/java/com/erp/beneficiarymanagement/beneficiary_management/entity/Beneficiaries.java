@@ -1,6 +1,7 @@
 package com.erp.beneficiarymanagement.beneficiary_management.entity;
 
 import com.erp.beneficiarymanagement.beneficiary_management.dto.RegBeneficiaryReqDTO;
+import com.erp.commonutil.jpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class Beneficiaries extends BaseEntity {
   private Long beneficiaryId;
 
   @Column(name = "institution_id")
-  private Long institutionId;
+  private String institutionId;
 
   @Column(name = "name")
   private String name;
@@ -43,7 +44,7 @@ public class Beneficiaries extends BaseEntity {
   @Column(name = "address")
   private String address;
 
-  @Column(name = "RFID")
+  @Column(name = "rfid")
   private String rfid;
 
   @Column(name = "supply_status")
@@ -108,6 +109,7 @@ public class Beneficiaries extends BaseEntity {
 
   public Beneficiaries(RegBeneficiaryReqDTO dto) {
     this.name = dto.getName();
+    this.institutionId = dto.getInstitutionId();
     this.gender = dto.getGender();
     this.birth = LocalDate.parse(dto.getBirth());
     this.phone = dto.getPhone();

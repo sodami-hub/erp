@@ -10,6 +10,7 @@ import lombok.Setter;
 public class RegBeneficiaryReqDTO {
 
   private String name;
+  private String institutionId;
   private String gender;
   private String birth;
   private String phone;

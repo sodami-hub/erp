@@ -1,5 +1,6 @@
 export type RegisterBeneficiary = {
   name: string;
+  institutionId:string;
   gender: string;
   birth: string;
   phone: string;
