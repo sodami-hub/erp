@@ -1,5 +1,6 @@
 package com.erp.beneficiarymanagement.beneficiary_management.entity;
 
+import com.erp.beneficiarymanagement.beneficiary_management.dto.RegBeneficiaryReqDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -104,5 +105,25 @@ public class Beneficiaries extends BaseEntity {
 
   @Column(name = "nursing_care_worker")
   private Long nursingCareWorker;  // 담당 요양보호사(직원)
+
+  public Beneficiaries(RegBeneficiaryReqDTO dto) {
+    this.name = dto.getName();
+    this.gender = dto.getGender();
+    this.birth = LocalDate.parse(dto.getBirth());
+    this.phone = dto.getPhone();
+    this.address = dto.getAddress();
+    this.rfid = dto.getRfid();
+    this.supplyStatus = dto.getSupplyStatus();
+    this.selfPaymentRate = dto.getSelfPaymentRate();
+    this.counselMemo = dto.getCounselMemo();
+    this.recognitionNumber = dto.getRecognitionNumber();
+    this.recognitionBeginDate = LocalDate.parse(dto.getRecognitionBeginDate());
+    this.recognitionEndDate = LocalDate.parse(dto.getRecognitionEndDate());
+    this.recognitionLevel = dto.getRecognitionLevel();
+    this.contractDate = LocalDate.parse(dto.getContractDate());
+    this.contractBeginDate = LocalDate.parse(dto.getContractBeginDate());
+    this.contractEndDate = LocalDate.parse(dto.getContractEndDate());
+    this.serviceType = dto.getServiceType();
+  }
 
 }

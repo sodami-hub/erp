@@ -23,12 +23,12 @@ public class CustomUserDetailService implements UserDetailsService {
   private final StaffRepository staffRepository;
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    Staff staff = staffRepository.getStaffIdByPhone(username);
+  public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+    Staff staff = staffRepository.getStaffIdByPhone(phoneNumber);
 
     if (staff == null) {
       // TODO 에러코드 변경
-      throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username);
+      throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: ID(전화번호) - " + phoneNumber);
     }
 
     //TODO 권한 설정

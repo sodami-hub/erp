@@ -38,7 +38,7 @@ public class AuthController {
   }
 
   @PostMapping(value = "/auth/signup", produces = "application/json")
-  public ResponseEntity<ApiResponse<SignUpResponseDTO>> signup(
+  public ResponseEntity<ApiResponse<SignUpResponseDTO>> registerStaff(
       @RequestBody SignUpRequestDTO signUpRequestDTO
   ) {
 
