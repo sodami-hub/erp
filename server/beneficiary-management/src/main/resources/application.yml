@@ -13,6 +13,7 @@ spring:
       host: 1.234.4.11
       port: 6379
       database: 0
+      password: erperp
   jpa:
     properties:
       hibernate:
