@@ -13,6 +13,7 @@ spring:
       host: 1.234.4.11
       port: 6379
       database: 0
+      password: erperp
   jpa:
     properties:
       hibernate:
@@ -26,7 +27,7 @@ spring:
           plan_cache_max_size: 384                     # 쿼리 실행 계획(plan) 캐시 최대 크기 (기본값보다 작게 설정하여 메모리 사용 조절 가능)
           plan_parameter_metadata_max_size: 24         # 파라미터 메타데이터 캐시 최대 크기 (성능 최적화)
           in_clause_parameter_padding: true            # IN 절 파라미터 개수를 일정하게 패딩하여 SQL 캐시 hit율 향상
-        default_schema: users
+        default_schema: beneficiary
   profiles:
     include:
       - base

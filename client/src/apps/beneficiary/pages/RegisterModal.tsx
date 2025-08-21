@@ -5,6 +5,7 @@ import * as EC from '../../../share/components/EtcComponents';
 import * as SC from '../../../share/components';
 import * as C from '../../../share/components';
 import {useToggle} from "../../../share/hooks";
+import * as U from '../../../share/utils';
 import * as API from '../api'
 
 export const RegisterModal: FC<ST.ModalProps> = ({
@@ -32,6 +33,7 @@ type RegisterBeneficiaryFormType = T.RegisterBeneficiary & {
 const initialFormState: RegisterBeneficiaryFormType = {
   addr01: '',
   addr02: '',
+  institutionId:'',
   address: '',
   birth: '',
   contractBeginDate: '',
@@ -72,7 +74,7 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
     },
     []
   );
-
+  const user:ST.LoggedUserInfo = U.readObject('user');
   const [reset, formReset] = useState<boolean>(false);
   const [attachment,setAttachment] = useState<FormData | undefined>(undefined)
   const [attachmentInfo, setAttachmentInfo] = useState<string>('서류없음')
@@ -110,19 +112,24 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
   // ================================
 
   const registerBeneficiary= async () => {
-    const res01 = await API.registerBeneficiary(registerForm)
+    const updatedForm = {...registerForm, institutionId: user.institutionId, supplyStatus: '상담중'};
+    setRegisterForm(updatedForm);
+    const res01 = await API.registerBeneficiary(updatedForm);
     if(!res01.ok) {
       alert('신규 수급자 등록 에러' + res01.message)
       return;
-    } else {
-      if(attachment) {
-        const res02 = await API.saveBeneficiaryAttachment(attachment);
-        if(!res02.ok) {
-          alert('신규 수급자 첨부 서류 저장 실패' + res02.message);
-          return
-        }
-      }
     }
+    // else {
+    //   if(attachment) {
+    //     const res02 = await API.saveBeneficiaryAttachment(attachment);
+    //     if(!res02.ok) {
+    //       alert('신규 수급자 첨부 서류 저장 실패' + res02.message);
+    //       return
+    //     }
+    //   }
+    // }
+    setRegisterForm(initialFormState)
+    formReset(value =>!value)
     alert('신규 수급자 저장 성공')
   }
 

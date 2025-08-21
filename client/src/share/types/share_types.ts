@@ -14,6 +14,8 @@ export type ModalContentProps = ReactDivProps & {
   closeIconClassName?: string;
 };
 
+export type LoggedUserInfo = {institutionId: string; id: string; authCode: string};
+
 export type ResponseType<T> = {
   ok: boolean;
   status: string;
@@ -63,3 +65,4 @@ export type FileAttachmentDataType = {
   documentName:string;
   document:File|undefined;
 }
+
