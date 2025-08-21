@@ -49,7 +49,10 @@ public class Beneficiaries extends BaseEntity {
   private String supplyStatus; // 수급현황 : 수급중, 상담중, 해지, 만료
 
   @Column(name = "self_payment_rate")
-  private int selfPaymentRate;  // 본인부담률
+  private String selfPaymentRate;  // 본인부담률
+
+  @Column(name = "counsel_memo")
+  private String counselMemo;
 
   @Column(name = "under_disease")
   private String underDisease;  // 기저질환
