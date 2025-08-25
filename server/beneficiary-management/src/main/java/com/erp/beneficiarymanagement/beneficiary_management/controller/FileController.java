@@ -21,7 +21,7 @@ public class FileController {
   @Transactional
   @PostMapping("/beneficiary/saveRecognitionDocs/{beneficiaryId}")
   public ResponseEntity<ApiResponse> saveRecognitionDocs(
-      @RequestParam(value = "documents") List<MultipartFile> files,
+      @RequestParam(value = "document") List<MultipartFile> files,
       @PathVariable Integer beneficiaryId
   ) {
     ApiResponse resp = fileService.recognitionFileService(files, beneficiaryId);
