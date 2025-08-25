@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileService {
 
   private final RecognitionDocsRepository recognitionDocsRepository;
-  private final String recognitionDocPath = "docs/beneficiary/attachedFile/recognitionDocs";
+  private final String recognitionDocPath = "docs/beneficiary/attachedFile/recognitionDocuments";
 
   private String generateUniqueFileName(String originalFileName) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
