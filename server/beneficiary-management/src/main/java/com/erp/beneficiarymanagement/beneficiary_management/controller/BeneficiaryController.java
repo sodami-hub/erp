@@ -27,6 +27,8 @@ public class BeneficiaryController {
       return ResponseEntity.ok(ApiResponse.error(HttpStatus.BAD_REQUEST, responseDTO.getMessage()));
     }
 
+    //TODO 레디스 서버에 수급자 정보 저장
+
     return ResponseEntity.ok(ApiResponse.success(responseDTO));
   }
 }

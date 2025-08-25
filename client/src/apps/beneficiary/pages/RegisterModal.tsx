@@ -118,16 +118,15 @@ export const RegisterModalContents: FC<ST.ModalContentProps> = ({
     if(!res01.ok) {
       alert('신규 수급자 등록 에러' + res01.message)
       return;
+    } else {
+      if(attachment) {
+        const res02 = await API.saveBeneficiaryAttachment(attachment,res01.data.beneficiaryId);
+        if(!res02.ok) {
+          alert('신규 수급자 첨부 서류 저장 실패' + res02.message);
+          return
+        }
+      }
     }
-    // else {
-    //   if(attachment) {
-    //     const res02 = await API.saveBeneficiaryAttachment(attachment);
-    //     if(!res02.ok) {
-    //       alert('신규 수급자 첨부 서류 저장 실패' + res02.message);
-    //       return
-    //     }
-    //   }
-    // }
     setRegisterForm(initialFormState)
     formReset(value =>!value)
     alert('신규 수급자 저장 성공')

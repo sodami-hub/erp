@@ -54,8 +54,8 @@ public class AttachedFileService {
     }
 
     String dirPath = switch (check) {
-      case "dependent" -> "attachedFile/dependentDocuments";
-      case "certificate" -> "attachedFile/certificateDocuments";
+      case "dependent" -> "docs/staff/attachedFile/dependentDocuments";
+      case "certificate" -> "docs/staff/attachedFile/certificateDocuments";
       default -> "";
     };
     // 파일 저장 처리

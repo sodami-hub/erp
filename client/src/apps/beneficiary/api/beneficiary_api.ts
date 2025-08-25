@@ -10,9 +10,9 @@ export const registerBeneficiary = async (data: T.RegisterBeneficiary) => {
   return res.data;
 }
 
-export const saveBeneficiaryAttachment = async(data:FormData) => {
+export const saveBeneficiaryAttachment = async(data:FormData, beneficiaryId:string) => {
   const res = await axiosClient.post<ST.ResponseType<any>>(
-      `${import.meta.env.VITE_BENEFICIARY_SERVER}/beneficiary/saveAttachment`,
+      `${import.meta.env.VITE_BENEFICIARY_SERVER}/beneficiary/saveRecognitionDocs/${beneficiaryId}`,
       data
   );
   return res.data;

@@ -1,5 +1,6 @@
 package com.erp.beneficiarymanagement.beneficiary_management.entity;
 
+import com.erp.beneficiarymanagement.beneficiary_management.dto.FileUploadDTO;
 import com.erp.commonutil.jpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,4 +32,11 @@ public class RecognitionDocs extends BaseEntity {
 
   @Column(name = "save_name")
   private String saveName;
+
+  public RecognitionDocs(FileUploadDTO fileUploadDTO, Integer beneficiaryId) {
+    this.beneficiaryId = beneficiaryId;
+    this.originalName = fileUploadDTO.getOriginalFileName();
+    this.saveName = fileUploadDTO.getSaveFileName();
+
+  }
 }
