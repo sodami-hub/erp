@@ -43,7 +43,7 @@ public class AttachedFileController {
     return ResponseEntity.ok(ApiResponse.success(fileUploadResponseDTO));
   }
 
-  // 자격증 첨부 서류 처리
+  // 자격증 첨부 서류 처리 : 자격증 정보 저장한 뒤 해당 데이터의 Id 값으로 첨부 서류 정보를 저장한다.
   @Transactional
   @PostMapping("/staff/saveCertFile/{certificateId}")
   public ResponseEntity<ApiResponse<FileUploadResponseDTO>> saveCertFile(

@@ -17,7 +17,7 @@ public class StaffManagementApplication {
     // timezone UTC 셋팅 -> 이걸 여기서 세팅하면 클라이언트의 시간과 차이가 발생하는데?? 흠...
     //TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
-    String dependentDocumentDirPath = "attachedFile/dependentDocuments";
+    String dependentDocumentDirPath = "docs/staff/attachedFile/dependentDocuments";
     File directory = new File(dependentDocumentDirPath);
     if (!directory.exists()) {
       boolean check = directory.mkdirs();
@@ -25,7 +25,7 @@ public class StaffManagementApplication {
         throw new RuntimeException("Failed to create directory: " + dependentDocumentDirPath);
       }
     }
-    String certificateDocumentDirPath = "attachedFile/certificateDocuments";
+    String certificateDocumentDirPath = "docs/staff/attachedFile/certificateDocuments";
     directory = new File(certificateDocumentDirPath);
     if (!directory.exists()) {
       boolean check = directory.mkdirs();

@@ -97,9 +97,9 @@ export const FileAttachmentContents: FC<FileAttachmentContentsProps> = ({
   const submit = ()=> {
     const formData = new FormData();
     if(document) {
-      document.forEach((doc,idx)=>{
+      document.forEach((doc)=>{
         if(doc.document) {
-          formData.append(`document${idx}`,doc.document, doc.documentName || doc.document.name)
+          formData.append(`document`,doc.document, doc.documentName || doc.document.name)
         }
       })
     }
